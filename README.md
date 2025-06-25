@@ -6,7 +6,7 @@ components for comparison.
 ## Installation
 Clone the repository and install with pip:
 ```bash
-git clone git@github.com:Accelergy-Project/hwcomponents-library.git
+git clone https://github.com/Accelergy-Project/hwcomponents-library.git
 cd hwcomponents-library
 pip3 install .
 

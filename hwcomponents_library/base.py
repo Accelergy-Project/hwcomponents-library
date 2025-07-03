@@ -1,8 +1,8 @@
-from hwcomponents import EnergyAreaEstimator, actionDynamicEnergy
+from hwcomponents import EnergyAreaModel, actionDynamicEnergy
 from hwcomponents.scaling import *
 
 
-class LibraryEstimatorClassBase(EnergyAreaEstimator):
+class LibraryEstimatorClassBase(EnergyAreaModel):
     @actionDynamicEnergy
     def write(self) -> float:
         return 0

@@ -74,7 +74,6 @@ class AladdinRegister(LibraryEstimatorClassBase):
         self.dynamic_energy: int = self.scale(
             "dynamic_energy", dynamic_energy, 1, linear, linear, linear
         )
-        self.area: int = self.scale("area", area, 5.98e00, linear, linear, linear)
 
     @actionDynamicEnergy
     def read(self) -> float:
@@ -90,9 +89,7 @@ class AladdinComparator(LibraryEstimatorClassBase):
     component_name = ["comparator", "aladdin_comparator"]
     percent_accuracy_0_to_100 = 90
 
-    def __init__(
-        self, tech_node: str, width: int = 32, energy: int = 0.02947, area: int = 71
-    ):
+    def __init__(self, tech_node: str, width: int = 32):
         super().__init__(leak_power=2.51e-8, area=71.0e-12)
         self.tech_node: str = self.scale(
             "tech_node",
@@ -103,8 +100,6 @@ class AladdinComparator(LibraryEstimatorClassBase):
             tech_node_leak,
         )
         self.width: int = self.scale("width", width, 32, linear, linear, linear)
-        self.energy: int = self.scale("energy", energy, 0.02947, linear, linear, linear)
-        self.area: int = self.scale("area", area, 71, linear, linear, linear)
 
     @actionDynamicEnergy
     def compare(self) -> float:
@@ -145,8 +140,6 @@ class AladdinMultiplier(LibraryEstimatorClassBase):
         self.width: int = self.scale("width", width, 32, linear, linear, linear)
         self.width_a: int = self.scale("width_a", width_a, 32, linear, linear, linear)
         self.width_b: int = self.scale("width_b", width_b, 32, linear, linear, linear)
-        self.energy: int = self.scale("energy", energy, 12.68, linear, linear, linear)
-        self.area: int = self.scale("area", area, 6350, linear, linear, linear)
 
     @actionDynamicEnergy
     def multiply(self) -> float:
@@ -166,9 +159,7 @@ class AladdinCounter(LibraryEstimatorClassBase):
     component_name = ["counter", "aladdin_counter"]
     percent_accuracy_0_to_100 = 90
 
-    def __init__(
-        self, tech_node: str, width: int = 32, energy: int = 0.25074, area: int = 495.5
-    ):
+    def __init__(self, tech_node: str, width: int = 32):
         super().__init__(leak_power=3.21e-7, area=495.5e-12)
         self.tech_node: str = self.scale(
             "tech_node",
@@ -179,8 +170,6 @@ class AladdinCounter(LibraryEstimatorClassBase):
             tech_node_leak,
         )
         self.width: int = self.scale("width", width, 32, linear, linear, linear)
-        self.energy: int = self.scale("energy", energy, 0.25074, linear, linear, linear)
-        self.area: int = self.scale("area", area, 495.5, linear, linear, linear)
 
     @actionDynamicEnergy
     def count(self) -> float:

@@ -17,7 +17,7 @@ from hwcomponents import actionDynamicEnergy
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,width|datawidth,depth,energy,area,action
+# tech_node,global_cycle_period,width|datawidth,depth,energy,area,action
 # 16nm,1e-9,1024,1024,2641.92,131570,read
 # 16nm,1e-9,1024,1024,2519.04,131570,write|update
 # 16nm,1e-9,1024,1024,0.381,131570,leak
@@ -34,7 +34,7 @@ from hwcomponents import actionDynamicEnergy
 # #   pages={110-113},
 # #   keywords={Random access memory;FinFETs;Temperature measurement;Leakage currents;Power demand;Voltage measurement;Embedded DRAM;gain cell (GC);low voltage;retention time;SRAM},
 # #   doi={10.1109/LSSC.2020.3006496}}
-class RaaamEdram(LibraryEstimatorClassBase):
+class RaaamEDRAM(LibraryEstimatorClassBase):
     component_name = "raaam_edram"
     percent_accuracy_0_to_100 = 90
 
@@ -53,10 +53,10 @@ class RaaamEdram(LibraryEstimatorClassBase):
             "depth", depth, 1024, linear, cacti_depth_energy, cacti_depth_energy
         )
 
-    @actionDynamicEnergy
+    @actionDynamicEnergy(bits_per_action="width")
     def read(self) -> float:
         return 2641.92e-12
 
-    @actionDynamicEnergy
+    @actionDynamicEnergy(bits_per_action="width")
     def write(self) -> float:
         return 2519.04e-12

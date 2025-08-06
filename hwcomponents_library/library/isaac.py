@@ -16,7 +16,7 @@ from hwcomponents import actionDynamicEnergy
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,width|datawidth,depth,energy,area,action
+# tech_node,global_cycle_period,width|datawidth,depth,energy,area,action
 # 32nm,1e-9,256,2048,20.45,83000,read|write|update,energy in pJ;  area in um^2;
 # 32nm,1e-9,256,2048,0,83000,leak
 # # Power * Time / (Reads+Writes) = Energy per read/write
@@ -43,17 +43,17 @@ class IsaacEDRAM(LibraryEstimatorClassBase):
             "depth", depth, 2048, linear, cacti_depth_energy, cacti_depth_energy
         )
 
-    @actionDynamicEnergy
+    @actionDynamicEnergy(bits_per_action="width")
     def read(self) -> float:
         return 20.45e-12
 
-    @actionDynamicEnergy
+    @actionDynamicEnergy(bits_per_action="width")
     def write(self) -> float:
         return 20.45e-12
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,width|datawidth,energy,area,action
+# tech_node,global_cycle_period,width|datawidth,energy,area,action
 # 65nm,1e-9,128,26,23000000,read|write|update
 # 65nm,1e-9,128,0, 23000000,leak
 class IsaacChip2ChipLink(LibraryEstimatorClassBase):
@@ -72,17 +72,17 @@ class IsaacChip2ChipLink(LibraryEstimatorClassBase):
         )
         self.width: int = self.scale("width", width, 128, linear, linear, linear)
 
-    @actionDynamicEnergy
+    @actionDynamicEnergy(bits_per_action="width")
     def read(self) -> float:
         return 26.0e-12
 
-    @actionDynamicEnergy
+    @actionDynamicEnergy(bits_per_action="width")
     def write(self) -> float:
         return 26.0e-12
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,width|datawidth,energy,area,action
+# tech_node,global_cycle_period,width|datawidth,energy,area,action
 # 32nm,1e-9,256,20.74,37500,read,energy in pJ;  area in um^2;
 # 32nm,1e-9,256,0,37500,leak|update|write
 # # To match the paper where ISAAC shares each of these between 4 tiles. Quarter the area
@@ -109,13 +109,13 @@ class IsaacRouterSharedByFour(LibraryEstimatorClassBase):
         )
         self.width: int = self.scale("width", width, 256, linear, linear, linear)
 
-    @actionDynamicEnergy
+    @actionDynamicEnergy(bits_per_action="width")
     def read(self) -> float:
         return 20.74e-12
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,resolution,energy,area,n_instances,action
+# tech_node,global_cycle_period,resolution,energy,area,n_instances,action
 # 32nm,1e-9,8,1.666666667,1200,1,convert|read
 # 32nm,1e-9,8,0,1200,1,leak|update|write
 # # Energy: 16*10^-3 W / (1.2*8*10^9 ADC BW) * 10 ^ 12 J->pJ
@@ -135,7 +135,7 @@ class IsaacRouterSharedByFour(LibraryEstimatorClassBase):
 # # 32nm,1e-9,8,1.67,1200,1,convert|read
 # # 32nm,1e-9,9,1.969078145,1827.911647,1,convert|read
 # # 32nm,1e-9,10,2.379022742,3002.008032,1,convert|read
-class IsaacAdc(LibraryEstimatorClassBase):
+class IsaacADC(LibraryEstimatorClassBase):
     component_name = "isaac_adc"
     percent_accuracy_0_to_100 = 90
 
@@ -163,7 +163,7 @@ class IsaacAdc(LibraryEstimatorClassBase):
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,width|datawidth,energy,area,action
+# tech_node,global_cycle_period,width|datawidth,energy,area,action
 # 32nm,1e-9,256,20.74,150000,read,energy in pJ;  area in um^2;
 # 32nm,1e-9,256,0,150000,leak|update|write
 # # ISAAC shares each of these between 4 tiles
@@ -189,13 +189,13 @@ class IsaacRouter(LibraryEstimatorClassBase):
         )
         self.width: int = self.scale("width", width, 256, linear, linear, linear)
 
-    @actionDynamicEnergy
+    @actionDynamicEnergy(bits_per_action="width")
     def read(self) -> float:
         return 20.74e-12
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,width|datawidth,energy,area,action
+# tech_node,global_cycle_period,width|datawidth,energy,area,action
 # 32nm,1e-9,16,0.021,60,shift_add|read|write,energy in pJ;  area in um^2
 # 32nm,1e-9,16,0.00E+00,60,leak|update
 # # Energy: 16*10^-3 W / (1.2*8*10^9 ADC BW) * 10 ^ 12 J->pJ
@@ -232,7 +232,7 @@ class IsaacShiftAdd(LibraryEstimatorClassBase):
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,width|datawidth,energy,area,action
+# tech_node,global_cycle_period,width|datawidth,energy,area,action
 # 32nm,1e-9,1,0.054,29.296875,read,energy in pJ;  area in um^2;
 # 32nm,1e-9,1,0,29.296875,leak|update|write,energy in pJ;  area in um^2;
 # # Power * Time / (Reads+Writes) = Energy per read/write
@@ -259,20 +259,20 @@ class IsaacEDRAMBus(LibraryEstimatorClassBase):
         )
         self.width: int = self.scale("width", width, 1, linear, linear, linear)
 
-    @actionDynamicEnergy
+    @actionDynamicEnergy(bits_per_action="width")
     def read(self) -> float:
         return 0.054e-12
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,resolution,energy,area,rows,action
+# tech_node,global_cycle_period,resolution,energy,area,rows,action
 # 32nm,1e-9,1,0.41667,0.166015625,1,drive|read
 # 32nm,1e-9,1,0,0.166015625,1,write|leak|update
 # # Energy: 4*10^-3 W / (128*8*10^7*1.2 DAC BW) * 10 ^ 12 J->pJ * 128/100 underutilized due to ADC
 # # 4e-3 / (128 * 8 * 1.2 * 10 ^ 7) * 10 ^ 12 * 128/100
 # # 0.3255 * 8 * 128 * 1.2e9 / 100 * 1e-9
 # # Area: 170um^2 / 128 / 8
-class IsaacDac(LibraryEstimatorClassBase):
+class IsaacDAC(LibraryEstimatorClassBase):
     component_name = "isaac_dac"
     percent_accuracy_0_to_100 = 90
 

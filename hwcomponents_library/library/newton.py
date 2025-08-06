@@ -13,8 +13,8 @@
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
 from hwcomponents import actionDynamicEnergy
-from .isaac import IsaacAdc
-from .isaac import IsaacDac
+from .isaac import IsaacADC
+from .isaac import IsaacDAC
 from .isaac import IsaacEDRAM
 from .isaac import IsaacEDRAMBus
 from .isaac import IsaacRouter
@@ -22,7 +22,7 @@ from .isaac import IsaacShiftAdd
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,resolution,energy,area,action
+# tech_node,global_cycle_period,resolution,energy,area,action
 # 32nm,1e-9,9,2.58333333333,1500,convert|read
 # 32nm,1e-9,9,0,1500,write|update|leak
 # # Energy: 3.1*10^-3 W / (1.2*10^9 ADC BW) * 10 ^ 12 J->pJ
@@ -48,7 +48,7 @@ from .isaac import IsaacShiftAdd
 # #    Sum of this table is 832. Sum of full-resolution (all table entries = 9)
 # #    is 1152. This is a 40% reduction, matching with the reported 40%
 # #    ADC power reduction in the paper.
-class NewtonAdc(LibraryEstimatorClassBase):
+class NewtonADC(LibraryEstimatorClassBase):
     component_name = "newton_adc"
     percent_accuracy_0_to_100 = 90
 
@@ -75,11 +75,11 @@ class NewtonAdc(LibraryEstimatorClassBase):
         return 2.58333333333e-12
 
 
-class NewtonAdc(IsaacAdc):
+class NewtonADC(IsaacADC):
     pass
 
 
-class NewtonDac(IsaacDac):
+class NewtonDAC(IsaacDAC):
     pass
 
 

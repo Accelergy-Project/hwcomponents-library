@@ -16,7 +16,7 @@ from hwcomponents import actionDynamicEnergy
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,width|datawidth,energy,area,action
+# tech_node,global_cycle_period,width|datawidth,energy,area,action
 # 40nm,1e-9,32,0.21,2.78E+02,add|read
 # 40nm,1e-9,32,0.0024,2.78E+02,leak
 # 40nm,1e-9,32,0,2.78E+02,update|write
@@ -46,7 +46,7 @@ class AladdinAdder(LibraryEstimatorClassBase):
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,width|datawidth,dynamic energy(pJ),area(um^2),action
+# tech_node,global_cycle_period,width|datawidth,dynamic energy(pJ),area(um^2),action
 # 40nm,1e-9,1,0.009,5.98E+00,read
 # 40nm,1e-9,1,0,5.98E+00,write
 # 40nm,1e-9,1,0,5.98E+00,leak|update
@@ -75,13 +75,13 @@ class AladdinRegister(LibraryEstimatorClassBase):
             "dynamic_energy", dynamic_energy, 1, linear, linear, linear
         )
 
-    @actionDynamicEnergy
+    @actionDynamicEnergy(bits_per_action="width")
     def read(self) -> float:
         return 0.009e-12
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,width|datawidth,energy(pJ),area(um^2),action
+# tech_node,global_cycle_period,width|datawidth,energy(pJ),area(um^2),action
 # 40nm,1e-9,32,0.02947,71,compare|read
 # 40nm,1e-9,32,2.51E-05,71,leak
 # 40nm,1e-9,32,0,71,update|write
@@ -111,7 +111,7 @@ class AladdinComparator(LibraryEstimatorClassBase):
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,width|datawidth,width_a|datawidth_a,width_b|datawidth_b,energy(pJ),area(um^2),action
+# tech_node,global_cycle_period,width|datawidth,width_a|datawidth_a,width_b|datawidth_b,energy(pJ),area(um^2),action
 # 40nm,1e-9,32,32,32,12.68,6350,multiply|read
 # 40nm,1e-9,32,32,32,0.08,6350,leak
 # 40nm,1e-9,32,32,32,0,6350,update|write
@@ -151,7 +151,7 @@ class AladdinMultiplier(LibraryEstimatorClassBase):
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,width|datawidth,energy(pJ),area(um^2),action
+# tech_node,global_cycle_period,width|datawidth,energy(pJ),area(um^2),action
 # 40nm,1e-9,32,0.25074,495.5,count|read
 # 40nm,1e-9,32,0.0003213,495.5,leak
 # 40nm,1e-9,32,0,495.5,update|write
@@ -178,3 +178,27 @@ class AladdinCounter(LibraryEstimatorClassBase):
     @actionDynamicEnergy
     def read(self) -> float:
         return 0.25074e-12
+
+class AladdinIntMAC(LibraryEstimatorClassBase):
+    component_name = ["intmac", "aladdin_intmac"]
+    percent_accuracy_0_to_100 = 90
+
+    def __init__(self, tech_node: str, adder_width: int = 16, multiplier_width: int = 8):
+        self.adder = AladdinAdder(tech_node, adder_width)
+        self.multiplier = AladdinMultiplier(tech_node, multiplier_width)
+        super().__init__(
+            area=self.adder.area + self.multiplier.area,
+            leak_power=self.adder.leak_power + self.multiplier.leak_power,
+        )
+
+    @actionDynamicEnergy
+    def mac(self) -> float:
+        return self.adder.add() + self.multiplier.multiply()
+
+    @actionDynamicEnergy
+    def read(self) -> float:
+        return self.mac()
+
+    @actionDynamicEnergy
+    def compute(self) -> float:
+        return self.mac()

@@ -17,7 +17,7 @@ from hwcomponents import actionDynamicEnergy
 
 
 # Original CSV contents:
-# tech_node,n_repeats,global_cycle_seconds,resolution, voltage,energy,area,  action
+# tech_node,n_repeats,global_cycle_period,resolution, voltage,energy,area,  action
 # 130nm,     1,      1e-6,                8,          1.8,    0.1,   170,  read
 # 130nm,     1,      1e-6,                8,          1.8,    0.1,   170,  write|update
 # 130nm,     1,      1e-6,                8,          1.8,    0.1,   170,  leak
@@ -59,11 +59,11 @@ class WanShiftAdd(LibraryEstimatorClassBase):
 
 
 # Original CSV contents:
-# tech_node,n_repeats,global_cycle_seconds,voltage,energy,area,  action
+# tech_node,n_repeats,global_cycle_period,voltage,energy,area,  action
 # 130nm,     1,      1e-6,                1.8,    0.3,  400,   read
 # 130nm,     1,      1e-6,                1.8,    0,     400,   leak
 # 130nm,     1,      1e-6,                1.8,    0,     400,   write|update
-class WanVariablePrecisionAdc(LibraryEstimatorClassBase):
+class WanVariablePrecisionADC(LibraryEstimatorClassBase):
     component_name = "wan_variable_precision_adc"
     percent_accuracy_0_to_100 = 90
 
@@ -88,7 +88,7 @@ class WanVariablePrecisionAdc(LibraryEstimatorClassBase):
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,voltage,energy,area,  action
+# tech_node,global_cycle_period,voltage,energy,area,  action
 # 130nm,     1e-6,                1.8,    1.2,   350,  read
 # 130nm,     1e-6,                1.8,    0,     350,  leak
 # 130nm,     1e-6,                1.8,    0,     350,  write|update
@@ -114,7 +114,7 @@ class WanAnalogSample(LibraryEstimatorClassBase):
 
 
 # Original CSV contents:
-# tech_node,n_repeats,global_cycle_seconds,voltage,energy,area, action
+# tech_node,n_repeats,global_cycle_period,voltage,energy,area, action
 # 130nm,     1,      1e-6,                 1.8,   0.25,  350,  read
 # 130nm,     1,      1e-6,                1.8,    0,     350,  leak
 # 130nm,     1,      1e-6,                1.8,    0,     350,  write|update

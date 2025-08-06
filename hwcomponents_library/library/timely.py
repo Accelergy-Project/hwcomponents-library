@@ -17,12 +17,12 @@ from .isaac import IsaacChip2ChipLink
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,energy,area,action
+# tech_node,global_cycle_period,energy,area,action
 # 65nm,1e-9,0.0368,40,read|add
 # 65nm,1e-9,0,40,write|update|leak
 # # TIMELY says these don't contribute to area
 # # Numbers from paper table II
-class TimelyIadder(LibraryEstimatorClassBase):
+class TimelyIAdder(LibraryEstimatorClassBase):
     component_name = "timely_iadder"
     percent_accuracy_0_to_100 = 90
 
@@ -47,11 +47,11 @@ class TimelyIadder(LibraryEstimatorClassBase):
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,n_instances,energy,area,action
+# tech_node,global_cycle_period,n_instances,energy,area,action
 # 65nm,1e-9,1,0.0023,5,drive|read|convert
 # 65nm,1e-9,1,0,5,leak|update|write
 # # Numbers from paper table II
-class TimelyPsubBuf(LibraryEstimatorClassBase):
+class TimelyPSubBuf(LibraryEstimatorClassBase):
     component_name = "timely_psubBuf"
     percent_accuracy_0_to_100 = 90
 
@@ -80,7 +80,7 @@ class TimelyPsubBuf(LibraryEstimatorClassBase):
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,resolution,energy,area,action
+# tech_node,global_cycle_period,resolution,energy,area,action
 # 65nm,1e-9,8,0.0375,240,convert|read
 # 65nm,1e-9,8,0,240,write|leak|update
 # # Numbers from paper table II
@@ -112,10 +112,10 @@ class TimelyDTC(LibraryEstimatorClassBase):
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,resolution,energy,area,action
+# tech_node,global_cycle_period,resolution,energy,area,action
 # 65nm,1e-9,8,0.145,310,convert|read
 # 65nm,1e-9,8,0,310,leak|write|update
-class TimelyTdc(LibraryEstimatorClassBase):
+class TimelyTDC(LibraryEstimatorClassBase):
     component_name = "timely_tdc"
     percent_accuracy_0_to_100 = 90
 
@@ -143,11 +143,11 @@ class TimelyTdc(LibraryEstimatorClassBase):
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,rows,energy,area,action
+# tech_node,global_cycle_period,rows,energy,area,action
 # 65nm,1e-9,1,0.00062,5,read|drive|buffer
 # 65nm,1e-9,1,0,5,leak|write|update
 # # Numbers from paper table II
-class TimelyXsubBuf(LibraryEstimatorClassBase):
+class TimelyXSubBuf(LibraryEstimatorClassBase):
     component_name = "timely_xsubBuf"
     percent_accuracy_0_to_100 = 90
 
@@ -177,7 +177,7 @@ class TimelyXsubBuf(LibraryEstimatorClassBase):
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,energy,area,action
+# tech_node,global_cycle_period,energy,area,action
 # 65nm,1e-9,0.0417,40,compare|read
 # 65nm,1e-9,0,40,write|update|leak
 # # Numbers from paper table II
@@ -206,7 +206,7 @@ class TimelyChargingComparator(LibraryEstimatorClassBase):
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,width|datawidth,depth,energy,area,action
+# tech_node,global_cycle_period,width|datawidth,depth,energy,area,action
 # 65nm,1e-9,128,128,203.776,40,read
 # 65nm,1e-9,128,128,496.624,40,write|update
 # 65nm,1e-9,128,128,0,40,leak
@@ -229,11 +229,11 @@ class TimelyInputOutputBuffer(LibraryEstimatorClassBase):
             "depth", depth, 128, linear, cacti_depth_energy, cacti_depth_energy
         )
 
-    @actionDynamicEnergy
+    @actionDynamicEnergy(bits_per_action="width")
     def read(self) -> float:
         return 203.776e-12
 
-    @actionDynamicEnergy
+    @actionDynamicEnergy(bits_per_action="width")
     def write(self) -> float:
         return 496.624e-12
 

@@ -16,7 +16,7 @@ from hwcomponents import actionDynamicEnergy
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,resolution,energy,area,action
+# tech_node,global_cycle_period,resolution,energy,area,action
 # 40nm,1e-9,8,0.291,438,read|convert
 # 40nm,1e-9,8,0,438,update|write|leak
 # # H. Chen,X. Zhot,F. Zhang and Q. Li,"A >3GHz ERBW 1.1GS/S 8B Two-Sten SAR ADC
@@ -30,7 +30,7 @@ from hwcomponents import actionDynamicEnergy
 # # (Picture was scaled when I screencapped it)
 # # 1629px * 743px / (2805px * 1625px) * 75e-6m * 22e-6m
 # # = 1629 * 743 / (2805 * 1625) * 75 * 22 = 438um^2
-class BrahmsDac(LibraryEstimatorClassBase):
+class BrahmsDAC(LibraryEstimatorClassBase):
     component_name = "brahms_dac"
     percent_accuracy_0_to_100 = 90
 

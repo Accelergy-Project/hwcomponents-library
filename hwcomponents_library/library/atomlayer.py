@@ -13,8 +13,8 @@
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
 from hwcomponents import actionDynamicEnergy
-from .isaac import IsaacAdc
-from .isaac import IsaacDac
+from .isaac import IsaacADC
+from .isaac import IsaacDAC
 from .isaac import IsaacEDRAM
 from .isaac import IsaacEDRAMBus
 from .isaac import IsaacRouter
@@ -22,7 +22,7 @@ from .isaac import IsaacShiftAdd
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,width|datawidth,depth,energy,area,action
+# tech_node,global_cycle_period,width|datawidth,depth,energy,area,action
 # 32nm,1e-9,16,128,0.083,1620,read|write,energy in pJ;  area in um^2;
 # 32nm,1e-9,16,128,0,1620,update|leak
 # # 1 read, 1 write per DAC activation
@@ -47,17 +47,17 @@ class AtomlayerRegisterLadder(LibraryEstimatorClassBase):
             "depth", depth, 128, linear, cacti_depth_energy, cacti_depth_energy
         )
 
-    @actionDynamicEnergy
+    @actionDynamicEnergy(bits_per_action="width")
     def read(self) -> float:
         return 0.083e-12
 
-    @actionDynamicEnergy
+    @actionDynamicEnergy(bits_per_action="width")
     def write(self) -> float:
         return 0.083e-12
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,width|datawidth,depth,energy,area,action
+# tech_node,global_cycle_period,width|datawidth,depth,energy,area,action
 # 32nm,1e-9,16,128,6.46,2100,read, energy in pJ;  area in um^2;
 # 32nm,1e-9,16,128,0,2100,write|update|leak
 # # Power calculation for input buffers:
@@ -87,16 +87,16 @@ class AtomlayerInputBufferTransfers(LibraryEstimatorClassBase):
             "depth", depth, 128, linear, cacti_depth_energy, cacti_depth_energy
         )
 
-    @actionDynamicEnergy
+    @actionDynamicEnergy(bits_per_action="width")
     def read(self) -> float:
         return 6.46e-12
 
 
-class AtomlayerAdc(IsaacAdc):
+class AtomlayerADC(IsaacADC):
     pass
 
 
-class AtomlayerDac(IsaacDac):
+class AtomlayerDAC(IsaacDAC):
     pass
 
 

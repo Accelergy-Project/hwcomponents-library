@@ -24,7 +24,7 @@ from hwcomponents import actionDynamicEnergy
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,energy,area,n_instances,action
+# tech_node,global_cycle_period,energy,area,n_instances,action
 # 40nm,1e-9,0.25,0,1,multiply|read,
 # 40nm,1e-9,0,0,1,update|leak|write,
 # # Assuming multiplication energy scales linearly with input, weight, and output energy

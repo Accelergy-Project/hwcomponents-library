@@ -13,17 +13,17 @@
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
 from hwcomponents import actionDynamicEnergy
-from .isaac import IsaacDac
+from .isaac import IsaacDAC
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,resolution,energy,area,n_instances,action
+# tech_node,global_cycle_period,resolution,energy,area,n_instances,action
 # 32nm,1e-9,4,0.22619,284.375,1,convert|read
 # 32nm,1e-9,4,0,284.375,1,update|write|leak
 # # Energy: 15.2*10^-3 W / (2.1*32*10^9 ADC BW) * 10 ^ 12 J->pJ
 # # 15.2*10^-3 / (2.1*32*10^9) * 10 ^ 12
 # # Area: 9100um^2 / 32
-class FormsAdc(LibraryEstimatorClassBase):
+class FormsADC(LibraryEstimatorClassBase):
     component_name = "forms_adc"
     percent_accuracy_0_to_100 = 90
 
@@ -50,5 +50,5 @@ class FormsAdc(LibraryEstimatorClassBase):
         return 0.22619e-12
 
 
-class FormsDac(IsaacDac):
+class FormsDAC(IsaacDAC):
     pass

@@ -16,7 +16,7 @@ from hwcomponents import actionDynamicEnergy
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,resolution,voltage,energy,area,action
+# tech_node,global_cycle_period,resolution,voltage,energy,area,action
 # 65nm,      540e-9,              8,         1.2,   2.25,   5000,read
 # 65nm,      540e-9,              8,         1.2,   1.2,    5000,leak
 # 65nm,      540e-9,              8,         1.2,   0,      5000,write|update
@@ -45,7 +45,7 @@ class JiaShiftAdd(LibraryEstimatorClassBase):
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,rows,resolution,voltage,energy,area,action
+# tech_node,global_cycle_period,rows,resolution,voltage,energy,area,action
 # 65nm,      540e-9,              1,   8,         1.2,   0.5,   174, read
 # 65nm,      540e-9,              1,   8,         1.2,   0.2,   174, leak
 # 65nm,      540e-9,              1,   8,         1.2,   0,     174, write|update
@@ -71,13 +71,13 @@ class JiaZeroGate(LibraryEstimatorClassBase):
         )
         self.voltage: float = self.scale("voltage", voltage, 1.2, noscale, quadratic, 1)
 
-    @actionDynamicEnergy
+    @actionDynamicEnergy(bits_per_action="width")
     def read(self) -> float:
         return 0.5e-12
 
 
 # Original CSV contents:
-# tech_node,global_cycle_seconds,voltage,energy,area,  action
+# tech_node,global_cycle_period,voltage,energy,area,  action
 # 65nm,      540e-9,              1.2,   12,     10535,read
 # 65nm,      540e-9,              1.2,   2.4,    10535,leak
 # 65nm,      540e-9,              1.2,   0,      10535,write|update

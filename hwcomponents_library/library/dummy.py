@@ -41,6 +41,10 @@ class DummyCompute(LibraryEstimatorClassBase):
     @actionDynamicEnergy
     def write(self) -> float:
         return 0.0
+    
+    @actionDynamicEnergy
+    def compute(self) -> float:
+        return 0.0
 
 
 class DummyMemory(LibraryEstimatorClassBase):

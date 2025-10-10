@@ -24,7 +24,7 @@ from .isaac import IsaacChip2ChipLink
 # # Numbers from paper table II
 class TimelyIAdder(LibraryEstimatorClassBase):
     component_name = "timely_iadder"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str):
         super().__init__(leak_power=0.0, area=40.0e-12)
@@ -53,7 +53,7 @@ class TimelyIAdder(LibraryEstimatorClassBase):
 # # Numbers from paper table II
 class TimelyPSubBuf(LibraryEstimatorClassBase):
     component_name = "timely_psubBuf"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str):
         super().__init__(leak_power=0.0, area=5.0e-12)
@@ -86,7 +86,7 @@ class TimelyPSubBuf(LibraryEstimatorClassBase):
 # # Numbers from paper table II
 class TimelyDTC(LibraryEstimatorClassBase):
     component_name = "timely_dtc"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, resolution: int = 8):
         super().__init__(leak_power=0.0, area=240.0e-12)
@@ -117,7 +117,7 @@ class TimelyDTC(LibraryEstimatorClassBase):
 # 65nm,1e-9,8,0,310,leak|write|update
 class TimelyTDC(LibraryEstimatorClassBase):
     component_name = "timely_tdc"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, resolution: int = 8):
         super().__init__(leak_power=0.0, area=310.0e-12)
@@ -149,7 +149,7 @@ class TimelyTDC(LibraryEstimatorClassBase):
 # # Numbers from paper table II
 class TimelyXSubBuf(LibraryEstimatorClassBase):
     component_name = "timely_xsubBuf"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, rows: int = 1):
         super().__init__(leak_power=0.0, area=5.0e-12)
@@ -183,7 +183,7 @@ class TimelyXSubBuf(LibraryEstimatorClassBase):
 # # Numbers from paper table II
 class TimelyChargingComparator(LibraryEstimatorClassBase):
     component_name = "timely_charging_comparator"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str):
         super().__init__(leak_power=0.0, area=40.0e-12)
@@ -212,7 +212,7 @@ class TimelyChargingComparator(LibraryEstimatorClassBase):
 # 65nm,1e-9,128,128,0,40,leak
 class TimelyInputOutputBuffer(LibraryEstimatorClassBase):
     component_name = "timely_input_output_buffer"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, width: int = 128, depth: int = 128):
         super().__init__(leak_power=0.0, area=40.0e-12)

@@ -36,7 +36,7 @@ from hwcomponents import actionDynamicEnergy
 # #   doi={10.1109/LSSC.2020.3006496}}
 class RaaamEDRAM(LibraryEstimatorClassBase):
     component_name = "raaam_edram"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, width: int = 1024, depth: int = 1024):
         super().__init__(leak_power=3.81e-4, area=131570.0e-12)

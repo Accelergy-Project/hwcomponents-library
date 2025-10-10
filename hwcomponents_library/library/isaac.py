@@ -26,7 +26,7 @@ from hwcomponents import actionDynamicEnergy
 # # (20.7e-3 / 12) * (16384 / ((128*8*10^7*1.2) * 100 / 128)) / ((16384 + 2048) * 2 / 256) * 1e12
 class IsaacEDRAM(LibraryEstimatorClassBase):
     component_name = "isaac_eDRAM"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, width: int = 256, depth: int = 2048):
         super().__init__(leak_power=0.0, area=83000.0e-12)
@@ -58,7 +58,7 @@ class IsaacEDRAM(LibraryEstimatorClassBase):
 # 65nm,1e-9,128,0, 23000000,leak
 class IsaacChip2ChipLink(LibraryEstimatorClassBase):
     component_name = "isaac_chip2chip_link"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, width: int = 128):
         super().__init__(leak_power=0.0, area=23000000.0e-12)
@@ -95,7 +95,7 @@ class IsaacChip2ChipLink(LibraryEstimatorClassBase):
 # # (42e-3 / 4 / 12) * (16384 / ((128*8*10^7*1.2) * 100 / 128)) / ((16384 + 2048) / 256) * 1e12
 class IsaacRouterSharedByFour(LibraryEstimatorClassBase):
     component_name = "isaac_router_shared_by_four"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, width: int = 256):
         super().__init__(leak_power=0.0, area=37500.0e-12)
@@ -137,7 +137,7 @@ class IsaacRouterSharedByFour(LibraryEstimatorClassBase):
 # # 32nm,1e-9,10,2.379022742,3002.008032,1,convert|read
 class IsaacADC(LibraryEstimatorClassBase):
     component_name = "isaac_adc"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, resolution: int = 8):
         super().__init__(leak_power=0.0, area=1200.0e-12)
@@ -175,7 +175,7 @@ class IsaacADC(LibraryEstimatorClassBase):
 # # (42e-3 / 4 / 12) * (16384 / ((128*8*10^7*1.2) * 100 / 128)) / ((16384 + 2048) / 256) * 1e12
 class IsaacRouter(LibraryEstimatorClassBase):
     component_name = "isaac_router"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, width: int = 256):
         super().__init__(leak_power=0.0, area=150000.0e-12)
@@ -204,7 +204,7 @@ class IsaacRouter(LibraryEstimatorClassBase):
 # # There are 4 of these in an ISAAC IMA
 class IsaacShiftAdd(LibraryEstimatorClassBase):
     component_name = "isaac_shift_add"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, width: int = 16):
         super().__init__(leak_power=0.0, area=60.0e-12)
@@ -245,7 +245,7 @@ class IsaacShiftAdd(LibraryEstimatorClassBase):
 # # Area: 7500 / (Width 256) = 29.296875 um^2 per bit width
 class IsaacEDRAMBus(LibraryEstimatorClassBase):
     component_name = "isaac_eDRAM_bus"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, width: int = 1):
         super().__init__(leak_power=0.0, area=29.296875e-12)
@@ -274,7 +274,7 @@ class IsaacEDRAMBus(LibraryEstimatorClassBase):
 # # Area: 170um^2 / 128 / 8
 class IsaacDAC(LibraryEstimatorClassBase):
     component_name = "isaac_dac"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, resolution: int = 1, rows: int = 1):
         super().__init__(leak_power=0.0, area=0.166015625e-12)

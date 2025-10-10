@@ -25,7 +25,7 @@ from .isaac import IsaacDAC
 # # Area: 9100um^2 / 32
 class FormsADC(LibraryEstimatorClassBase):
     component_name = "forms_adc"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, resolution: int = 4):
         super().__init__(leak_power=0.0, area=284.375e-12)

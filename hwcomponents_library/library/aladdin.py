@@ -22,7 +22,7 @@ from hwcomponents import actionDynamicEnergy
 # 40nm,1e-9,32,0,2.78E+02,update|write
 class AladdinAdder(LibraryEstimatorClassBase):
     component_name = ["adder", "intadder", "aladdin_adder"]
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, width: int = 32):
         super().__init__(leak_power=2.40e-6, area=278.0e-12)
@@ -52,7 +52,7 @@ class AladdinAdder(LibraryEstimatorClassBase):
 # 40nm,1e-9,1,0,5.98E+00,leak|update
 class AladdinRegister(LibraryEstimatorClassBase):
     component_name = ["register", "aladdin_register"]
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(
         self,
@@ -87,7 +87,7 @@ class AladdinRegister(LibraryEstimatorClassBase):
 # 40nm,1e-9,32,0,71,update|write
 class AladdinComparator(LibraryEstimatorClassBase):
     component_name = ["comparator", "aladdin_comparator"]
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, width: int = 32):
         super().__init__(leak_power=2.51e-8, area=71.0e-12)
@@ -117,7 +117,7 @@ class AladdinComparator(LibraryEstimatorClassBase):
 # 40nm,1e-9,32,32,32,0,6350,update|write
 class AladdinMultiplier(LibraryEstimatorClassBase):
     component_name = ["intmultiplier", "multiplier", "aladdin_multiplier"]
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(
         self,
@@ -157,7 +157,7 @@ class AladdinMultiplier(LibraryEstimatorClassBase):
 # 40nm,1e-9,32,0,495.5,update|write
 class AladdinCounter(LibraryEstimatorClassBase):
     component_name = ["counter", "aladdin_counter"]
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, width: int = 32):
         super().__init__(leak_power=3.21e-7, area=495.5e-12)
@@ -181,7 +181,7 @@ class AladdinCounter(LibraryEstimatorClassBase):
 
 class AladdinIntMAC(LibraryEstimatorClassBase):
     component_name = ["intmac", "aladdin_intmac"]
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, adder_width: int = 16, multiplier_width: int = 8):
         self.adder = AladdinAdder(tech_node, adder_width)

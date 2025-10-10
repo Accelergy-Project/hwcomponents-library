@@ -32,7 +32,7 @@ from hwcomponents import actionDynamicEnergy
 # # = 1629 * 743 / (2805 * 1625) * 75 * 22 = 438um^2
 class BrahmsDAC(LibraryEstimatorClassBase):
     component_name = "brahms_dac"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, resolution: int = 8):
         super().__init__(leak_power=0.0, area=438.0e-12)

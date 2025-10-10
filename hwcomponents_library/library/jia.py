@@ -22,7 +22,7 @@ from hwcomponents import actionDynamicEnergy
 # 65nm,      540e-9,              8,         1.2,   0,      5000,write|update
 class JiaShiftAdd(LibraryEstimatorClassBase):
     component_name = "jia_shift_add"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, resolution: int = 8, voltage: float = 1.2):
         super().__init__(leak_power=2.22e-6, area=5000.0e-12)
@@ -51,7 +51,7 @@ class JiaShiftAdd(LibraryEstimatorClassBase):
 # 65nm,      540e-9,              1,   8,         1.2,   0,     174, write|update
 class JiaZeroGate(LibraryEstimatorClassBase):
     component_name = "jia_zero_gate"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(
         self, tech_node: str, rows: int = 1, resolution: int = 8, voltage: float = 1.2
@@ -83,7 +83,7 @@ class JiaZeroGate(LibraryEstimatorClassBase):
 # 65nm,      540e-9,              1.2,   0,      10535,write|update
 class JiaDatapath(LibraryEstimatorClassBase):
     component_name = "jia_datapath"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, voltage: float = 1.2):
         super().__init__(leak_power=4.44e-6, area=10535.0e-12)

@@ -23,7 +23,7 @@ from hwcomponents import actionDynamicEnergy
 # 130nm,     1,      1e-6,                8,          1.8,    0.1,   170,  leak
 class WanShiftAdd(LibraryEstimatorClassBase):
     component_name = "wan_shift_add"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(
         self,
@@ -65,7 +65,7 @@ class WanShiftAdd(LibraryEstimatorClassBase):
 # 130nm,     1,      1e-6,                1.8,    0,     400,   write|update
 class WanVariablePrecisionADC(LibraryEstimatorClassBase):
     component_name = "wan_variable_precision_adc"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, n_repeats: int = 1, voltage: float = 1.8):
         super().__init__(leak_power=0.0, area=400.0e-12)
@@ -94,7 +94,7 @@ class WanVariablePrecisionADC(LibraryEstimatorClassBase):
 # 130nm,     1e-6,                1.8,    0,     350,  write|update
 class WanAnalogSample(LibraryEstimatorClassBase):
     component_name = "wan_analog_sample"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, voltage: float = 1.8):
         super().__init__(leak_power=0.0, area=350.0e-12)
@@ -120,7 +120,7 @@ class WanAnalogSample(LibraryEstimatorClassBase):
 # 130nm,     1,      1e-6,                1.8,    0,     350,  write|update
 class WanAnalogIntegrator(LibraryEstimatorClassBase):
     component_name = "wan_analog_integrator"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, n_repeats: int = 1, voltage: float = 1.8):
         super().__init__(leak_power=0.0, area=350.0e-12)

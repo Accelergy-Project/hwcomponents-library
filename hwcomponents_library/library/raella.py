@@ -33,7 +33,7 @@ from hwcomponents import actionDynamicEnergy
 # # We do this at the L2 (large) tile level, so area will be negligible
 class RaellaQuantMultiplier(LibraryEstimatorClassBase):
     component_name = "raella_quant_multiplier"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str):
         super().__init__(leak_power=0.0, area=0.0e-12)

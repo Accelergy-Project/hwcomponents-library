@@ -8,7 +8,7 @@ from hwcomponents import actionDynamicEnergy
 # 1e-9,0,0,1,read|update|leak|write|*
 class DummyStorage(LibraryEstimatorClassBase):
     component_name = "dummy_storage"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str):
         super().__init__(leak_power=0.0, area=0.0)
@@ -28,7 +28,7 @@ class DummyStorage(LibraryEstimatorClassBase):
 # 1e-9,0,0,1,read|update|leak|write|*
 class DummyCompute(LibraryEstimatorClassBase):
     component_name = "dummy_compute"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str):
         super().__init__(leak_power=0.0, area=0.0)
@@ -49,7 +49,7 @@ class DummyCompute(LibraryEstimatorClassBase):
 
 class DummyMemory(LibraryEstimatorClassBase):
     component_name = "dummy_memory"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str):
         super().__init__(leak_power=0.0, area=0.0)
@@ -65,7 +65,7 @@ class DummyMemory(LibraryEstimatorClassBase):
 
 class DummyNetwork(LibraryEstimatorClassBase):
     component_name = "dummy_network"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str):
         super().__init__(leak_power=0.0, area=0.0)

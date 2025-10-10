@@ -30,7 +30,7 @@ from .isaac import IsaacShiftAdd
 # # 0.166015625 / 2 = 0.083
 class AtomlayerRegisterLadder(LibraryEstimatorClassBase):
     component_name = "atomlayer_register_ladder"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, width: int = 16, depth: int = 128):
         super().__init__(leak_power=0.0, area=1620.0e-12)
@@ -70,7 +70,7 @@ class AtomlayerRegisterLadder(LibraryEstimatorClassBase):
 # # buffer reads from the inter-buffer transfer network.
 class AtomlayerInputBufferTransfers(LibraryEstimatorClassBase):
     component_name = "atomlayer_input_buffer_transfers"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, width: int = 16, depth: int = 128):
         super().__init__(leak_power=0.0, area=2100.0e-12)

@@ -50,7 +50,7 @@ from .isaac import IsaacShiftAdd
 # #    ADC power reduction in the paper.
 class NewtonADC(LibraryEstimatorClassBase):
     component_name = "newton_adc"
-    percent_accuracy_0_to_100 = 90
+    priority = 0.9
 
     def __init__(self, tech_node: str, resolution: int = 9):
         super().__init__(leak_power=0.0, area=1500.0e-12)

@@ -118,6 +118,13 @@ class SmartBufferSRAM(LibraryEstimatorClassBase):
         n_rw_ports: The number of read/write ports. Bandwidth will increase with more
             ports.
         n_banks: The number of banks. Bandwidth will increase with more banks.
+
+    Attributes
+    ----------
+        sram: The SRAM buffer.
+        address_reg: The register that holds the current address.
+        delta_reg: The register that holds the increment value.
+        adder: The adder that adds the increment value to the current address.
     """
     component_name = ["smart_buffer_sram", "smartbuffer_sram", "smartbuffersram"]
     priority = 0.5

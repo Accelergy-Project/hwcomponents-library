@@ -127,8 +127,8 @@ class SmartBufferSRAM(LibraryEstimatorClassBase):
             tech_node: float,
             width: int,
             depth: int,
-            n_rw_ports: int,
-            n_banks: int,
+            n_rw_ports: int=1,
+            n_banks: int=1,
     ):
         self.sram: SRAM = SRAM(
             tech_node=tech_node,

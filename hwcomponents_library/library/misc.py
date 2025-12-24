@@ -119,6 +119,9 @@ class SmartBufferSRAM(LibraryEstimatorClassBase):
             ports.
         n_banks: The number of banks. Bandwidth will increase with more banks.
     """
+    component_name = ["smart_buffer_sram", "smartbuffer_sram", "smartbuffersram"]
+    priority = 0.5
+
     def __init__(
             self,
             tech_node: float,

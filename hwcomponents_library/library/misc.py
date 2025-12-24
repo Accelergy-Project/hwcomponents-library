@@ -14,7 +14,8 @@
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
 from hwcomponents import actionDynamicEnergy
-
+from hwcomponents_cacti import SRAM
+from hwcomponents_library.library.aladdin import AladdinRegister, AladdinAdder
 
 # Original CSV contents:
 # tech_node,global_cycle_period,width|datawidth,depth,energy,area,action
@@ -35,12 +36,27 @@ from hwcomponents import actionDynamicEnergy
 # #   keywords={Random access memory;FinFETs;Temperature measurement;Leakage currents;Power demand;Voltage measurement;Embedded DRAM;gain cell (GC);low voltage;retention time;SRAM},
 # #   doi={10.1109/LSSC.2020.3006496}}
 class RaaamEDRAM(LibraryEstimatorClassBase):
+    """
+    RAAAM EDRAM from Giterman et al. LSSC 2020. This is a MB-class embedded DRAM unit.
+
+    Parameters
+    ----------
+    tech_node: float
+        Technology node in meters.
+    width: int
+        Width of the eDRAM in bits. This is the width of a read/write port. Total size =
+        width * depth.
+    depth: int
+        The number of entries in the eDRAM, each with `width` bits. Total size = width *
+        depth.
+    """
+
     component_name = "raaam_edram"
     priority = 0.9
 
-    def __init__(self, tech_node: str, width: int = 1024, depth: int = 1024):
+    def __init__(self, tech_node: float, width: int = 1024, depth: int = 1024):
         super().__init__(leak_power=3.81e-4, area=131570.0e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             16e-9,
@@ -55,8 +71,119 @@ class RaaamEDRAM(LibraryEstimatorClassBase):
 
     @actionDynamicEnergy(bits_per_action="width")
     def read(self) -> float:
+        """
+        Returns the energy consumed by a read operation in Joules.
+
+        Parameters
+        ----------
+        bits_per_action: int
+            The number of bits to read.
+
+        Returns
+        -------
+        float
+            The energy consumed by a read operation in Joules.
+        """
         return 2641.92e-12
 
     @actionDynamicEnergy(bits_per_action="width")
     def write(self) -> float:
+        """
+        Returns the energy consumed by a write operation in Joules.
+
+        Parameters
+        ----------
+        bits_per_action: int
+            The number of bits to write.
+
+        Returns
+        -------
+        float
+            The energy consumed by a write operation in Joules.
+        """
         return 2519.04e-12
+
+
+class SmartBufferSRAM(LibraryEstimatorClassBase):
+    """
+    An SRAM with an address generator that sequentially reads addresses in the SRAM.
+
+    Parameters
+    ----------
+        tech_node: The technology node in meters.
+        width: The width of the read and write ports in bits. This is the number of bits
+            that are accssed by any one read/write. Total size = width * depth.
+        depth: The number of entries in the SRAM, each with `width` bits. Total size =
+            width * depth.
+        n_rw_ports: The number of read/write ports. Bandwidth will increase with more
+            ports.
+        n_banks: The number of banks. Bandwidth will increase with more banks.
+    """
+    def __init__(
+            self,
+            tech_node: float,
+            width: int,
+            depth: int,
+            n_rw_ports: int,
+            n_banks: int,
+    ):
+        self.sram: SRAM = SRAM(
+            tech_node=tech_node,
+            width=width,
+            depth=depth,
+            n_rw_ports=n_rw_ports,
+            n_banks=n_banks,
+        )
+        self.address_bits = max(math.ceil(math.log2(depth)), 1)
+        self.width = width
+
+        self.address_reg = AladdinRegister(width=self.address_bits, tech_node=tech_node)
+        self.delta_reg = AladdinRegister(width=self.address_bits, tech_node=tech_node)
+        self.adder = AladdinAdder(width=self.address_bits, tech_node=tech_node)
+
+        super().__init__(subcomponents=[
+                self.sram,
+                self.address_reg,
+                self.delta_reg,
+                self.adder,
+        ])
+
+    @actionDynamicEnergy(bits_per_action="width")
+    def read(self) -> float:
+        """
+        Returns the energy consumed by a read operation in Joules.
+
+        Parameters
+        ----------
+        bits_per_action: int
+            The number of bits to read.
+
+        Returns
+        -------
+        float
+            The energy consumed by a read operation in Joules.
+        """
+        self.sram.read(bits_per_action=self.width)
+        self.address_reg.read()
+        self.delta_reg.read()
+        self.adder.add()
+
+    @actionDynamicEnergy(bits_per_action="width")
+    def write(self) -> float:
+        """
+        Returns the energy consumed by a write operation in Joules.
+
+        Parameters
+        ----------
+        bits_per_action: int
+            The number of bits to write.
+
+        Returns
+        -------
+        float
+            The energy consumed by a write operation in Joules.
+        """
+        self.sram.write(bits_per_action=self.width)
+        self.address_reg.write()
+        self.delta_reg.read()
+        self.adder.add()

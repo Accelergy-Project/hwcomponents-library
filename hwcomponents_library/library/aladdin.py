@@ -21,12 +21,30 @@ from hwcomponents import actionDynamicEnergy
 # 40nm,1e-9,32,0.0024,2.78E+02,leak
 # 40nm,1e-9,32,0,2.78E+02,update|write
 class AladdinAdder(LibraryEstimatorClassBase):
+    """
+    An adder from the Aladdin paper. Adds two values.
+
+    Parameters
+    ----------
+    tech_node : str
+        The technology node in meters.
+    width : int, optional
+        The width of the adder in bits. This is the number of bits of the input values.
+
+    Attributes
+    ----------
+    tech_node : str
+        The technology node in meters.
+    width : int
+        The width of the adder in bits. This is the number of bits of the input values.
+    """
+
     component_name = ["adder", "intadder", "aladdin_adder"]
     priority = 0.9
 
-    def __init__(self, tech_node: str, width: int = 32):
+    def __init__(self, tech_node: float, width: int = 32):
         super().__init__(leak_power=2.40e-6, area=278.0e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             40e-9,
@@ -38,10 +56,26 @@ class AladdinAdder(LibraryEstimatorClassBase):
 
     @actionDynamicEnergy
     def add(self) -> float:
+        """
+        Returns the energy for one addition operation in Joules.
+
+        Returns
+        -------
+        float
+            The energy for one addition operation in Joules.
+        """
         return 0.21e-12
 
     @actionDynamicEnergy
     def read(self) -> float:
+        """
+        Returns the energy for one addition operation in Joules.
+
+        Returns
+        -------
+        float
+            The energy for one addition operation in Joules.
+        """
         return 0.21e-12
 
 
@@ -51,18 +85,28 @@ class AladdinAdder(LibraryEstimatorClassBase):
 # 40nm,1e-9,1,0,5.98E+00,write
 # 40nm,1e-9,1,0,5.98E+00,leak|update
 class AladdinRegister(LibraryEstimatorClassBase):
+    """
+    A register from the Aladdin paper. Stores a value.
+
+    Parameters
+    ----------
+    tech_node : str
+        The technology node in meters.
+    width : int, optional
+        The width of the register in bits.
+    """
     component_name = ["register", "aladdin_register"]
     priority = 0.9
 
     def __init__(
         self,
-        tech_node: str,
+        tech_node: float,
         width: int = 1,
         dynamic_energy: int = 1,
         area: int = 5.98e00,
     ):
         super().__init__(leak_power=0.0, area=5.98e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             40e-9,
@@ -77,6 +121,36 @@ class AladdinRegister(LibraryEstimatorClassBase):
 
     @actionDynamicEnergy(bits_per_action="width")
     def read(self) -> float:
+        """
+        Returns the energy for one read operation in Joules.
+
+        Parameters
+        ----------
+        bits_per_action : int
+            The number of bits that are read.
+
+        Returns
+        -------
+        float
+            The energy for one read operation in Joules.
+        """
+        return 0.009e-12
+
+    @actionDynamicEnergy(bits_per_action="width")
+    def write(self) -> float:
+        """
+        Returns the energy for one write operation in Joules.
+
+        Parameters
+        ----------
+        bits_per_action : int
+            The number of bits that are written.
+
+        Returns
+        -------
+        float
+            The energy for one write operation in Joules.
+        """
         return 0.009e-12
 
 
@@ -86,12 +160,23 @@ class AladdinRegister(LibraryEstimatorClassBase):
 # 40nm,1e-9,32,2.51E-05,71,leak
 # 40nm,1e-9,32,0,71,update|write
 class AladdinComparator(LibraryEstimatorClassBase):
+    """
+    A comparator from the Aladdin paper. Tells whether one value is greater than
+    another.
+
+    Parameters
+    ----------
+    tech_node : str
+        The technology node in meters.
+    width : int, optional
+        The width of the comparator in bits.
+    """
     component_name = ["comparator", "aladdin_comparator"]
     priority = 0.9
 
-    def __init__(self, tech_node: str, width: int = 32):
+    def __init__(self, tech_node: float, width: int = 32):
         super().__init__(leak_power=2.51e-8, area=71.0e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             40e-9,
@@ -103,10 +188,26 @@ class AladdinComparator(LibraryEstimatorClassBase):
 
     @actionDynamicEnergy
     def compare(self) -> float:
+        """
+        Returns the energy for one comparison operation in Joules.
+
+        Returns
+        -------
+        float
+            The energy for one comparison operation in Joules.
+        """
         return 0.02947e-12
 
     @actionDynamicEnergy
     def read(self) -> float:
+        """
+        Returns the energy for one comparison operation in Joules.
+
+        Returns
+        -------
+        float
+            The energy for one comparison operation in Joules.
+        """
         return 0.02947e-12
 
 
@@ -116,12 +217,27 @@ class AladdinComparator(LibraryEstimatorClassBase):
 # 40nm,1e-9,32,32,32,0.08,6350,leak
 # 40nm,1e-9,32,32,32,0,6350,update|write
 class AladdinMultiplier(LibraryEstimatorClassBase):
+    """
+    A integer multiplier from the Aladdin paper. Multiplies two values.
+
+    Parameters
+    ----------
+    tech_node : str
+        The technology node in meters.
+    width : int, optional
+        The width of the multiplier in bits. Can not be set if width_a and width_b are
+        set.
+    width_a : int, optional
+        The width of the first input value in bits.
+    width_b : int, optional
+        The width of the second input value in bits.
+    """
     component_name = ["intmultiplier", "multiplier", "aladdin_multiplier"]
     priority = 0.9
 
     def __init__(
         self,
-        tech_node: str,
+        tech_node: float,
         width: int = 32,
         width_a: int = 32,
         width_b: int = 32,
@@ -129,7 +245,7 @@ class AladdinMultiplier(LibraryEstimatorClassBase):
         area: int = 6350,
     ):
         super().__init__(leak_power=8.00e-5, area=6350.0e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             40e-9,
@@ -137,16 +253,42 @@ class AladdinMultiplier(LibraryEstimatorClassBase):
             tech_node_area,
             tech_node_leak,
         )
-        self.width: int = self.scale("width", width, 32, linear, linear, linear)
+        if width_a != 32 and width != 32:
+            raise ValueError(
+                "width and width_a cannot both be set. Either set width of both inputs "
+                "or width_a and width_b separately."
+            )
+        if width != 32 and width_b != 32:
+            raise ValueError(
+                "width and width_b cannot both be set. Either set width of both inputs "
+                "or width_a and width_b separately."
+            )
+        self.width: int = self.scale("width", width, 32, quadratic, quadratic, quadratic)
         self.width_a: int = self.scale("width_a", width_a, 32, linear, linear, linear)
         self.width_b: int = self.scale("width_b", width_b, 32, linear, linear, linear)
 
     @actionDynamicEnergy
     def multiply(self) -> float:
+        """
+        Returns the energy for one multiplication operation in Joules.
+
+        Returns
+        -------
+        float
+            The energy for one multiplication operation in Joules.
+        """
         return 12.68e-12
 
     @actionDynamicEnergy
     def read(self) -> float:
+        """
+        Returns the energy for one read operation in Joules.
+
+        Returns
+        -------
+        float
+            The energy for one read operation in Joules.
+        """
         return 12.68e-12
 
 
@@ -156,12 +298,22 @@ class AladdinMultiplier(LibraryEstimatorClassBase):
 # 40nm,1e-9,32,0.0003213,495.5,leak
 # 40nm,1e-9,32,0,495.5,update|write
 class AladdinCounter(LibraryEstimatorClassBase):
+    """
+    A counter from the Aladdin paper. Increments a stored value.
+
+    Parameters
+    ----------
+    tech_node : str
+        The technology node in meters.
+    width : int, optional
+        The width of the counter in bits.
+    """
     component_name = ["counter", "aladdin_counter"]
     priority = 0.9
 
-    def __init__(self, tech_node: str, width: int = 32):
+    def __init__(self, tech_node: float, width: int = 32):
         super().__init__(leak_power=3.21e-7, area=495.5e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             40e-9,
@@ -173,17 +325,46 @@ class AladdinCounter(LibraryEstimatorClassBase):
 
     @actionDynamicEnergy
     def count(self) -> float:
+        """
+        Returns the energy for one increment operation in Joules.
+
+        Returns
+        -------
+        float
+            The energy for one increment operation in Joules.
+        """
         return 0.25074e-12
 
     @actionDynamicEnergy
     def read(self) -> float:
+        """
+        Returns the energy for one increment operation in Joules.
+
+        Returns
+        -------
+        float
+            The energy for one increment operation in Joules.
+        """
         return 0.25074e-12
 
 class AladdinIntMAC(LibraryEstimatorClassBase):
+    """
+    A integer multiply-accumulate unit from the Aladdin paper. Multiplies two values
+    and adds the result to a stored value.
+
+    Parameters
+    ----------
+    tech_node : str
+        The technology node in meters.
+    adder_width : int, optional
+        The width of the adder in bits.
+    multiplier_width : int, optional
+        The width of the multiplier in bits.
+    """
     component_name = ["intmac", "aladdin_intmac"]
     priority = 0.9
 
-    def __init__(self, tech_node: str, adder_width: int = 16, multiplier_width: int = 8):
+    def __init__(self, tech_node: float, adder_width: int = 16, multiplier_width: int = 8):
         self.adder = AladdinAdder(tech_node, adder_width)
         self.multiplier = AladdinMultiplier(tech_node, multiplier_width)
         super().__init__(
@@ -193,12 +374,36 @@ class AladdinIntMAC(LibraryEstimatorClassBase):
 
     @actionDynamicEnergy
     def mac(self) -> float:
+        """
+        Returns the energy for one multiply-accumulate operation in Joules.
+
+        Returns
+        -------
+        float
+            The energy for one multiply-accumulate operation in Joules.
+        """
         return self.adder.add() + self.multiplier.multiply()
 
     @actionDynamicEnergy
     def read(self) -> float:
+        """
+        Returns the energy for one multiply-accumulate operation in Joules.
+
+        Returns
+        -------
+        float
+            The energy for one multiply-accumulate operation in Joules.
+        """
         return self.mac()
 
     @actionDynamicEnergy
     def compute(self) -> float:
+        """
+        Returns the energy for one multiply-accumulate operation in Joules.
+
+        Returns
+        -------
+        float
+            The energy for one multiply-accumulate operation in Joules.
+        """
         return self.mac()

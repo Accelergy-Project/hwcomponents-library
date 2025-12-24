@@ -31,12 +31,23 @@ from hwcomponents import actionDynamicEnergy
 # # 1629px * 743px / (2805px * 1625px) * 75e-6m * 22e-6m
 # # = 1629 * 743 / (2805 * 1625) * 75 * 22 = 438um^2
 class BrahmsDAC(LibraryEstimatorClassBase):
+    """
+    Digital-analog converter (DAC) from the BRAHMS paper
+
+    Parameters
+    ----------
+    tech_node: float
+        Technology node in meters
+    resolution: int
+        Resolution of the DAC in bits
+    """
+
     component_name = "brahms_dac"
     priority = 0.9
 
-    def __init__(self, tech_node: str, resolution: int = 8):
+    def __init__(self, tech_node: float, resolution: int = 8):
         super().__init__(leak_power=0.0, area=438.0e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             40e-9,
@@ -50,8 +61,25 @@ class BrahmsDAC(LibraryEstimatorClassBase):
 
     @actionDynamicEnergy
     def read(self) -> float:
+        """
+        Returns the energy of one DAC conversion in Joules
+
+        Returns
+        -------
+        float
+            Energy of one DAC conversion in Joules
+        """
         return 0.291e-12
+
 
     @actionDynamicEnergy
     def convert(self) -> float:
+        """
+        Returns the energy of one DAC conversion in Joules
+
+        Returns
+        -------
+        float
+            Energy of one DAC conversion in Joules
+        """
         return 0.291e-12

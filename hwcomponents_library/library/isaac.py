@@ -25,12 +25,26 @@ from hwcomponents import actionDynamicEnergy
 # # (16384 + 2048) * 2 / 256 reads+writes, including IMA<->eDRAM<->network
 # # (20.7e-3 / 12) * (16384 / ((128*8*10^7*1.2) * 100 / 128)) / ((16384 + 2048) * 2 / 256) * 1e12
 class IsaacEDRAM(LibraryEstimatorClassBase):
+    """
+    The embedded DRAM from the ISAAC paper.
+
+    Parameters
+    ----------
+    tech_node: float
+        Technology node in meters.
+    width: int
+        Width of the eDRAM in bits. This is the width of a reads/write port. Total size =
+        width * depth.
+    depth: int
+        Depth of the eDRAM in bits. This is the number of entries in the eDRAM, each
+        with `width` bits. Total size = width * depth.
+    """
     component_name = "isaac_eDRAM"
     priority = 0.9
 
-    def __init__(self, tech_node: str, width: int = 256, depth: int = 2048):
+    def __init__(self, tech_node: float, width: int = 256, depth: int = 2048):
         super().__init__(leak_power=0.0, area=83000.0e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             32e-9,
@@ -45,10 +59,26 @@ class IsaacEDRAM(LibraryEstimatorClassBase):
 
     @actionDynamicEnergy(bits_per_action="width")
     def read(self) -> float:
+        """
+        Returns the energy of one read operation in Joules.
+
+        Returns
+        -------
+        float
+            Energy of one read operation in Joules
+        """
         return 20.45e-12
 
     @actionDynamicEnergy(bits_per_action="width")
     def write(self) -> float:
+        """
+        Returns the energy of one write operation in Joules.
+
+        Returns
+        -------
+        float
+            Energy of one write operation in Joules
+        """
         return 20.45e-12
 
 
@@ -57,12 +87,22 @@ class IsaacEDRAM(LibraryEstimatorClassBase):
 # 65nm,1e-9,128,26,23000000,read|write|update
 # 65nm,1e-9,128,0, 23000000,leak
 class IsaacChip2ChipLink(LibraryEstimatorClassBase):
+    """
+    The chip-to-chip link from the ISAAC paper. This connects multiple chips together.
+
+    Parameters
+    ----------
+    tech_node: float
+        Technology node in meters.
+    width: int
+        Width of the link in bits. This is the width of a read/write port.
+    """
     component_name = "isaac_chip2chip_link"
     priority = 0.9
 
-    def __init__(self, tech_node: str, width: int = 128):
+    def __init__(self, tech_node: float, width: int = 128):
         super().__init__(leak_power=0.0, area=23000000.0e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             65e-9,
@@ -74,10 +114,26 @@ class IsaacChip2ChipLink(LibraryEstimatorClassBase):
 
     @actionDynamicEnergy(bits_per_action="width")
     def read(self) -> float:
+        """
+        Returns the energy of one read operation in Joules.
+
+        Returns
+        -------
+        float
+            Energy of one read operation in Joules
+        """
         return 26.0e-12
 
     @actionDynamicEnergy(bits_per_action="width")
     def write(self) -> float:
+        """
+        Returns the energy of one write operation in Joules.
+
+        Returns
+        -------
+        float
+            Energy of one write operation in Joules
+        """
         return 26.0e-12
 
 
@@ -94,12 +150,17 @@ class IsaacChip2ChipLink(LibraryEstimatorClassBase):
 # # (16384 + 2048) / 256 reads+writes
 # # (42e-3 / 4 / 12) * (16384 / ((128*8*10^7*1.2) * 100 / 128)) / ((16384 + 2048) / 256) * 1e12
 class IsaacRouterSharedByFour(LibraryEstimatorClassBase):
+    """
+    This is the router from the ISAAC paper. In the paper, it is shared by four tiles,
+    so this area is divided by four to match the paper.
+    """
+
     component_name = "isaac_router_shared_by_four"
     priority = 0.9
 
-    def __init__(self, tech_node: str, width: int = 256):
+    def __init__(self, tech_node: float, width: int = 256):
         super().__init__(leak_power=0.0, area=37500.0e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             32e-9,
@@ -111,6 +172,54 @@ class IsaacRouterSharedByFour(LibraryEstimatorClassBase):
 
     @actionDynamicEnergy(bits_per_action="width")
     def read(self) -> float:
+        """
+        Returns the energy to transfer data in Joules.
+
+        Parameters
+        ----------
+        bits_per_action: int
+            The number of bits transferred.
+
+        Returns
+        -------
+        float
+            Energy to transfer data in Joules
+        """
+        return self.transfer()
+
+    @actionDynamicEnergy(bits_per_action="width")
+    def write(self) -> float:
+        """
+        Write energy is zero because transfer costs are already included in the read
+        energy.
+
+        Parameters
+        ----------
+        bits_per_action: int
+            The number of bits transferred.
+
+        Returns
+        -------
+        float
+            Energy to transfer data in Joules
+        """
+        return 0
+
+    @actionDynamicEnergy(bits_per_action="width")
+    def transfer(self) -> float:
+        """
+        Returns the energy to transfer data in Joules.
+
+        Parameters
+        ----------
+        bits_per_action: int
+            The number of bits transferred.
+
+        Returns
+        -------
+        float
+            Energy to transfer data in Joules
+        """
         return 20.74e-12
 
 
@@ -136,12 +245,22 @@ class IsaacRouterSharedByFour(LibraryEstimatorClassBase):
 # # 32nm,1e-9,9,1.969078145,1827.911647,1,convert|read
 # # 32nm,1e-9,10,2.379022742,3002.008032,1,convert|read
 class IsaacADC(LibraryEstimatorClassBase):
+    """
+    The analog-digital-converter (ADC) from the ISAAC paper.
+
+    Parameters
+    ----------
+    tech_node: float
+        Technology node in meters.
+    resolution: int
+        Resolution of the ADC in bits.
+    """
     component_name = "isaac_adc"
     priority = 0.9
 
-    def __init__(self, tech_node: str, resolution: int = 8):
+    def __init__(self, tech_node: float, resolution: int = 8):
         super().__init__(leak_power=0.0, area=1200.0e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             32e-9,
@@ -155,10 +274,26 @@ class IsaacADC(LibraryEstimatorClassBase):
 
     @actionDynamicEnergy
     def convert(self) -> float:
+        """
+        Returns the energy of one ADC conversion in Joules
+
+        Returns
+        -------
+        float
+            Energy of one ADC conversion in Joules
+        """
         return 1.666666667e-12
 
     @actionDynamicEnergy
     def read(self) -> float:
+        """
+        Returns the energy of one ADC conversion in Joules
+
+        Returns
+        -------
+        float
+            Energy of one ADC conversion in Joules
+        """
         return 1.666666667e-12
 
 
@@ -174,12 +309,24 @@ class IsaacADC(LibraryEstimatorClassBase):
 # # (16384 + 2048) / 256 reads+writes
 # # (42e-3 / 4 / 12) * (16384 / ((128*8*10^7*1.2) * 100 / 128)) / ((16384 + 2048) / 256) * 1e12
 class IsaacRouter(LibraryEstimatorClassBase):
+    """
+    The router from the ISAAC paper. This is the router shared by four tiles in the
+    paper, so divide this area by four if you'd like to get the per-tile area from the
+    paper.
+
+    Parameters
+    ----------
+    tech_node: float
+        Technology node in meters.
+    width: int
+        Width of the router in bits. This is the width of a read/write port.
+    """
     component_name = "isaac_router"
     priority = 0.9
 
-    def __init__(self, tech_node: str, width: int = 256):
+    def __init__(self, tech_node: float, width: int = 256):
         super().__init__(leak_power=0.0, area=150000.0e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             32e-9,
@@ -191,6 +338,41 @@ class IsaacRouter(LibraryEstimatorClassBase):
 
     @actionDynamicEnergy(bits_per_action="width")
     def read(self) -> float:
+        """
+        Returns the energy to transfer data in Joules.
+
+        Returns
+        -------
+        float
+            Energy to transfer data in Joules
+        """
+        return self.transfer()
+
+    @actionDynamicEnergy(bits_per_action="width")
+    def write(self) -> float:
+        """
+        Returns the energy to transfer data in Joules.
+
+        Returns
+        -------
+        float
+            Energy to transfer data in Joules
+        """
+        return 0
+
+
+    @actionDynamicEnergy(bits_per_action="width")
+    def transfer(self) -> float:
+        """
+        Returns the energy to transfer data in Joules.
+
+        Parameters
+        ----------
+        bits_per_action: int
+            The number of bits transferred.
+
+        Returns
+        """
         return 20.74e-12
 
 
@@ -203,12 +385,25 @@ class IsaacRouter(LibraryEstimatorClassBase):
 # # .2e-3 / (1.2*8*10^9) * 10 ^ 12
 # # There are 4 of these in an ISAAC IMA
 class IsaacShiftAdd(LibraryEstimatorClassBase):
+    """
+    The shift-and-add unit from the ISAAC paper. This unit will sum and accumulate
+    values in a register, while also shifting the register contents to accept various
+    power-of-two scaling factors for the summed values.
+
+    Parameters
+    ----------
+    tech_node: float
+        Technology node in meters.
+    width: int
+        Width of the shift-and-add unit in bits. This is the number of bits of each
+        input value that is added to the register.
+    """
     component_name = "isaac_shift_add"
     priority = 0.9
 
-    def __init__(self, tech_node: str, width: int = 16):
+    def __init__(self, tech_node: float, width: int = 16):
         super().__init__(leak_power=0.0, area=60.0e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             32e-9,
@@ -220,14 +415,38 @@ class IsaacShiftAdd(LibraryEstimatorClassBase):
 
     @actionDynamicEnergy
     def shift_add(self) -> float:
+        """
+        Returns the energy of one shift-and-add operation in Joules.
+
+        Returns
+        -------
+        float
+            Energy of one shift-and-add operation in Joules
+        """
         return 0.021e-12
 
     @actionDynamicEnergy
     def read(self) -> float:
-        return 0.021e-12
+        """
+        Returns the energy to read the shift-and-add unit's output in Joules.
+
+        Returns
+        -------
+        float
+            Energy to read the shift-and-add unit's output in Joules
+        """
+        return 0
 
     @actionDynamicEnergy
     def write(self) -> float:
+        """
+        Returns the energy of one shift-and-add operation in Joules.
+
+        Returns
+        -------
+        float
+            Energy of one shift-and-add operation in Joules
+        """
         return 0.021e-12
 
 
@@ -244,12 +463,22 @@ class IsaacShiftAdd(LibraryEstimatorClassBase):
 # # Area reported per IMA. In ISAAC, a bus connects 12 IMAs
 # # Area: 7500 / (Width 256) = 29.296875 um^2 per bit width
 class IsaacEDRAMBus(LibraryEstimatorClassBase):
+    """
+    The eDRAM bus from the ISAAC paper. This bus connects the eDRAM to the router.
+
+    Parameters
+    ----------
+    tech_node: float
+        Technology node in meters.
+    width: int
+        Width of the eDRAM bus in bits. This is the width of a read/write port.
+    """
     component_name = "isaac_eDRAM_bus"
     priority = 0.9
 
-    def __init__(self, tech_node: str, width: int = 1):
+    def __init__(self, tech_node: float, width: int = 1):
         super().__init__(leak_power=0.0, area=29.296875e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             32e-9,
@@ -261,7 +490,54 @@ class IsaacEDRAMBus(LibraryEstimatorClassBase):
 
     @actionDynamicEnergy(bits_per_action="width")
     def read(self) -> float:
+        """
+        Returns the energy to read the eDRAM bus in Joules.
+
+        Parameters
+        ----------
+        bits_per_action: int
+            The number of bits transferred.
+
+        Returns
+        -------
+        float
+            Energy to read the eDRAM bus in Joules
+        """
+        return self.transfer()
+
+    @actionDynamicEnergy(bits_per_action="width")
+    def transfer(self) -> float:
+        """
+        Returns the energy to transfer data in Joules.
+
+        Parameters
+        ----------
+        bits_per_action: int
+            The number of bits transferred.
+
+        Returns
+        -------
+        float
+            Energy to transfer data in Joules
+        """
         return 0.054e-12
+
+    @actionDynamicEnergy(bits_per_action="width")
+    def write(self) -> float:
+        """
+        Returns 0 because transfer costs are already included in the read energy.
+
+        Parameters
+        ----------
+        bits_per_action: int
+            The number of bits transferred.
+
+        Returns
+        -------
+        float
+            Zero
+        """
+        return 0
 
 
 # Original CSV contents:
@@ -273,12 +549,22 @@ class IsaacEDRAMBus(LibraryEstimatorClassBase):
 # # 0.3255 * 8 * 128 * 1.2e9 / 100 * 1e-9
 # # Area: 170um^2 / 128 / 8
 class IsaacDAC(LibraryEstimatorClassBase):
+    """
+    The digital-analog converter (DAC) from the ISAAC paper.
+
+    Parameters
+    ----------
+    tech_node: float
+        Technology node in meters.
+    resolution: int
+        Resolution of the DAC in bits.
+    """
     component_name = "isaac_dac"
     priority = 0.9
 
-    def __init__(self, tech_node: str, resolution: int = 1, rows: int = 1):
+    def __init__(self, tech_node: float, resolution: int = 1, rows: int = 1):
         super().__init__(leak_power=0.0, area=0.166015625e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             32e-9,
@@ -292,9 +578,25 @@ class IsaacDAC(LibraryEstimatorClassBase):
         self.rows: int = self.scale("rows", rows, 1, linear, noscale, noscale)
 
     @actionDynamicEnergy
-    def drive(self) -> float:
+    def convert(self) -> float:
+        """
+        Returns the energy to convert with the the DAC in Joules.
+
+        Returns
+        -------
+        float
+            Energy to convert with the the DAC in Joules
+        """
         return 0.41667e-12
 
     @actionDynamicEnergy
     def read(self) -> float:
+        """
+        Returns the energy to read the DAC in Joules.
+
+        Returns
+        -------
+        float
+            Energy to read the DAC in Joules
+        """
         return 0.41667e-12

@@ -24,12 +24,22 @@ from .isaac import IsaacDAC
 # # 15.2*10^-3 / (2.1*32*10^9) * 10 ^ 12
 # # Area: 9100um^2 / 32
 class FormsADC(LibraryEstimatorClassBase):
+    """
+    The analog-digital-converter (ADC) from the FORMS paper.
+
+    Parameters
+    ----------
+    tech_node: float
+        Technology node in meters.
+    resolution: int
+        Resolution of the ADC in bits.
+    """
     component_name = "forms_adc"
     priority = 0.9
 
-    def __init__(self, tech_node: str, resolution: int = 4):
+    def __init__(self, tech_node: float, resolution: int = 4):
         super().__init__(leak_power=0.0, area=284.375e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             32e-9,
@@ -43,10 +53,26 @@ class FormsADC(LibraryEstimatorClassBase):
 
     @actionDynamicEnergy
     def convert(self) -> float:
+        """
+        Returns the energy of one ADC conversion in Joules
+
+        Returns
+        -------
+        float
+            Energy of one ADC conversion in Joules
+        """
         return 0.22619e-12
 
     @actionDynamicEnergy
     def read(self) -> float:
+        """
+        Returns the energy of one ADC conversion operation in Joules
+
+        Returns
+        -------
+        float
+            Energy of one ADC conversion operation in Joules
+        """
         return 0.22619e-12
 
 

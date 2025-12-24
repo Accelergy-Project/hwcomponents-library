@@ -49,12 +49,24 @@ from .isaac import IsaacShiftAdd
 # #    is 1152. This is a 40% reduction, matching with the reported 40%
 # #    ADC power reduction in the paper.
 class NewtonADC(LibraryEstimatorClassBase):
+    """
+    The ADC from the Newton paper. This is a 9-bit ADC that can optionally stop
+    quantizing after a certain number of bits.
+
+    Parameters
+    ----------
+    tech_node: float
+        Technology node in meters.
+    resolution: int
+        Resolution of the ADC in bits.
+    """
+
     component_name = "newton_adc"
     priority = 0.9
 
-    def __init__(self, tech_node: str, resolution: int = 9):
+    def __init__(self, tech_node: float, resolution: int = 9):
         super().__init__(leak_power=0.0, area=1500.0e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             32e-9,
@@ -68,10 +80,26 @@ class NewtonADC(LibraryEstimatorClassBase):
 
     @actionDynamicEnergy
     def convert(self) -> float:
+        """
+        Returns the energy consumed by a convert operation in Joules.
+
+        Returns
+        -------
+        float
+            The energy consumed by a convert operation in Joules.
+        """
         return 2.58333333333e-12
 
     @actionDynamicEnergy
     def read(self) -> float:
+        """
+        Returns the energy consumed by a convert operation in Joules.
+
+        Returns
+        -------
+        float
+            The energy consumed by a convert operation in Joules.
+        """
         return 2.58333333333e-12
 
 

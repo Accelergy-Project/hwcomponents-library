@@ -32,12 +32,22 @@ from hwcomponents import actionDynamicEnergy
 # # 16b * 8b -> 8b multiply: 0.2 pJ
 # # We do this at the L2 (large) tile level, so area will be negligible
 class RaellaQuantMultiplier(LibraryEstimatorClassBase):
+    """
+    The quantization & multipliler from the RAELLA paper. This unit will multiply a
+    partial sum value by a quantization scale to apply linear quntization.
+
+    Parameters
+    ----------
+    tech_node: float
+        Technology node in meters.
+    """
+
     component_name = "raella_quant_multiplier"
     priority = 0.9
 
-    def __init__(self, tech_node: str):
+    def __init__(self, tech_node: float, resolution: int=16):
         super().__init__(leak_power=0.0, area=0.0e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             40e-9,
@@ -45,11 +55,35 @@ class RaellaQuantMultiplier(LibraryEstimatorClassBase):
             tech_node_area,
             tech_node_leak,
         )
+        self.resolution: int = self.scale(
+            "resolution",
+            resolution,
+            16,
+            linear,
+            linear,
+            linear
+        )
 
     @actionDynamicEnergy
     def multiply(self) -> float:
+        """
+        Returns the energy consumed by a multiply operation in Joules.
+
+        Returns
+        -------
+        float
+            The energy consumed by a multiply operation in Joules.
+        """
         return 0.25e-12
 
     @actionDynamicEnergy
     def read(self) -> float:
+        """
+        Returns the energy consumed by a multiply operation in Joules.
+
+        Returns
+        -------
+        float
+            The energy consumed by a multiply operation in Joules.
+        """
         return 0.25e-12

@@ -23,12 +23,22 @@ from .isaac import IsaacChip2ChipLink
 # # TIMELY says these don't contribute to area
 # # Numbers from paper table II
 class TimelyIAdder(LibraryEstimatorClassBase):
+    """
+    The current adder from the TIMELY paper. This unit will sum multiple currents into
+    one.
+
+    Parameters
+    ----------
+    tech_node: float
+        Technology node in meters.
+    """
+
     component_name = "timely_iadder"
     priority = 0.9
 
-    def __init__(self, tech_node: str):
+    def __init__(self, tech_node: float):
         super().__init__(leak_power=0.0, area=40.0e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             65e-9,
@@ -39,10 +49,28 @@ class TimelyIAdder(LibraryEstimatorClassBase):
 
     @actionDynamicEnergy
     def read(self) -> float:
+        """
+        Returns the energy used to sum two currents in Joules.
+
+        Returns
+        -------
+        float
+            The energy used to sum two currents in Joules.
+        """
+
         return 0.0368e-12
 
     @actionDynamicEnergy
     def add(self) -> float:
+        """
+        Returns the energy used to sum two currents in Joules.
+
+        Returns
+        -------
+        float
+            The energy used to sum two currents in Joules.
+        """
+
         return 0.0368e-12
 
 
@@ -52,12 +80,21 @@ class TimelyIAdder(LibraryEstimatorClassBase):
 # 65nm,1e-9,1,0,5,leak|update|write
 # # Numbers from paper table II
 class TimelyPSubBuf(LibraryEstimatorClassBase):
+    """
+    PSubBuf from the TIMELY paper. This unit will repeat & amplify an input voltage
+    value.
+
+    Parameters
+    ----------
+    tech_node: float
+        Technology node in meters.
+    """
     component_name = "timely_psubBuf"
     priority = 0.9
 
-    def __init__(self, tech_node: str):
+    def __init__(self, tech_node: float):
         super().__init__(leak_power=0.0, area=5.0e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             65e-9,
@@ -68,14 +105,26 @@ class TimelyPSubBuf(LibraryEstimatorClassBase):
 
     @actionDynamicEnergy
     def drive(self) -> float:
+        """
+        Returns the energy used to drive a voltage in Joules.
+
+        Returns
+        -------
+        float
+            The energy used to drive a voltage in Joules.
+        """
         return 0.0023e-12
 
     @actionDynamicEnergy
     def read(self) -> float:
-        return 0.0023e-12
+        """
+        Returns the energy used to drive a voltage in Joules.
 
-    @actionDynamicEnergy
-    def convert(self) -> float:
+        Returns
+        -------
+        float
+            The energy used to drive a voltage in Joules.
+        """
         return 0.0023e-12
 
 
@@ -85,12 +134,23 @@ class TimelyPSubBuf(LibraryEstimatorClassBase):
 # 65nm,1e-9,8,0,240,write|leak|update
 # # Numbers from paper table II
 class TimelyDTC(LibraryEstimatorClassBase):
+    """
+    The digital-to-time converter (DTC) from the TIMELY paper. This unit will convert
+    a digital value into a pulse width modulated (PWM) signal.
+
+    Parameters
+    ----------
+    tech_node: float
+        Technology node in meters.
+    resolution: int
+        Resolution of the DTC in bits.
+    """
     component_name = "timely_dtc"
     priority = 0.9
 
-    def __init__(self, tech_node: str, resolution: int = 8):
+    def __init__(self, tech_node: float, resolution: int = 8):
         super().__init__(leak_power=0.0, area=240.0e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             65e-9,
@@ -104,10 +164,26 @@ class TimelyDTC(LibraryEstimatorClassBase):
 
     @actionDynamicEnergy
     def convert(self) -> float:
+        """
+        Returns the energy used to convert a digital value into a PWM signal in Joules.
+
+        Returns
+        -------
+        float
+            The energy used to convert a digital value into a PWM signal in Joules.
+        """
         return 0.0375e-12
 
     @actionDynamicEnergy
     def read(self) -> float:
+        """
+        Returns the energy used to convert a digital value into a PWM signal in Joules.
+
+        Returns
+        -------
+        float
+            The energy used to convert a digital value into a PWM signal in Joules.
+        """
         return 0.0375e-12
 
 
@@ -116,12 +192,24 @@ class TimelyDTC(LibraryEstimatorClassBase):
 # 65nm,1e-9,8,0.145,310,convert|read
 # 65nm,1e-9,8,0,310,leak|write|update
 class TimelyTDC(LibraryEstimatorClassBase):
+    """
+    The time-to-digital converter (TDC) from the TIMELY paper. This unit will convert
+    a pulse width modulated (PWM) signal into a digital value.
+
+    Parameters
+    ----------
+    tech_node: float
+        Technology node in meters.
+    resolution: int
+        Resolution of the TDC in bits.
+    """
+
     component_name = "timely_tdc"
     priority = 0.9
 
-    def __init__(self, tech_node: str, resolution: int = 8):
+    def __init__(self, tech_node: float, resolution: int = 8):
         super().__init__(leak_power=0.0, area=310.0e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             65e-9,
@@ -135,10 +223,26 @@ class TimelyTDC(LibraryEstimatorClassBase):
 
     @actionDynamicEnergy
     def convert(self) -> float:
+        """
+        Returns the energy used to convert a PWM signal into a digital value in Joules.
+
+        Returns
+        -------
+        float
+            The energy used to convert a PWM signal into a digital value in Joules.
+        """
         return 0.145e-12
 
     @actionDynamicEnergy
     def read(self) -> float:
+        """
+        Returns the energy used to convert a PWM signal into a digital value in Joules.
+
+        Returns
+        -------
+        float
+            The energy used to convert a PWM signal into a digital value in Joules.
+        """
         return 0.145e-12
 
 
@@ -148,12 +252,25 @@ class TimelyTDC(LibraryEstimatorClassBase):
 # 65nm,1e-9,1,0,5,leak|write|update
 # # Numbers from paper table II
 class TimelyXSubBuf(LibraryEstimatorClassBase):
+    """
+    The XSubBuf from the TIMELY paper. This unit will repeat & amplify an input current
+    value.
+
+    Parameters
+    ----------
+    tech_node: float
+        Technology node in meters.
+    rows: int
+        Number of rows of the CiM array that are applying current to the XSubBuf. Power
+        will increase with more rows.
+    """
+
     component_name = "timely_xsubBuf"
     priority = 0.9
 
-    def __init__(self, tech_node: str, rows: int = 1):
+    def __init__(self, tech_node: float, rows: int = 1):
         super().__init__(leak_power=0.0, area=5.0e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             65e-9,
@@ -165,14 +282,26 @@ class TimelyXSubBuf(LibraryEstimatorClassBase):
 
     @actionDynamicEnergy
     def read(self) -> float:
+        """
+        Returns the energy used to repeat & amplify an input current in Joules.
+
+        Returns
+        -------
+        float
+            The energy used to repeat & amplify an input current in Joules.
+        """
         return 0.00062e-12
 
     @actionDynamicEnergy
     def drive(self) -> float:
-        return 0.00062e-12
+        """
+        Returns the energy used to repeat & amplify an input current in Joules.
 
-    @actionDynamicEnergy
-    def buffer(self) -> float:
+        Returns
+        -------
+        float
+            The energy used to repeat & amplify an input current in Joules.
+        """
         return 0.00062e-12
 
 
@@ -182,12 +311,22 @@ class TimelyXSubBuf(LibraryEstimatorClassBase):
 # 65nm,1e-9,0,40,write|update|leak
 # # Numbers from paper table II
 class TimelyChargingComparator(LibraryEstimatorClassBase):
+    """
+    The charging comparator from the TIMELY paper. This unit will accumulate charge on a
+    capacitor and trigger a singal once it exceed a reference charge.
+
+    Parameters
+    ----------
+    tech_node: float
+        Technology node in meters.
+    """
+
     component_name = "timely_charging_comparator"
     priority = 0.9
 
-    def __init__(self, tech_node: str):
+    def __init__(self, tech_node: float):
         super().__init__(leak_power=0.0, area=40.0e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             65e-9,
@@ -198,10 +337,26 @@ class TimelyChargingComparator(LibraryEstimatorClassBase):
 
     @actionDynamicEnergy
     def compare(self) -> float:
+        """
+        Returns the energy used to compare an input to the reference.
+
+        Returns
+        -------
+        float
+            The energy used to compare an input current to the reference.
+        """
         return 0.0417e-12
 
     @actionDynamicEnergy
     def read(self) -> float:
+        """
+        Returns the energy used to compare an input to the reference.
+
+        Returns
+        -------
+        float
+            The energy used to compare an input current to the reference.
+        """
         return 0.0417e-12
 
 
@@ -211,12 +366,26 @@ class TimelyChargingComparator(LibraryEstimatorClassBase):
 # 65nm,1e-9,128,128,496.624,40,write|update
 # 65nm,1e-9,128,128,0,40,leak
 class TimelyInputOutputBuffer(LibraryEstimatorClassBase):
+    """
+    The input/output buffers from the TIMELY paper. These digital buffers store inputs and outputs to the CiM arrays.
+
+    Parameters
+    ----------
+    tech_node: float
+        Technology node in meters.
+    width : int, optional
+        The width of the read/write port of the buffer in bits. Total size = width * depth.
+    depth: int
+        The number of entries in the buffer, each with `width` bits. Total size = width
+        * depth.
+    """
+
     component_name = "timely_input_output_buffer"
     priority = 0.9
 
-    def __init__(self, tech_node: str, width: int = 128, depth: int = 128):
+    def __init__(self, tech_node: float, width: int = 128, depth: int = 128):
         super().__init__(leak_power=0.0, area=40.0e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             65e-9,
@@ -231,10 +400,36 @@ class TimelyInputOutputBuffer(LibraryEstimatorClassBase):
 
     @actionDynamicEnergy(bits_per_action="width")
     def read(self) -> float:
+        """
+        Returns the energy used to read from the buffer in Joules.
+
+        Parameters
+        ----------
+        bits_per_action: int
+            The number of bits to read.
+
+        Returns
+        -------
+        float
+            The energy used to read from the buffer in Joules.
+        """
         return 203.776e-12
 
     @actionDynamicEnergy(bits_per_action="width")
     def write(self) -> float:
+        """
+        Returns the energy used to write to the buffer in Joules.
+
+        Parameters
+        ----------
+        bits_per_action: int
+            The number of bits to write.
+
+        Returns
+        -------
+        float
+            The energy used to write to the buffer in Joules.
+        """
         return 496.624e-12
 
 

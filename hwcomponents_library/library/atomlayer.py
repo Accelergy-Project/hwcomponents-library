@@ -29,12 +29,28 @@ from .isaac import IsaacShiftAdd
 # # Reported power = 0.39 / 4 x DAC
 # # 0.166015625 / 2 = 0.083
 class AtomlayerRegisterLadder(LibraryEstimatorClassBase):
+    """
+    A register ladder from the AtomLayer paper. Is a series of registers that shift
+    stored values along themselves.
+
+    Parameters
+    ----------
+    tech_node : str
+        The technology node in meters.
+    width : int, optional
+        The width of the register ladder in bits. This is the bits in each register.
+        Total size = width * depth.
+    depth : int, optional
+        The number of entries in the register ladder, each with `width` bits. Total size
+        = width * depth.
+    """
+
     component_name = "atomlayer_register_ladder"
     priority = 0.9
 
-    def __init__(self, tech_node: str, width: int = 16, depth: int = 128):
+    def __init__(self, tech_node: float, width: int = 16, depth: int = 128):
         super().__init__(leak_power=0.0, area=1620.0e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             32e-9,
@@ -49,10 +65,36 @@ class AtomlayerRegisterLadder(LibraryEstimatorClassBase):
 
     @actionDynamicEnergy(bits_per_action="width")
     def read(self) -> float:
+        """
+        Returns the energy for one read operation in Joules.
+
+        Parameters
+        ----------
+        bits_per_action : int
+            The number of bits that are read.
+
+        Returns
+        -------
+        float
+            The energy for one read operation in Joules.
+        """
         return 0.083e-12
 
     @actionDynamicEnergy(bits_per_action="width")
     def write(self) -> float:
+        """
+        Returns the energy for one write operation in Joules.
+
+        Parameters
+        ----------
+        bits_per_action : int
+            The number of bits that are written.
+
+        Returns
+        -------
+        float
+            The energy for one write operation in Joules.
+        """
         return 0.083e-12
 
 
@@ -69,12 +111,28 @@ class AtomlayerRegisterLadder(LibraryEstimatorClassBase):
 # # another
 # # buffer reads from the inter-buffer transfer network.
 class AtomlayerInputBufferTransfers(LibraryEstimatorClassBase):
+    """
+    This component measures transfer energy between input buffers in the AtomLayer
+    paper.
+
+    Parameters
+    ----------
+    tech_node : str
+        The technology node in meters.
+    width : int, optional
+        The width of the read/write port of each input buffer in bits. Total size =
+        width * depth.
+    depth : int, optional
+        The number of entries in each input buffer, each with `width` bits. Total size =
+        width * depth.
+    """
+
     component_name = "atomlayer_input_buffer_transfers"
     priority = 0.9
 
-    def __init__(self, tech_node: str, width: int = 16, depth: int = 128):
+    def __init__(self, tech_node: float, width: int = 16, depth: int = 128):
         super().__init__(leak_power=0.0, area=2100.0e-12)
-        self.tech_node: str = self.scale(
+        self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             32e-9,
@@ -89,6 +147,36 @@ class AtomlayerInputBufferTransfers(LibraryEstimatorClassBase):
 
     @actionDynamicEnergy(bits_per_action="width")
     def read(self) -> float:
+        """
+        Returns the energy for one read operation in Joules.
+
+        Parameters
+        ----------
+        bits_per_action : int
+            The number of bits that are transferred.
+
+        Returns
+        -------
+        float
+            The energy for one transfer operation in Joules.
+        """
+        return 6.46e-12
+
+    @actionDynamicEnergy(bits_per_action="width")
+    def transfer(self) -> float:
+        """
+        Returns the energy for one transfer operation in Joules.
+
+        Parameters
+        ----------
+        bits_per_action : int
+            The number of bits that are transferred.
+
+        Returns
+        -------
+        float
+            The energy for one transfer operation in Joules.
+        """
         return 6.46e-12
 
 

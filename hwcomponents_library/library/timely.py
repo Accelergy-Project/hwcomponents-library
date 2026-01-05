@@ -33,9 +33,6 @@ class TimelyIAdder(LibraryEstimatorClassBase):
         Technology node in meters.
     """
 
-    component_name = "timely_iadder"
-    priority = 0.9
-
     def __init__(self, tech_node: float):
         super().__init__(leak_power=0.0, area=40.0e-12)
         self.tech_node: float = self.scale(
@@ -89,8 +86,6 @@ class TimelyPSubBuf(LibraryEstimatorClassBase):
     tech_node: float
         Technology node in meters.
     """
-    component_name = "timely_psubBuf"
-    priority = 0.9
 
     def __init__(self, tech_node: float):
         super().__init__(leak_power=0.0, area=5.0e-12)
@@ -145,8 +140,6 @@ class TimelyDTC(LibraryEstimatorClassBase):
     resolution: int
         Resolution of the DTC in bits.
     """
-    component_name = "timely_dtc"
-    priority = 0.9
 
     def __init__(self, tech_node: float, resolution: int = 8):
         super().__init__(leak_power=0.0, area=240.0e-12)
@@ -203,9 +196,6 @@ class TimelyTDC(LibraryEstimatorClassBase):
     resolution: int
         Resolution of the TDC in bits.
     """
-
-    component_name = "timely_tdc"
-    priority = 0.9
 
     def __init__(self, tech_node: float, resolution: int = 8):
         super().__init__(leak_power=0.0, area=310.0e-12)
@@ -265,9 +255,6 @@ class TimelyXSubBuf(LibraryEstimatorClassBase):
         will increase with more rows.
     """
 
-    component_name = "timely_xsubBuf"
-    priority = 0.9
-
     def __init__(self, tech_node: float, rows: int = 1):
         super().__init__(leak_power=0.0, area=5.0e-12)
         self.tech_node: float = self.scale(
@@ -320,9 +307,6 @@ class TimelyChargingComparator(LibraryEstimatorClassBase):
     tech_node: float
         Technology node in meters.
     """
-
-    component_name = "timely_charging_comparator"
-    priority = 0.9
 
     def __init__(self, tech_node: float):
         super().__init__(leak_power=0.0, area=40.0e-12)
@@ -379,9 +363,6 @@ class TimelyInputOutputBuffer(LibraryEstimatorClassBase):
         The number of entries in the buffer, each with `width` bits. Total size = width
         * depth.
     """
-
-    component_name = "timely_input_output_buffer"
-    priority = 0.9
 
     def __init__(self, tech_node: float, width: int = 128, depth: int = 128):
         super().__init__(leak_power=0.0, area=40.0e-12)

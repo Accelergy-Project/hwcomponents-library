@@ -40,9 +40,6 @@ class WanShiftAdd(LibraryEstimatorClassBase):
         Voltage of the shift-and-add unit in volts.
     """
 
-    component_name = "wan_shift_add"
-    priority = 0.9
-
     def __init__(
         self,
         tech_node: float,
@@ -124,9 +121,6 @@ class WanVariablePrecisionADC(LibraryEstimatorClassBase):
         Voltage of the ADC unit in volts.
     """
 
-    component_name = "wan_variable_precision_adc"
-    priority = 0.9
-
     def __init__(self, tech_node: float, n_repeats: int = 1, voltage: float = 1.8):
         super().__init__(leak_power=0.0, area=400.0e-12)
         self.tech_node: float = self.scale(
@@ -185,9 +179,6 @@ class WanAnalogSample(LibraryEstimatorClassBase):
         Voltage of the analog sample unit in volts.
     """
 
-    component_name = "wan_analog_sample"
-    priority = 0.9
-
     def __init__(self, tech_node: float, voltage: float = 1.8):
         super().__init__(leak_power=0.0, area=350.0e-12)
         self.tech_node: float = self.scale(
@@ -244,9 +235,6 @@ class WanAnalogIntegrator(LibraryEstimatorClassBase):
     voltage: float
         Voltage of the analog integrator unit in volts.
     """
-
-    component_name = "wan_analog_integrator"
-    priority = 0.9
 
     def __init__(self, tech_node: float, n_repeats: int = 1, voltage: float = 1.8):
         super().__init__(leak_power=0.0, area=350.0e-12)

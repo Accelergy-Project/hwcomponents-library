@@ -34,8 +34,6 @@ class FormsADC(LibraryEstimatorClassBase):
     resolution: int
         Resolution of the ADC in bits.
     """
-    component_name = "forms_adc"
-    priority = 0.9
 
     def __init__(self, tech_node: float, resolution: int = 4):
         super().__init__(leak_power=0.0, area=284.375e-12)

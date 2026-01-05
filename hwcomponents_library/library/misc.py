@@ -17,6 +17,7 @@ from hwcomponents import actionDynamicEnergy
 from hwcomponents_cacti import SRAM
 from hwcomponents_library.library.aladdin import AladdinRegister, AladdinAdder
 
+
 # Original CSV contents:
 # tech_node,global_cycle_period,width|datawidth,depth,energy,area,action
 # 16nm,1e-9,1024,1024,2641.92,131570,read
@@ -50,9 +51,6 @@ class RaaamEDRAM(LibraryEstimatorClassBase):
         The number of entries in the eDRAM, each with `width` bits. Total size = width *
         depth.
     """
-
-    component_name = "raaam_edram"
-    priority = 0.9
 
     def __init__(self, tech_node: float, width: int = 1024, depth: int = 1024):
         super().__init__(leak_power=3.81e-4, area=131570.0e-12)
@@ -126,16 +124,17 @@ class SmartBufferSRAM(LibraryEstimatorClassBase):
         delta_reg: The register that holds the increment value.
         adder: The adder that adds the increment value to the current address.
     """
+
     component_name = ["smart_buffer_sram", "smartbuffer_sram", "smartbuffersram"]
     priority = 0.5
 
     def __init__(
-            self,
-            tech_node: float,
-            width: int,
-            depth: int,
-            n_rw_ports: int=1,
-            n_banks: int=1,
+        self,
+        tech_node: float,
+        width: int,
+        depth: int,
+        n_rw_ports: int = 1,
+        n_banks: int = 1,
     ):
         self.sram: SRAM = SRAM(
             tech_node=tech_node,
@@ -151,12 +150,14 @@ class SmartBufferSRAM(LibraryEstimatorClassBase):
         self.delta_reg = AladdinRegister(width=self.address_bits, tech_node=tech_node)
         self.adder = AladdinAdder(width=self.address_bits, tech_node=tech_node)
 
-        super().__init__(subcomponents=[
+        super().__init__(
+            subcomponents=[
                 self.sram,
                 self.address_reg,
                 self.delta_reg,
                 self.adder,
-        ])
+            ]
+        )
 
     @actionDynamicEnergy(bits_per_action="width")
     def read(self) -> float:

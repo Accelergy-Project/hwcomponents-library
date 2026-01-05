@@ -39,8 +39,6 @@ class IsaacEDRAM(LibraryEstimatorClassBase):
         Depth of the eDRAM in bits. This is the number of entries in the eDRAM, each
         with `width` bits. Total size = width * depth.
     """
-    component_name = "isaac_eDRAM"
-    priority = 0.9
 
     def __init__(self, tech_node: float, width: int = 256, depth: int = 2048):
         super().__init__(leak_power=0.0, area=83000.0e-12)
@@ -97,8 +95,6 @@ class IsaacChip2ChipLink(LibraryEstimatorClassBase):
     width: int
         Width of the link in bits. This is the width of a read/write port.
     """
-    component_name = "isaac_chip2chip_link"
-    priority = 0.9
 
     def __init__(self, tech_node: float, width: int = 128):
         super().__init__(leak_power=0.0, area=23000000.0e-12)
@@ -154,9 +150,6 @@ class IsaacRouterSharedByFour(LibraryEstimatorClassBase):
     This is the router from the ISAAC paper. In the paper, it is shared by four tiles,
     so this area is divided by four to match the paper.
     """
-
-    component_name = "isaac_router_shared_by_four"
-    priority = 0.9
 
     def __init__(self, tech_node: float, width: int = 256):
         super().__init__(leak_power=0.0, area=37500.0e-12)
@@ -255,8 +248,6 @@ class IsaacADC(LibraryEstimatorClassBase):
     resolution: int
         Resolution of the ADC in bits.
     """
-    component_name = "isaac_adc"
-    priority = 0.9
 
     def __init__(self, tech_node: float, resolution: int = 8):
         super().__init__(leak_power=0.0, area=1200.0e-12)
@@ -321,8 +312,6 @@ class IsaacRouter(LibraryEstimatorClassBase):
     width: int
         Width of the router in bits. This is the width of a read/write port.
     """
-    component_name = "isaac_router"
-    priority = 0.9
 
     def __init__(self, tech_node: float, width: int = 256):
         super().__init__(leak_power=0.0, area=150000.0e-12)
@@ -359,7 +348,6 @@ class IsaacRouter(LibraryEstimatorClassBase):
             Energy to transfer data in Joules
         """
         return 0
-
 
     @actionDynamicEnergy(bits_per_action="width")
     def transfer(self) -> float:
@@ -398,8 +386,6 @@ class IsaacShiftAdd(LibraryEstimatorClassBase):
         Width of the shift-and-add unit in bits. This is the number of bits of each
         input value that is added to the register.
     """
-    component_name = "isaac_shift_add"
-    priority = 0.9
 
     def __init__(self, tech_node: float, width: int = 16):
         super().__init__(leak_power=0.0, area=60.0e-12)
@@ -473,8 +459,6 @@ class IsaacEDRAMBus(LibraryEstimatorClassBase):
     width: int
         Width of the eDRAM bus in bits. This is the width of a read/write port.
     """
-    component_name = "isaac_eDRAM_bus"
-    priority = 0.9
 
     def __init__(self, tech_node: float, width: int = 1):
         super().__init__(leak_power=0.0, area=29.296875e-12)
@@ -559,8 +543,6 @@ class IsaacDAC(LibraryEstimatorClassBase):
     resolution: int
         Resolution of the DAC in bits.
     """
-    component_name = "isaac_dac"
-    priority = 0.9
 
     def __init__(self, tech_node: float, resolution: int = 1, rows: int = 1):
         super().__init__(leak_power=0.0, area=0.166015625e-12)

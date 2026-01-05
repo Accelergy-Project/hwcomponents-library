@@ -15,8 +15,6 @@ class DummyStorage(LibraryEstimatorClassBase):
     tech_node: float, optional
         Technology node in meters. This is not used.
     """
-    component_name = "dummy_storage"
-    priority = 0.9
 
     def __init__(self, tech_node: float | None = None):
         super().__init__(leak_power=0.0, area=0.0)
@@ -59,8 +57,6 @@ class DummyCompute(LibraryEstimatorClassBase):
     tech_node: float, optional
         Technology node in meters. This is not used.
     """
-    component_name = "dummy_compute"
-    priority = 0.9
 
     def __init__(self, tech_node: float | None = None):
         super().__init__(leak_power=0.0, area=0.0)
@@ -100,8 +96,6 @@ class DummyMemory(LibraryEstimatorClassBase):
     tech_node: float
         Technology node in meters. This is not used.
     """
-    component_name = "dummy_memory"
-    priority = 0.9
 
     def __init__(self, tech_node: float | None = None):
         super().__init__(leak_power=0.0, area=0.0)
@@ -131,6 +125,7 @@ class DummyMemory(LibraryEstimatorClassBase):
         """
         return 0.0
 
+
 class DummyNetwork(LibraryEstimatorClassBase):
     """
     A dummy network component. Has zero area, zero energy, and zero leakage power.
@@ -140,8 +135,6 @@ class DummyNetwork(LibraryEstimatorClassBase):
     tech_node: float
         Technology node in meters. This is not used.
     """
-    component_name = "dummy_network"
-    priority = 0.9
 
     def __init__(self, tech_node: float | None = None):
         super().__init__(leak_power=0.0, area=0.0)

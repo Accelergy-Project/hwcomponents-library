@@ -16,3 +16,4 @@ if hwcomponents_dir.exists() and str(parent_dir) not in sys.path:
 from setuptools import setup
 
 setup()
+

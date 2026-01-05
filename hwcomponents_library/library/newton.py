@@ -61,9 +61,6 @@ class NewtonADC(LibraryEstimatorClassBase):
         Resolution of the ADC in bits.
     """
 
-    component_name = "newton_adc"
-    priority = 0.9
-
     def __init__(self, tech_node: float, resolution: int = 9):
         super().__init__(leak_power=0.0, area=1500.0e-12)
         self.tech_node: float = self.scale(

@@ -3,6 +3,8 @@ from hwcomponents.scaling import *
 
 
 class LibraryEstimatorClassBase(EnergyAreaModel):
+    priority: float = 0.8
+
     @actionDynamicEnergy
     def write(self) -> float:
         return 0

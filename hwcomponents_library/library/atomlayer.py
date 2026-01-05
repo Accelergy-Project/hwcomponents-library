@@ -45,9 +45,6 @@ class AtomlayerRegisterLadder(LibraryEstimatorClassBase):
         = width * depth.
     """
 
-    component_name = "atomlayer_register_ladder"
-    priority = 0.9
-
     def __init__(self, tech_node: float, width: int = 16, depth: int = 128):
         super().__init__(leak_power=0.0, area=1620.0e-12)
         self.tech_node: float = self.scale(
@@ -126,9 +123,6 @@ class AtomlayerInputBufferTransfers(LibraryEstimatorClassBase):
         The number of entries in each input buffer, each with `width` bits. Total size =
         width * depth.
     """
-
-    component_name = "atomlayer_input_buffer_transfers"
-    priority = 0.9
 
     def __init__(self, tech_node: float, width: int = 16, depth: int = 128):
         super().__init__(leak_power=0.0, area=2100.0e-12)

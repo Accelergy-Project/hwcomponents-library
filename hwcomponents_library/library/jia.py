@@ -37,9 +37,6 @@ class JiaShiftAdd(LibraryEstimatorClassBase):
         Voltage of the shift-and-add unit in volts.
     """
 
-    component_name = "jia_shift_add"
-    priority = 0.9
-
     def __init__(self, tech_node: float, resolution: int = 8, voltage: float = 1.2):
         super().__init__(leak_power=2.22e-6, area=5000.0e-12)
         self.tech_node: float = self.scale(
@@ -116,9 +113,6 @@ class JiaZeroGate(LibraryEstimatorClassBase):
         Voltage of the zero gating unit in volts.
     """
 
-    component_name = "jia_zero_gate"
-    priority = 0.9
-
     def __init__(
         self, tech_node: float, rows: int = 1, resolution: int = 8, voltage: float = 1.2
     ):
@@ -189,9 +183,6 @@ class JiaDatapath(LibraryEstimatorClassBase):
         Voltage of the datapath in volts.
 
     """
-
-    component_name = "jia_datapath"
-    priority = 0.9
 
     def __init__(self, tech_node: float, voltage: float = 1.2):
         super().__init__(leak_power=4.44e-6, area=10535.0e-12)

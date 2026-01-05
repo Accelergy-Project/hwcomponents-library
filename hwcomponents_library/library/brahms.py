@@ -42,9 +42,6 @@ class BrahmsDAC(LibraryEstimatorClassBase):
         Resolution of the DAC in bits
     """
 
-    component_name = "brahms_dac"
-    priority = 0.9
-
     def __init__(self, tech_node: float, resolution: int = 8):
         super().__init__(leak_power=0.0, area=438.0e-12)
         self.tech_node: float = self.scale(
@@ -70,7 +67,6 @@ class BrahmsDAC(LibraryEstimatorClassBase):
             Energy of one DAC conversion in Joules
         """
         return 0.291e-12
-
 
     @actionDynamicEnergy
     def convert(self) -> float:

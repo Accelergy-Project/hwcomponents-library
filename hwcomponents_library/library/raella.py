@@ -42,10 +42,7 @@ class RaellaQuantMultiplier(LibraryEstimatorClassBase):
         Technology node in meters.
     """
 
-    component_name = "raella_quant_multiplier"
-    priority = 0.9
-
-    def __init__(self, tech_node: float, resolution: int=16):
+    def __init__(self, tech_node: float, resolution: int = 16):
         super().__init__(leak_power=0.0, area=0.0e-12)
         self.tech_node: float = self.scale(
             "tech_node",
@@ -56,12 +53,7 @@ class RaellaQuantMultiplier(LibraryEstimatorClassBase):
             tech_node_leak,
         )
         self.resolution: int = self.scale(
-            "resolution",
-            resolution,
-            16,
-            linear,
-            linear,
-            linear
+            "resolution", resolution, 16, linear, linear, linear
         )
 
     @actionDynamicEnergy

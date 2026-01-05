@@ -30,5 +30,5 @@ include-package-data = true
 [tool.setuptools_scm]
 write_to = "hwcomponents_library/_version.py"
 fallback_version = "1.0.0"
-version_scheme = "release-branch-semver"
-local_scheme = "no-local-version"
+version_scheme = "setup_scm_version:post_version"
+local_scheme = "setup_scm_version:no_local"

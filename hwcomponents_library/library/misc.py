@@ -126,7 +126,7 @@ class SmartBufferSRAM(LibraryEstimatorClassBase):
     """
 
     component_name = ["smart_buffer_sram", "smartbuffer_sram", "smartbuffersram"]
-    priority = 0.5
+    priority = 0.3
 
     def __init__(
         self,

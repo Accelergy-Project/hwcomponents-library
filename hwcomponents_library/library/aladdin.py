@@ -39,6 +39,7 @@ class AladdinAdder(LibraryEstimatorClassBase):
         The width of the adder in bits. This is the number of bits of the input values.
     """
     component_name = ["Adder", "AladdinAdder", "IntAdder"]
+    priority = 0.1
 
     def __init__(self, tech_node: float, width: int = 32):
         super().__init__(leak_power=2.40e-6, area=278.0e-12)
@@ -94,6 +95,7 @@ class AladdinRegister(LibraryEstimatorClassBase):
         The width of the register in bits.
     """
     component_name = ["Register", "AladdinRegister"]
+    priority = 0.1
 
     def __init__(
         self,
@@ -169,6 +171,7 @@ class AladdinComparator(LibraryEstimatorClassBase):
         The width of the comparator in bits.
     """
     component_name = ["Comparator", "AladdinComparator"]
+    priority = 0.1
 
     def __init__(self, tech_node: float, width: int = 32):
         super().__init__(leak_power=2.51e-8, area=71.0e-12)
@@ -229,6 +232,7 @@ class AladdinMultiplier(LibraryEstimatorClassBase):
         The width of the second input value in bits.
     """
     component_name = ["Multiplier", "AladdinMultiplier", "IntMultiplier"]
+    priority = 0.1
 
     def __init__(
         self,
@@ -306,6 +310,7 @@ class AladdinCounter(LibraryEstimatorClassBase):
         The width of the counter in bits.
     """
     component_name = ["Counter", "AladdinCounter"]
+    priority = 0.1
 
     def __init__(self, tech_node: float, width: int = 32):
         super().__init__(leak_power=3.21e-7, area=495.5e-12)
@@ -359,6 +364,7 @@ class AladdinIntMAC(LibraryEstimatorClassBase):
         The width of the multiplier in bits.
     """
     component_name = ["IntMAC", "AladdinIntMAC"]
+    priority = 0.1
 
     def __init__(
         self, tech_node: float, adder_width: int = 16, multiplier_width: int = 8

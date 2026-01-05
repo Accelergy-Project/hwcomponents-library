@@ -1,10 +1,9 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools>=61.0", "wheel", "setuptools-scm>=6.2"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "hwcomponents_library"
-version = "0.1"
 description = "A library of hardware components for energy estimation."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -26,3 +25,9 @@ dependencies = [
 [tool.setuptools]
 packages = {find = {include = ["hwcomponents_library", "hwcomponents_library.*"]}}
 include-package-data = true
+
+[tool.setuptools_scm]
+write_to = "hwcomponents_library/_version.py"
+fallback_version = "0.0.0"
+version_scheme = "release-branch-semver"
+local_scheme = "node-and-date"

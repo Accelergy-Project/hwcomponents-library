@@ -1,4 +1,4 @@
-"""Minimal version scheme for setuptools-scm - creates post-release versions."""
+"""Version scheme for setuptools-scm - creates post-release versions."""
 from setuptools_scm.version import guess_next_version
 
 
@@ -10,7 +10,7 @@ def post_version(version):
     base = str(version.tag).lstrip('v') if version.tag else (guess_next_version(version) or "1.0.0")
     distance = version.distance or 0
 
-    return f"{base}.post{distance}" if distance > 0 else base
+    return f"{base}.push{distance}" if distance > 0 else base
 
 
 def no_local(version):

@@ -31,4 +31,4 @@ include-package-data = true
 write_to = "hwcomponents_library/_version.py"
 fallback_version = "1.0.0"
 version_scheme = "release-branch-semver"
-local_scheme = "node-and-date"
+local_scheme = "no-local-version"

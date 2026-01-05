@@ -38,6 +38,7 @@ class AladdinAdder(LibraryEstimatorClassBase):
     width : int
         The width of the adder in bits. This is the number of bits of the input values.
     """
+    component_name = ["Adder", "AladdinAdder", "IntAdder"]
 
     def __init__(self, tech_node: float, width: int = 32):
         super().__init__(leak_power=2.40e-6, area=278.0e-12)
@@ -76,14 +77,6 @@ class AladdinAdder(LibraryEstimatorClassBase):
         return 0.21e-12
 
 
-class Adder(AladdinAdder):
-    pass
-
-
-class IntAdder(AladdinAdder):
-    pass
-
-
 # Original CSV contents:
 # tech_node,global_cycle_period,width|datawidth,dynamic energy(pJ),area(um^2),action
 # 40nm,1e-9,1,0.009,5.98E+00,read
@@ -100,6 +93,7 @@ class AladdinRegister(LibraryEstimatorClassBase):
     width : int, optional
         The width of the register in bits.
     """
+    component_name = ["Register", "AladdinRegister"]
 
     def __init__(
         self,
@@ -157,10 +151,6 @@ class AladdinRegister(LibraryEstimatorClassBase):
         return 0.009e-12
 
 
-class Register(AladdinRegister):
-    pass
-
-
 # Original CSV contents:
 # tech_node,global_cycle_period,width|datawidth,energy(pJ),area(um^2),action
 # 40nm,1e-9,32,0.02947,71,compare|read
@@ -178,6 +168,7 @@ class AladdinComparator(LibraryEstimatorClassBase):
     width : int, optional
         The width of the comparator in bits.
     """
+    component_name = ["Comparator", "AladdinComparator"]
 
     def __init__(self, tech_node: float, width: int = 32):
         super().__init__(leak_power=2.51e-8, area=71.0e-12)
@@ -216,10 +207,6 @@ class AladdinComparator(LibraryEstimatorClassBase):
         return 0.02947e-12
 
 
-class Comparator(AladdinComparator):
-    pass
-
-
 # Original CSV contents:
 # tech_node,global_cycle_period,width|datawidth,width_a|datawidth_a,width_b|datawidth_b,energy(pJ),area(um^2),action
 # 40nm,1e-9,32,32,32,12.68,6350,multiply|read
@@ -241,6 +228,7 @@ class AladdinMultiplier(LibraryEstimatorClassBase):
     width_b : int, optional
         The width of the second input value in bits.
     """
+    component_name = ["Multiplier", "AladdinMultiplier", "IntMultiplier"]
 
     def __init__(
         self,
@@ -301,14 +289,6 @@ class AladdinMultiplier(LibraryEstimatorClassBase):
         return 12.68e-12
 
 
-class IntMultiplier(AladdinMultiplier):
-    pass
-
-
-class Multiplier(AladdinMultiplier):
-    pass
-
-
 # Original CSV contents:
 # tech_node,global_cycle_period,width|datawidth,energy(pJ),area(um^2),action
 # 40nm,1e-9,32,0.25074,495.5,count|read
@@ -325,6 +305,7 @@ class AladdinCounter(LibraryEstimatorClassBase):
     width : int, optional
         The width of the counter in bits.
     """
+    component_name = ["Counter", "AladdinCounter"]
 
     def __init__(self, tech_node: float, width: int = 32):
         super().__init__(leak_power=3.21e-7, area=495.5e-12)
@@ -363,10 +344,6 @@ class AladdinCounter(LibraryEstimatorClassBase):
         return 0.25074e-12
 
 
-class Counter(AladdinCounter):
-    pass
-
-
 class AladdinIntMAC(LibraryEstimatorClassBase):
     """
     A integer multiply-accumulate unit from the Aladdin paper. Multiplies two values
@@ -381,8 +358,7 @@ class AladdinIntMAC(LibraryEstimatorClassBase):
     multiplier_width : int, optional
         The width of the multiplier in bits.
     """
-
-    component_name = ["intmac", "aladdin_intmac"]
+    component_name = ["IntMAC", "AladdinIntMAC"]
 
     def __init__(
         self, tech_node: float, adder_width: int = 16, multiplier_width: int = 8

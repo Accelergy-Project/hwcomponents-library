@@ -12,16 +12,27 @@ def post_release_version_scheme(version):
     Post-release versions are installable by default (not pre-releases).
     """
     if version.exact:
-        return version.format_with("{tag}")
+        # Exact tag match - return the tag version (strip 'v' prefix if present)
+        tag = version.format_with("{tag}")
+        return tag.lstrip('v')
 
-    # Get the next version (e.g., 1.1.0)
-    next_version = guess_next_version(version)
+    # Get the base version from the tag (or fallback)
+    if version.tag:
+        # Strip 'v' prefix if present
+        base_version = str(version.tag).lstrip('v')
+    else:
+        # No tag - use fallback or guess
+        base_version = guess_next_version(version) or "1.0.0"
 
     # Get the distance from the last tag
     distance = version.distance or 0
 
+    if distance == 0:
+        # No commits after tag - return base version
+        return base_version
+
     # Return as post-release version
-    return f"{next_version}.post{distance}"
+    return f"{base_version}.post{distance}"
 
 
 def post_release_local_scheme(version):

@@ -4,6 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hwcomponents_library"
+dynamic = ["version"]
 description = "A library of hardware components for energy estimation."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -28,6 +29,6 @@ include-package-data = true
 
 [tool.setuptools_scm]
 write_to = "hwcomponents_library/_version.py"
-fallback_version = "0.0.0"
+fallback_version = "1.0.0"
 version_scheme = "release-branch-semver"
 local_scheme = "node-and-date"

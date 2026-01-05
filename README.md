@@ -7,11 +7,11 @@ These models are for use with the HWComponents package, found at
 https://accelergy-project.github.io/hwcomponents/.
 
 ## Installation
-Clone the repository and install with pip:
+
+Install from PyPI:
+
 ```bash
-git clone https://github.com/Accelergy-Project/hwcomponents-library.git
-cd hwcomponents-library
-pip3 install .
+pip install hwcomponents-library
 
 # Check that the installation is successful
 hwc --list | grep adder

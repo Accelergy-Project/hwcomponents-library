@@ -8,14 +8,13 @@ version = "0.1"
 description = "A library of hardware components for energy estimation."
 readme = "README.md"
 requires-python = ">=3.12"
-license = {text = "MIT"}
+license = "MIT"
 authors = [
     {name = "Tanner Andrulis", email = "Andrulis@Mit.edu"}
 ]
 keywords = ["hardware", "components", "energy", "estimation"]
 classifiers = [
     "Development Status :: 3 - Alpha",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Topic :: Scientific/Engineering :: Electronic Design Automation (EDA)",
 ]

@@ -30,6 +30,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install build
       - name: Build package
+        working-directory: .
+        env:
+          PYTHONPATH: ${{ github.workspace }}
         run: |
           python -m build
       - name: Publish package distributions to PyPI

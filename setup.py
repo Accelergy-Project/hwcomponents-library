@@ -1,4 +1,5 @@
 """Setup.py to ensure hwcomponents._version_scheme is importable during build."""
+
 import sys
 from pathlib import Path
 
@@ -16,4 +17,3 @@ if hwcomponents_dir.exists() and str(parent_dir) not in sys.path:
 from setuptools import setup
 
 setup()
-

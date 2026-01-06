@@ -38,6 +38,7 @@ class AladdinAdder(LibraryEstimatorClassBase):
     width : int
         The width of the adder in bits. This is the number of bits of the input values.
     """
+
     component_name = ["Adder", "AladdinAdder", "IntAdder"]
     priority = 0.1
 
@@ -94,6 +95,7 @@ class AladdinRegister(LibraryEstimatorClassBase):
     width : int, optional
         The width of the register in bits.
     """
+
     component_name = ["Register", "AladdinRegister"]
     priority = 0.1
 
@@ -170,6 +172,7 @@ class AladdinComparator(LibraryEstimatorClassBase):
     width : int, optional
         The width of the comparator in bits.
     """
+
     component_name = ["Comparator", "AladdinComparator"]
     priority = 0.1
 
@@ -231,6 +234,7 @@ class AladdinMultiplier(LibraryEstimatorClassBase):
     width_b : int, optional
         The width of the second input value in bits.
     """
+
     component_name = ["Multiplier", "AladdinMultiplier", "IntMultiplier"]
     priority = 0.1
 
@@ -309,6 +313,7 @@ class AladdinCounter(LibraryEstimatorClassBase):
     width : int, optional
         The width of the counter in bits.
     """
+
     component_name = ["Counter", "AladdinCounter"]
     priority = 0.1
 
@@ -363,6 +368,7 @@ class AladdinIntMAC(LibraryEstimatorClassBase):
     multiplier_width : int, optional
         The width of the multiplier in bits.
     """
+
     component_name = ["IntMAC", "AladdinIntMAC"]
     priority = 0.1
 

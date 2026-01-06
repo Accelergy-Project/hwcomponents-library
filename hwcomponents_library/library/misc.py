@@ -145,6 +145,9 @@ class SmartBufferSRAM(LibraryEstimatorClassBase):
         )
         self.address_bits = max(math.ceil(math.log2(depth)), 1)
         self.width = width
+        self.depth = depth
+        self.n_rw_ports = n_rw_ports
+        self.n_banks = n_banks
 
         self.address_reg = AladdinRegister(width=self.address_bits, tech_node=tech_node)
         self.delta_reg = AladdinRegister(width=self.address_bits, tech_node=tech_node)
@@ -174,6 +177,7 @@ class SmartBufferSRAM(LibraryEstimatorClassBase):
         float
             The energy consumed by a read operation in Joules.
         """
+        print(f'My width is {self.width}')
         self.sram.read(bits_per_action=self.width)
         self.address_reg.read()
         self.delta_reg.read()

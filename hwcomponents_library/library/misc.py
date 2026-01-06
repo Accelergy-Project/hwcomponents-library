@@ -177,7 +177,6 @@ class SmartBufferSRAM(LibraryEstimatorClassBase):
         float
             The energy consumed by a read operation in Joules.
         """
-        print(f'My width is {self.width}')
         self.sram.read(bits_per_action=self.width)
         self.address_reg.read()
         self.delta_reg.read()

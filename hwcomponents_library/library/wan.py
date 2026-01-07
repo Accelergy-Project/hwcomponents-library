@@ -13,7 +13,7 @@
 
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
-from hwcomponents import actionDynamicEnergy
+from hwcomponents import action
 
 
 # Original CSV contents:
@@ -52,53 +52,53 @@ class WanShiftAdd(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             130e-9,
-            tech_node_energy,
             tech_node_area,
+            tech_node_energy,
+            noscale,
             tech_node_leak,
         )
         self.n_repeats: int = self.scale(
-            "n_repeats", n_repeats, 1, linear, linear, linear
+            "n_repeats", n_repeats, 1, linear, linear, noscale, linear
         )
         self.resolution: int = self.scale(
-            "resolution", resolution, 8, pow_base(2), pow_base(2), pow_base(2)
+            "resolution", resolution, 8, pow_base(2), pow_base(2), noscale, pow_base(2)
         )
-        self.voltage: float = self.scale("voltage", voltage, 1.8, noscale, quadratic, 1)
+        self.voltage: float = self.scale(
+            "voltage", voltage, 1.8, quadratic, quadratic, noscale, quadratic, 1
+        )
 
-    @actionDynamicEnergy
-    def read(self) -> float:
+    @action
+    def read(self) -> tuple[float, float]:
         """
-        Returns zero Joules.
+        Returns zero energy and latency.
 
         Returns
         -------
-        float
-            Zero Joules.
+        (energy, latency): (0.0, 0.0).
         """
-        return 0
+        return 0.0, 0.0
 
-    @actionDynamicEnergy
-    def write(self) -> float:
+    @action
+    def write(self) -> tuple[float, float]:
         """
-        Returns the energy used to perform a shift-and-add operation in Joules.
+        Returns the energy and latency used to perform a shift-and-add operation.
 
         Returns
         -------
-        float
-            The energy used to perform a shift-and-add operation in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
         return self.shift_and_add()
 
-    @actionDynamicEnergy
-    def shift_and_add(self) -> float:
+    @action
+    def shift_and_add(self) -> tuple[float, float]:
         """
-        Returns the energy used to perform a shift-and-add operation in Joules.
+        Returns the energy and latency used to perform a shift-and-add operation.
 
         Returns
         -------
-        float
-            The energy used to perform a shift-and-add operation in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.1e-12
+        return 0.1e-12, 0.0
 
 
 # Original CSV contents:
@@ -127,36 +127,37 @@ class WanVariablePrecisionADC(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             130e-9,
-            tech_node_energy,
             tech_node_area,
+            tech_node_energy,
+            noscale,
             tech_node_leak,
         )
         self.n_repeats: int = self.scale(
-            "n_repeats", n_repeats, 1, linear, linear, linear
+            "n_repeats", n_repeats, 1, linear, linear, noscale, linear
         )
-        self.voltage: float = self.scale("voltage", voltage, 1.8, noscale, quadratic, 1)
+        self.voltage: float = self.scale(
+            "voltage", voltage, 1.8, quadratic, quadratic, noscale, quadratic, 1
+        )
 
-    @actionDynamicEnergy
-    def convert(self) -> float:
+    @action
+    def convert(self) -> tuple[float, float]:
         """
-        Returns the energy used to convert a voltage to a digital value in Joules.
+        Returns the energy and latency used to convert a voltage to a digital value.
 
         Returns
         -------
-        float
-            The energy used to convert a voltage to a digital value in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.3e-12
+        return 0.3e-12, 0.0
 
-    @actionDynamicEnergy
-    def read(self) -> float:
+    @action
+    def read(self) -> tuple[float, float]:
         """
-        Returns the energy used to convert a voltage to a digital value in Joules.
+        Returns the energy and latency used to convert a voltage to a digital value.
 
         Returns
         -------
-        float
-            The energy used to convert a voltage to a digital value in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
         return self.convert()
 
@@ -185,35 +186,36 @@ class WanAnalogSample(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             130e-9,
-            tech_node_energy,
             tech_node_area,
+            tech_node_energy,
+            noscale,
             tech_node_leak,
         )
-        self.voltage: float = self.scale("voltage", voltage, 1.8, noscale, quadratic, 1)
+        self.voltage: float = self.scale(
+            "voltage", voltage, 1.8, quadratic, quadratic, noscale, quadratic, 1
+        )
 
-    @actionDynamicEnergy
-    def read(self) -> float:
+    @action
+    def read(self) -> tuple[float, float]:
         """
-        Returns the energy used to sample an analog voltage in Joules.
+        Returns the energy and latency used to sample an analog voltage.
 
         Returns
         -------
-        float
-            The energy used to sample an analog voltage in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
         return self.sample()
 
-    @actionDynamicEnergy
-    def sample(self) -> float:
+    @action
+    def sample(self) -> tuple[float, float]:
         """
-        Returns the energy used to sample an analog voltage in Joules.
+        Returns the energy and latency used to sample an analog voltage.
 
         Returns
         -------
-        float
-            The energy used to sample an analog voltage in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 1.2e-12
+        return 1.2e-12, 0.0
 
 
 # Original CSV contents:
@@ -242,35 +244,36 @@ class WanAnalogIntegrator(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             130e-9,
-            tech_node_energy,
             tech_node_area,
+            tech_node_energy,
+            noscale,
             tech_node_leak,
         )
         self.n_repeats: int = self.scale(
             "n_repeats", n_repeats, 1, linear, linear, linear
         )
-        self.voltage: float = self.scale("voltage", voltage, 1.8, noscale, quadratic, 1)
+        self.voltage: float = self.scale(
+            "voltage", voltage, 1.8, quadratic, quadratic, noscale, quadratic, 1
+        )
 
-    @actionDynamicEnergy
-    def integrate(self) -> float:
+    @action
+    def integrate(self) -> tuple[float, float]:
         """
-        Returns the energy used to integrate charge for a sample in Joules.
+        Returns the energy and latency used to integrate charge for a sample.
 
         Returns
         -------
-        float
-            The energy used to integrate charge for a sample in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.25e-12
+        return 0.25e-12, 0.0
 
-    @actionDynamicEnergy
-    def read(self) -> float:
+    @action
+    def read(self) -> tuple[float, float]:
         """
-        Returns the energy used to integrate charge for a sample in Joules.
+        Returns the energy and latency used to integrate charge for a sample.
 
         Returns
         -------
-        float
-            The energy used to integrate charge for a sample in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
         return self.integrate()

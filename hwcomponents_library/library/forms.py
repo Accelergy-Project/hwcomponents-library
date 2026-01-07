@@ -12,7 +12,7 @@
 
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
-from hwcomponents import actionDynamicEnergy
+from hwcomponents import action
 from .isaac import IsaacDAC
 
 
@@ -41,37 +41,36 @@ class FormsADC(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             32e-9,
-            tech_node_energy,
             tech_node_area,
+            tech_node_energy,
+            noscale,
             tech_node_leak,
         )
         self.resolution: int = self.scale(
-            "resolution", resolution, 4, pow_base(2), pow_base(2), pow_base(2)
+            "resolution", resolution, 4, pow_base(2), pow_base(2), noscale, pow_base(2)
         )
 
-    @actionDynamicEnergy
-    def convert(self) -> float:
+    @action
+    def convert(self) -> tuple[float, float]:
         """
-        Returns the energy of one ADC conversion in Joules
+        Returns the energy and latency of one ADC conversion.
 
         Returns
         -------
-        float
-            Energy of one ADC conversion in Joules
+        (energy, latency): Tuple in (Joules, seconds)
         """
-        return 0.22619e-12
+        return 0.22619e-12, 0.0
 
-    @actionDynamicEnergy
-    def read(self) -> float:
+    @action
+    def read(self) -> tuple[float, float]:
         """
-        Returns the energy of one ADC conversion operation in Joules
+        Returns the energy and latency of one ADC conversion operation.
 
         Returns
         -------
-        float
-            Energy of one ADC conversion operation in Joules
+        (energy, latency): Tuple in (Joules, seconds)
         """
-        return 0.22619e-12
+        return 0.22619e-12, 0.0
 
 
 class FormsDAC(IsaacDAC):

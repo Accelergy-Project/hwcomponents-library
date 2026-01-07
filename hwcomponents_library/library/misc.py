@@ -13,7 +13,7 @@
 
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
-from hwcomponents import actionDynamicEnergy
+from hwcomponents import action
 from hwcomponents_cacti import SRAM
 from hwcomponents_library.library.aladdin import AladdinRegister, AladdinAdder
 
@@ -58,19 +58,28 @@ class RaaamEDRAM(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             16e-9,
-            tech_node_energy,
             tech_node_area,
+            tech_node_energy,
+            noscale,
             tech_node_leak,
         )
-        self.width: int = self.scale("width", width, 1024, linear, linear, linear)
+        self.width: int = self.scale(
+            "width", width, 1024, linear, linear, noscale, linear
+        )
         self.depth: int = self.scale(
-            "depth", depth, 1024, linear, cacti_depth_energy, cacti_depth_energy
+            "depth",
+            depth,
+            1024,
+            linear,
+            cacti_depth_energy,
+            noscale,
+            cacti_depth_energy,
         )
 
-    @actionDynamicEnergy(bits_per_action="width")
-    def read(self) -> float:
+    @action(bits_per_action="width")
+    def read(self) -> tuple[float, float]:
         """
-        Returns the energy consumed by a read operation in Joules.
+        Returns the energy and latency consumed by a read operation.
 
         Parameters
         ----------
@@ -79,15 +88,14 @@ class RaaamEDRAM(LibraryEstimatorClassBase):
 
         Returns
         -------
-        float
-            The energy consumed by a read operation in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 2641.92e-12
+        return 2641.92e-12, 0.0
 
-    @actionDynamicEnergy(bits_per_action="width")
-    def write(self) -> float:
+    @action(bits_per_action="width")
+    def write(self) -> tuple[float, float]:
         """
-        Returns the energy consumed by a write operation in Joules.
+        Returns the energy and latency consumed by a write operation.
 
         Parameters
         ----------
@@ -96,10 +104,9 @@ class RaaamEDRAM(LibraryEstimatorClassBase):
 
         Returns
         -------
-        float
-            The energy consumed by a write operation in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 2519.04e-12
+        return 2519.04e-12, 0.0
 
 
 class SmartBufferSRAM(LibraryEstimatorClassBase):
@@ -162,10 +169,10 @@ class SmartBufferSRAM(LibraryEstimatorClassBase):
             ]
         )
 
-    @actionDynamicEnergy(bits_per_action="width")
-    def read(self) -> float:
+    @action(bits_per_action="width")
+    def read(self) -> tuple[float, float]:
         """
-        Returns the energy consumed by a read operation in Joules.
+        Returns the energy and latency consumed by a read operation.
 
         Parameters
         ----------
@@ -174,18 +181,18 @@ class SmartBufferSRAM(LibraryEstimatorClassBase):
 
         Returns
         -------
-        float
-            The energy consumed by a read operation in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
         self.sram.read(bits_per_action=self.width)
         self.address_reg.read()
         self.delta_reg.read()
         self.adder.add()
+        return 0.0, 0.0
 
-    @actionDynamicEnergy(bits_per_action="width")
-    def write(self) -> float:
+    @action(bits_per_action="width")
+    def write(self) -> tuple[float, float]:
         """
-        Returns the energy consumed by a write operation in Joules.
+        Returns the energy and latency consumed by a write operation.
 
         Parameters
         ----------
@@ -194,10 +201,10 @@ class SmartBufferSRAM(LibraryEstimatorClassBase):
 
         Returns
         -------
-        float
-            The energy consumed by a write operation in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
         self.sram.write(bits_per_action=self.width)
         self.address_reg.write()
         self.delta_reg.read()
         self.adder.add()
+        return 0.0, 0.0

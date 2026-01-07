@@ -20,7 +20,7 @@ series = {ISCA '23}
 
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
-from hwcomponents import actionDynamicEnergy
+from hwcomponents import action
 
 
 # Original CSV contents:
@@ -48,34 +48,33 @@ class RaellaQuantMultiplier(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             40e-9,
-            tech_node_energy,
             tech_node_area,
+            tech_node_energy,
+            noscale,
             tech_node_leak,
         )
         self.resolution: int = self.scale(
-            "resolution", resolution, 16, linear, linear, linear
+            "resolution", resolution, 16, linear, linear, noscale, linear
         )
 
-    @actionDynamicEnergy
-    def multiply(self) -> float:
+    @action
+    def multiply(self) -> tuple[float, float]:
         """
-        Returns the energy consumed by a multiply operation in Joules.
+        Returns the energy and latency consumed by a multiply operation.
 
         Returns
         -------
-        float
-            The energy consumed by a multiply operation in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.25e-12
+        return 0.25e-12, 0.0
 
-    @actionDynamicEnergy
-    def read(self) -> float:
+    @action
+    def read(self) -> tuple[float, float]:
         """
-        Returns the energy consumed by a multiply operation in Joules.
+        Returns the energy and latency consumed by a multiply operation.
 
         Returns
         -------
-        float
-            The energy consumed by a multiply operation in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.25e-12
+        return 0.25e-12, 0.0

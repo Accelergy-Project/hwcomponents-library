@@ -12,7 +12,7 @@
 
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
-from hwcomponents import actionDynamicEnergy
+from hwcomponents import action
 
 
 # Original CSV contents:
@@ -43,51 +43,51 @@ class JiaShiftAdd(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             65e-9,
-            tech_node_energy,
             tech_node_area,
+            tech_node_energy,
+            noscale,
             tech_node_leak,
         )
         self.resolution: int = self.scale(
-            "resolution", resolution, 8, pow_base(2), pow_base(2), pow_base(2)
+            "resolution", resolution, 8, pow_base(2), pow_base(2), noscale, pow_base(2)
         )
-        self.voltage: float = self.scale("voltage", voltage, 1.2, noscale, quadratic, 1)
+        self.voltage: float = self.scale(
+            "voltage", voltage, 1.2, noscale, quadratic, noscale, quadratic, 1
+        )
 
-    @actionDynamicEnergy
-    def shift_and_add(self) -> float:
+    @action
+    def shift_and_add(self) -> tuple[float, float]:
         """
-        Returns the energy consumed by a shift+add operation in Joules.
+        Returns the energy and latency consumed by a shift+add operation.
 
         Returns
         -------
-        float
-            The energy consumed by a shift+add operation in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
 
-        return 2.25e-12
+        return 2.25e-12, 0.0
 
-    @actionDynamicEnergy
-    def write(self) -> float:
+    @action
+    def write(self) -> tuple[float, float]:
         """
-        Returns the energy consumed by a shift+add operation in Joules.
+        Returns the energy and latency consumed by a shift+add operation.
 
         Returns
         -------
-        float
-            The energy consumed by a shift+add operation in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
         return self.shift_and_add()
 
-    @actionDynamicEnergy
-    def read(self) -> float:
+    @action
+    def read(self) -> tuple[float, float]:
         """
-        Zero Joules to read
+        Zero energy and latency to read.
 
         Returns
         -------
-        float
-            Zero
+        (energy, latency): (0.0, 0.0)
         """
-        return 0.0
+        return 0.0, 0.0
 
 
 # Original CSV contents:
@@ -121,20 +121,23 @@ class JiaZeroGate(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             65e-9,
-            tech_node_energy,
             tech_node_area,
+            tech_node_energy,
+            noscale,
             tech_node_leak,
         )
-        self.rows: int = self.scale("rows", rows, 1, linear, noscale, noscale)
+        self.rows: int = self.scale("rows", rows, 1, linear, linear, noscale, linear)
         self.resolution: int = self.scale(
-            "resolution", resolution, 8, pow_base(2), pow_base(2), pow_base(2)
+            "resolution", resolution, 8, linear, linear, noscale, linear
         )
-        self.voltage: float = self.scale("voltage", voltage, 1.2, noscale, quadratic, 1)
+        self.voltage: float = self.scale(
+            "voltage", voltage, 1.2, noscale, noscale, noscale, quadratic, 1
+        )
 
-    @actionDynamicEnergy(bits_per_action="resolution")
-    def zero_gate(self) -> float:
+    @action(bits_per_action="resolution")
+    def zero_gate(self) -> tuple[float, float]:
         """
-        Returns the energy consumed to zero gate & read an input in Joules.
+        Returns the energy and latency consumed to zero gate & read an input.
 
         Parameters
         ----------
@@ -143,14 +146,13 @@ class JiaZeroGate(LibraryEstimatorClassBase):
 
         Returns
         -------
-        float
-            The energy consumed to zero gate & read an input in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.5e-12
+        return 0.5e-12, 0.0
 
-    def read(self) -> float:
+    def read(self) -> tuple[float, float]:
         """
-        Returns the energy consumed to zero gate & read an input in Joules.
+        Returns the energy and latency consumed to zero gate & read an input.
 
         Parameters
         ----------
@@ -159,8 +161,7 @@ class JiaZeroGate(LibraryEstimatorClassBase):
 
         Returns
         -------
-        float
-            The energy consumed to zero gate & read an input in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
         return self.zero_gate()
 
@@ -190,34 +191,35 @@ class JiaDatapath(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             65e-9,
-            tech_node_energy,
             tech_node_area,
+            tech_node_energy,
+            noscale,
             tech_node_leak,
         )
-        self.voltage: float = self.scale("voltage", voltage, 1.2, noscale, quadratic, 1)
+        self.voltage: float = self.scale(
+            "voltage", voltage, 1.2, noscale, quadratic, noscale, quadratic, 1
+        )
 
-    @actionDynamicEnergy
-    def process(self) -> float:
+    @action
+    def process(self) -> tuple[float, float]:
         """
-        Returns the energy consumed by the datapath to quantize and apply activation
-        functions on a single input.
+        Returns the energy and latency consumed by the datapath to quantize and apply
+        activation functions on a single input.
 
         Returns
         -------
-        float
-            The energy consumed by the datapath to process an input in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 2.4e-12
+        return 2.4e-12, 0.0
 
-    @actionDynamicEnergy
-    def read(self) -> float:
+    @action
+    def read(self) -> tuple[float, float]:
         """
-        Returns the energy consumed by the datapath to quantize and apply activation
-        functions on a single input.
+        Returns the energy and latency consumed by the datapath to quantize and apply
+        activation functions on a single input.
 
         Returns
         -------
-        float
-            The energy consumed by the datapath to process an input in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
         return self.process()

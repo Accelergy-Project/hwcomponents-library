@@ -12,7 +12,7 @@
 
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
-from hwcomponents import actionDynamicEnergy
+from hwcomponents import action
 from .isaac import IsaacADC
 from .isaac import IsaacDAC
 from .isaac import IsaacEDRAM
@@ -67,37 +67,36 @@ class NewtonADC(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             32e-9,
-            tech_node_energy,
             tech_node_area,
+            tech_node_energy,
+            noscale,
             tech_node_leak,
         )
         self.resolution: int = self.scale(
-            "resolution", resolution, 9, pow_base(2), pow_base(2), pow_base(2)
+            "resolution", resolution, 9, pow_base(2), noscale, pow_base(2), pow_base(2)
         )
 
-    @actionDynamicEnergy
-    def convert(self) -> float:
+    @action
+    def convert(self) -> tuple[float, float]:
         """
-        Returns the energy consumed by a convert operation in Joules.
+        Returns the energy and latency consumed by a convert operation.
 
         Returns
         -------
-        float
-            The energy consumed by a convert operation in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 2.58333333333e-12
+        return 2.58333333333e-12, 0.0
 
-    @actionDynamicEnergy
-    def read(self) -> float:
+    @action
+    def read(self) -> tuple[float, float]:
         """
-        Returns the energy consumed by a convert operation in Joules.
+        Returns the energy and latency consumed by a convert operation.
 
         Returns
         -------
-        float
-            The energy consumed by a convert operation in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 2.58333333333e-12
+        return 2.58333333333e-12, 0.0
 
 
 class NewtonADC(IsaacADC):

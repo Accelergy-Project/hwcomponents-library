@@ -12,7 +12,7 @@
 
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
-from hwcomponents import actionDynamicEnergy
+from hwcomponents import action
 from .isaac import IsaacChip2ChipLink
 
 
@@ -39,36 +39,35 @@ class TimelyIAdder(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             65e-9,
-            tech_node_energy,
             tech_node_area,
+            tech_node_energy,
+            noscale,
             tech_node_leak,
         )
 
-    @actionDynamicEnergy
-    def read(self) -> float:
+    @action
+    def read(self) -> tuple[float, float]:
         """
-        Returns the energy used to sum two currents in Joules.
+        Returns the energy and latency used to sum two currents.
 
         Returns
         -------
-        float
-            The energy used to sum two currents in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
 
-        return 0.0368e-12
+        return 0.0368e-12, 0.0
 
-    @actionDynamicEnergy
-    def add(self) -> float:
+    @action
+    def add(self) -> tuple[float, float]:
         """
-        Returns the energy used to sum two currents in Joules.
+        Returns the energy and latency used to sum two currents.
 
         Returns
         -------
-        float
-            The energy used to sum two currents in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
 
-        return 0.0368e-12
+        return 0.0368e-12, 0.0
 
 
 # Original CSV contents:
@@ -93,34 +92,33 @@ class TimelyPSubBuf(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             65e-9,
-            tech_node_energy,
             tech_node_area,
+            tech_node_energy,
+            noscale,
             tech_node_leak,
         )
 
-    @actionDynamicEnergy
-    def drive(self) -> float:
+    @action
+    def drive(self) -> tuple[float, float]:
         """
-        Returns the energy used to drive a voltage in Joules.
+        Returns the energy and latency used to drive a voltage.
 
         Returns
         -------
-        float
-            The energy used to drive a voltage in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.0023e-12
+        return 0.0023e-12, 0.0
 
-    @actionDynamicEnergy
-    def read(self) -> float:
+    @action
+    def read(self) -> tuple[float, float]:
         """
-        Returns the energy used to drive a voltage in Joules.
+        Returns the energy and latency used to drive a voltage.
 
         Returns
         -------
-        float
-            The energy used to drive a voltage in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.0023e-12
+        return 0.0023e-12, 0.0
 
 
 # Original CSV contents:
@@ -147,37 +145,36 @@ class TimelyDTC(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             65e-9,
-            tech_node_energy,
             tech_node_area,
+            tech_node_energy,
+            noscale,
             tech_node_leak,
         )
         self.resolution: int = self.scale(
-            "resolution", resolution, 8, pow_base(2), pow_base(2), pow_base(2)
+            "resolution", resolution, 8, pow_base(2), pow_base(2), noscale, pow_base(2)
         )
 
-    @actionDynamicEnergy
-    def convert(self) -> float:
+    @action
+    def convert(self) -> tuple[float, float]:
         """
-        Returns the energy used to convert a digital value into a PWM signal in Joules.
+        Returns the energy and latency used to convert a digital value into a PWM signal.
 
         Returns
         -------
-        float
-            The energy used to convert a digital value into a PWM signal in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.0375e-12
+        return 0.0375e-12, 0.0
 
-    @actionDynamicEnergy
-    def read(self) -> float:
+    @action
+    def read(self) -> tuple[float, float]:
         """
-        Returns the energy used to convert a digital value into a PWM signal in Joules.
+        Returns the energy and latency used to convert a digital value into a PWM signal.
 
         Returns
         -------
-        float
-            The energy used to convert a digital value into a PWM signal in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.0375e-12
+        return 0.0375e-12, 0.0
 
 
 # Original CSV contents:
@@ -203,37 +200,36 @@ class TimelyTDC(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             65e-9,
-            tech_node_energy,
             tech_node_area,
+            tech_node_energy,
+            noscale,
             tech_node_leak,
         )
         self.resolution: int = self.scale(
-            "resolution", resolution, 8, pow_base(2), pow_base(2), pow_base(2)
+            "resolution", resolution, 8, pow_base(2), pow_base(2), noscale, pow_base(2)
         )
 
-    @actionDynamicEnergy
-    def convert(self) -> float:
+    @action
+    def convert(self) -> tuple[float, float]:
         """
-        Returns the energy used to convert a PWM signal into a digital value in Joules.
+        Returns the energy and latency used to convert a PWM signal into a digital value.
 
         Returns
         -------
-        float
-            The energy used to convert a PWM signal into a digital value in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.145e-12
+        return 0.145e-12, 0.0
 
-    @actionDynamicEnergy
-    def read(self) -> float:
+    @action
+    def read(self) -> tuple[float, float]:
         """
-        Returns the energy used to convert a PWM signal into a digital value in Joules.
+        Returns the energy and latency used to convert a PWM signal into a digital value.
 
         Returns
         -------
-        float
-            The energy used to convert a PWM signal into a digital value in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.145e-12
+        return 0.145e-12, 0.0
 
 
 # Original CSV contents:
@@ -261,35 +257,34 @@ class TimelyXSubBuf(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             65e-9,
-            tech_node_energy,
             tech_node_area,
+            tech_node_energy,
+            noscale,
             tech_node_leak,
         )
-        self.rows: int = self.scale("rows", rows, 1, linear, noscale, noscale)
+        self.rows: int = self.scale("rows", rows, 1, linear, linear, noscale, linear)
 
-    @actionDynamicEnergy
-    def read(self) -> float:
+    @action
+    def read(self) -> tuple[float, float]:
         """
-        Returns the energy used to repeat & amplify an input current in Joules.
-
-        Returns
-        -------
-        float
-            The energy used to repeat & amplify an input current in Joules.
-        """
-        return 0.00062e-12
-
-    @actionDynamicEnergy
-    def drive(self) -> float:
-        """
-        Returns the energy used to repeat & amplify an input current in Joules.
+        Returns the energy and latency used to repeat & amplify an input current.
 
         Returns
         -------
-        float
-            The energy used to repeat & amplify an input current in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.00062e-12
+        return 0.00062e-12, 0.0
+
+    @action
+    def drive(self) -> tuple[float, float]:
+        """
+        Returns the energy and latency used to repeat & amplify an input current.
+
+        Returns
+        -------
+        (energy, latency): Tuple in (Joules, seconds).
+        """
+        return 0.00062e-12, 0.0
 
 
 # Original CSV contents:
@@ -314,34 +309,33 @@ class TimelyChargingComparator(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             65e-9,
-            tech_node_energy,
             tech_node_area,
+            tech_node_energy,
+            noscale,
             tech_node_leak,
         )
 
-    @actionDynamicEnergy
-    def compare(self) -> float:
+    @action
+    def compare(self) -> tuple[float, float]:
         """
-        Returns the energy used to compare an input to the reference.
+        Returns the energy and latency used to compare an input to the reference.
 
         Returns
         -------
-        float
-            The energy used to compare an input current to the reference.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.0417e-12
+        return 0.0417e-12, 0.0
 
-    @actionDynamicEnergy
-    def read(self) -> float:
+    @action
+    def read(self) -> tuple[float, float]:
         """
-        Returns the energy used to compare an input to the reference.
+        Returns the energy and latency used to compare an input to the reference.
 
         Returns
         -------
-        float
-            The energy used to compare an input current to the reference.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.0417e-12
+        return 0.0417e-12, 0.0
 
 
 # Original CSV contents:
@@ -370,19 +364,22 @@ class TimelyInputOutputBuffer(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             65e-9,
-            tech_node_energy,
             tech_node_area,
+            tech_node_energy,
+            noscale,
             tech_node_leak,
         )
-        self.width: int = self.scale("width", width, 128, linear, linear, linear)
+        self.width: int = self.scale(
+            "width", width, 128, linear, linear, noscale, linear
+        )
         self.depth: int = self.scale(
-            "depth", depth, 128, linear, cacti_depth_energy, cacti_depth_energy
+            "depth", depth, 128, linear, cacti_depth_energy, noscale, cacti_depth_energy
         )
 
-    @actionDynamicEnergy(bits_per_action="width")
-    def read(self) -> float:
+    @action(bits_per_action="width")
+    def read(self) -> tuple[float, float]:
         """
-        Returns the energy used to read from the buffer in Joules.
+        Returns the energy and latency used to read from the buffer.
 
         Parameters
         ----------
@@ -391,15 +388,14 @@ class TimelyInputOutputBuffer(LibraryEstimatorClassBase):
 
         Returns
         -------
-        float
-            The energy used to read from the buffer in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 203.776e-12
+        return 203.776e-12, 0.0
 
-    @actionDynamicEnergy(bits_per_action="width")
-    def write(self) -> float:
+    @action(bits_per_action="width")
+    def write(self) -> tuple[float, float]:
         """
-        Returns the energy used to write to the buffer in Joules.
+        Returns the energy and latency used to write to the buffer.
 
         Parameters
         ----------
@@ -408,10 +404,9 @@ class TimelyInputOutputBuffer(LibraryEstimatorClassBase):
 
         Returns
         -------
-        float
-            The energy used to write to the buffer in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 496.624e-12
+        return 496.624e-12, 0.0
 
 
 class TimelyChip2ChipLink(IsaacChip2ChipLink):

@@ -1,6 +1,6 @@
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
-from hwcomponents import actionDynamicEnergy
+from hwcomponents import action
 
 
 # Original CSV contents:
@@ -20,29 +20,27 @@ class DummyStorage(LibraryEstimatorClassBase):
         super().__init__(leak_power=0.0, area=0.0)
         self.tech_node: float = tech_node
 
-    @actionDynamicEnergy
-    def read(self) -> float:
+    @action
+    def read(self) -> tuple[float, float]:
         """
-        Returns the energy of one read operation in Joules. Energy is zero.
+        Returns the energy and latency of one read operation. Energy is zero.
 
         Returns
         -------
-        float
-            Energy of one read operation in Joules
+        (energy, latency): (0.0, 0.0)
         """
-        return 0.0
+        return 0.0, 0.0
 
-    @actionDynamicEnergy
-    def write(self) -> float:
+    @action
+    def write(self) -> tuple[float, float]:
         """
-        Returns the energy of one write operation in Joules. Energy is zero.
+        Returns the energy and latency of one write operation. Energy is zero.
 
         Returns
         -------
-        float
-            Energy of one write operation in Joules
+        (energy, latency): (0.0, 0.0)
         """
-        return 0.0
+        return 0.0, 0.0
 
 
 # Original CSV contents:
@@ -62,29 +60,27 @@ class DummyCompute(LibraryEstimatorClassBase):
         super().__init__(leak_power=0.0, area=0.0)
         self.tech_node: float = tech_node
 
-    @actionDynamicEnergy
-    def read(self) -> float:
+    @action
+    def read(self) -> tuple[float, float]:
         """
-        Returns the energy of one compute operation in Joules. Energy is zero.
+        Returns the energy and latency of one compute operation. Energy is zero.
 
         Returns
         -------
-        float
-            Energy of one compute operation in Joules
+        (energy, latency): (0.0, 0.0)
         """
-        return 0.0
+        return 0.0, 0.0
 
-    @actionDynamicEnergy
-    def compute(self) -> float:
+    @action
+    def compute(self) -> tuple[float, float]:
         """
-        Returns the energy of one compute operation in Joules. Energy is zero.
+        Returns the energy and latency of one compute operation. Energy is zero.
 
         Returns
         -------
-        float
-            Energy of one compute operation in Joules
+        (energy, latency): (0.0, 0.0)
         """
-        return 0.0
+        return 0.0, 0.0
 
 
 class DummyMemory(LibraryEstimatorClassBase):
@@ -101,29 +97,27 @@ class DummyMemory(LibraryEstimatorClassBase):
         super().__init__(leak_power=0.0, area=0.0)
         self.tech_node: float = tech_node
 
-    @actionDynamicEnergy
-    def read(self) -> float:
+    @action
+    def read(self) -> tuple[float, float]:
         """
-        Returns the energy of one read operation in Joules. Energy is zero.
+        Returns the energy and latency of one read operation. Energy is zero.
 
         Returns
         -------
-        float
-            Energy of one read operation in Joules
+        (energy, latency): (0.0, 0.0)
         """
-        return 0.0
+        return 0.0, 0.0
 
-    @actionDynamicEnergy
-    def write(self) -> float:
+    @action
+    def write(self) -> tuple[float, float]:
         """
-        Returns the energy of one write operation in Joules. Energy is zero.
+        Returns the energy and latency of one write operation. Energy is zero.
 
         Returns
         -------
-        float
-            Energy of one write operation in Joules
+        (energy, latency): (0.0, 0.0)
         """
-        return 0.0
+        return 0.0, 0.0
 
 
 class DummyNetwork(LibraryEstimatorClassBase):
@@ -140,26 +134,24 @@ class DummyNetwork(LibraryEstimatorClassBase):
         super().__init__(leak_power=0.0, area=0.0)
         self.tech_node: float = tech_node
 
-    @actionDynamicEnergy
-    def read(self) -> float:
+    @action
+    def read(self) -> tuple[float, float]:
         """
-        Returns the energy of one read operation in Joules. Energy is zero.
+        Returns the energy and latency of one read operation. Energy is zero.
 
         Returns
         -------
-        float
-            Energy of one read operation in Joules
+        (energy, latency): (0.0, 0.0)
         """
-        return 0.0
+        return 0.0, 0.0
 
-    @actionDynamicEnergy
-    def write(self) -> float:
+    @action
+    def write(self) -> tuple[float, float]:
         """
-        Returns the energy of one write operation in Joules. Energy is zero.
+        Returns the energy and latency of one write operation. Energy is zero.
 
         Returns
         -------
-        float
-            Energy of one write operation in Joules
+        (energy, latency): (0.0, 0.0)
         """
-        return 0.0
+        return 0.0, 0.0

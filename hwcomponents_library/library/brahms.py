@@ -12,7 +12,7 @@
 
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
-from hwcomponents import actionDynamicEnergy
+from hwcomponents import action
 
 
 # Original CSV contents:
@@ -48,34 +48,33 @@ class BrahmsDAC(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             40e-9,
-            tech_node_energy,
             tech_node_area,
+            tech_node_energy,
+            noscale,
             tech_node_leak,
         )
         self.resolution: int = self.scale(
-            "resolution", resolution, 8, pow_base(2), pow_base(2), pow_base(2)
+            "resolution", resolution, 8, pow_base(2), pow_base(2), noscale, pow_base(2)
         )
 
-    @actionDynamicEnergy
-    def read(self) -> float:
+    @action
+    def read(self) -> tuple[float, float]:
         """
-        Returns the energy of one DAC conversion in Joules
+        Returns the energy and latency of one DAC conversion.
 
         Returns
         -------
-        float
-            Energy of one DAC conversion in Joules
+        (energy, latency): Tuple in (Joules, seconds)
         """
-        return 0.291e-12
+        return 0.291e-12, 0.0
 
-    @actionDynamicEnergy
-    def convert(self) -> float:
+    @action
+    def convert(self) -> tuple[float, float]:
         """
-        Returns the energy of one DAC conversion in Joules
+        Returns the energy and latency of one DAC conversion.
 
         Returns
         -------
-        float
-            Energy of one DAC conversion in Joules
+        (energy, latency): Tuple in (Joules, seconds)
         """
-        return 0.291e-12
+        return 0.291e-12, 0.0

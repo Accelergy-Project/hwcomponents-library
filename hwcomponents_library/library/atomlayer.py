@@ -12,7 +12,7 @@
 
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
-from hwcomponents import actionDynamicEnergy
+from hwcomponents import action
 from .isaac import IsaacADC
 from .isaac import IsaacDAC
 from .isaac import IsaacEDRAM
@@ -51,19 +51,22 @@ class AtomlayerRegisterLadder(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             32e-9,
-            tech_node_energy,
             tech_node_area,
+            tech_node_energy,
+            noscale,
             tech_node_leak,
         )
-        self.width: int = self.scale("width", width, 16, linear, linear, linear)
+        self.width: int = self.scale(
+            "width", width, 16, linear, linear, noscale, linear
+        )
         self.depth: int = self.scale(
-            "depth", depth, 128, linear, cacti_depth_energy, cacti_depth_energy
+            "depth", depth, 128, linear, cacti_depth_energy, noscale, cacti_depth_energy
         )
 
-    @actionDynamicEnergy(bits_per_action="width")
-    def read(self) -> float:
+    @action(bits_per_action="width")
+    def read(self) -> tuple[float, float]:
         """
-        Returns the energy for one read operation in Joules.
+        Returns the energy and latency for one read operation.
 
         Parameters
         ----------
@@ -72,15 +75,14 @@ class AtomlayerRegisterLadder(LibraryEstimatorClassBase):
 
         Returns
         -------
-        float
-            The energy for one read operation in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.083e-12
+        return 0.083e-12, 0.0
 
-    @actionDynamicEnergy(bits_per_action="width")
-    def write(self) -> float:
+    @action(bits_per_action="width")
+    def write(self) -> tuple[float, float]:
         """
-        Returns the energy for one write operation in Joules.
+        Returns the energy and latency for one write operation.
 
         Parameters
         ----------
@@ -89,10 +91,9 @@ class AtomlayerRegisterLadder(LibraryEstimatorClassBase):
 
         Returns
         -------
-        float
-            The energy for one write operation in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.083e-12
+        return 0.083e-12, 0.0
 
 
 # Original CSV contents:
@@ -130,19 +131,22 @@ class AtomlayerInputBufferTransfers(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             32e-9,
-            tech_node_energy,
             tech_node_area,
+            tech_node_energy,
+            noscale,
             tech_node_leak,
         )
-        self.width: int = self.scale("width", width, 16, linear, linear, linear)
+        self.width: int = self.scale(
+            "width", width, 16, linear, linear, noscale, linear
+        )
         self.depth: int = self.scale(
-            "depth", depth, 128, linear, cacti_depth_energy, cacti_depth_energy
+            "depth", depth, 128, linear, cacti_depth_energy, noscale, cacti_depth_energy
         )
 
-    @actionDynamicEnergy(bits_per_action="width")
-    def read(self) -> float:
+    @action(bits_per_action="width")
+    def read(self) -> tuple[float, float]:
         """
-        Returns the energy for one read operation in Joules.
+        Returns the energy and latency for one read operation.
 
         Parameters
         ----------
@@ -151,15 +155,14 @@ class AtomlayerInputBufferTransfers(LibraryEstimatorClassBase):
 
         Returns
         -------
-        float
-            The energy for one transfer operation in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 6.46e-12
+        return 6.46e-12, 0.0
 
-    @actionDynamicEnergy(bits_per_action="width")
-    def transfer(self) -> float:
+    @action(bits_per_action="width")
+    def transfer(self) -> tuple[float, float]:
         """
-        Returns the energy for one transfer operation in Joules.
+        Returns the energy and latency for one transfer operation.
 
         Parameters
         ----------
@@ -168,10 +171,9 @@ class AtomlayerInputBufferTransfers(LibraryEstimatorClassBase):
 
         Returns
         -------
-        float
-            The energy for one transfer operation in Joules.
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 6.46e-12
+        return 6.46e-12, 0.0
 
 
 class AtomlayerADC(IsaacADC):

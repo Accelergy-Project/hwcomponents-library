@@ -104,8 +104,6 @@ class AladdinRegister(LibraryEstimatorClassBase):
         self,
         tech_node: float,
         width: int = 1,
-        dynamic_energy: int = 1,
-        area: int = 5.98e00,
     ):
         super().__init__(leak_power=0.0, area=5.98e-12)
         self.tech_node: float = self.scale(
@@ -118,9 +116,6 @@ class AladdinRegister(LibraryEstimatorClassBase):
             tech_node_leak,
         )
         self.width: int = self.scale("width", width, 1, linear, linear, noscale, linear)
-        self.dynamic_energy: int = self.scale(
-            "dynamic_energy", dynamic_energy, 1, linear, linear, noscale, linear
-        )
 
     @action(bits_per_action="width")
     def read(self) -> tuple[float, float]:
@@ -245,8 +240,6 @@ class AladdinMultiplier(LibraryEstimatorClassBase):
         width: int = 32,
         width_a: int = 32,
         width_b: int = 32,
-        energy: int = 12.68,
-        area: int = 6350,
     ):
         super().__init__(leak_power=8.00e-5, area=6350.0e-12)
         self.tech_node: float = self.scale(

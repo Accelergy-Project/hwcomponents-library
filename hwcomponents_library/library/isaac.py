@@ -33,14 +33,35 @@ class IsaacEDRAM(LibraryEstimatorClassBase):
     tech_node: float
         Technology node in meters.
     width: int
-        Width of the eDRAM in bits. This is the width of a reads/write port. Total size =
-        width * depth.
+        Width of the eDRAM in bits. This is the width of a reads/write port. Total size
+        = width * depth.
     depth: int
         Depth of the eDRAM in bits. This is the number of entries in the eDRAM, each
-        with `width` bits. Total size = width * depth.
+        with `width` bits. Total size = width * depth. Either this or size must be
+        provided, but not both.
+    size : int, optional
+        The total size of the eDRAM in bits. Total size = width * depth. Either this or
+        depth must be provided, but not both. Either this or size must be provided, but
+        not both.
     """
 
-    def __init__(self, tech_node: float, width: int = 256, depth: int = 2048):
+    def __init__(
+        self,
+        tech_node: float,
+        width: int = 256,
+        depth: int | None = None,
+        size: int | None = None,
+    ):
+        depth = self.resolve_multiple_ways_to_calculate_value(
+            "depth",
+            ("depth", lambda depth: depth, {"depth": depth}),
+            (
+                "size / width",
+                lambda size, width: size / width,
+                {"size": size, "width": width},
+            ),
+        )
+
         super().__init__(leak_power=0.0, area=83000.0e-12)
         self.tech_node: float = self.scale(
             "tech_node",
@@ -63,6 +84,7 @@ class IsaacEDRAM(LibraryEstimatorClassBase):
             noscale,
             cacti_depth_energy,
         )
+        self.size = width * depth
 
     @action(bits_per_action="width")
     def read(self) -> tuple[float, float]:

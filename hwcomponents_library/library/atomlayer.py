@@ -42,10 +42,29 @@ class AtomlayerRegisterLadder(LibraryEstimatorClassBase):
         Total size = width * depth.
     depth : int, optional
         The number of entries in the register ladder, each with `width` bits. Total size
-        = width * depth.
+        = width * depth. Either this or size must be provided, but not both.
+    size : int, optional
+        The total size of the register ladder in bits. Total size = width * depth.
+        Either this or depth must be provided, but not both.
     """
 
-    def __init__(self, tech_node: float, width: int = 16, depth: int = 128):
+    def __init__(
+        self,
+        tech_node: float,
+        width: int = 16,
+        depth: int | None = None,
+        size: int | None = None,
+    ):
+        depth = self.resolve_multiple_ways_to_calculate_value(
+            "depth",
+            ("depth", lambda depth: depth, {"depth": depth}),
+            (
+                "size / width",
+                lambda size, width: size / width,
+                {"size": size, "width": width},
+            ),
+        )
+
         super().__init__(leak_power=0.0, area=1620.0e-12)
         self.tech_node: float = self.scale(
             "tech_node",
@@ -60,8 +79,15 @@ class AtomlayerRegisterLadder(LibraryEstimatorClassBase):
             "width", width, 16, linear, linear, noscale, linear
         )
         self.depth: int = self.scale(
-            "depth", depth, 128, linear, cacti_depth_energy, noscale, cacti_depth_energy
+            "depth",
+            depth,
+            128,
+            linear,
+            cacti_depth_energy,
+            noscale,
+            cacti_depth_energy,
         )
+        self.size = width * depth
 
     @action(bits_per_action="width")
     def read(self) -> tuple[float, float]:
@@ -122,10 +148,29 @@ class AtomlayerInputBufferTransfers(LibraryEstimatorClassBase):
         width * depth.
     depth : int, optional
         The number of entries in each input buffer, each with `width` bits. Total size =
-        width * depth.
+        width * depth. Either this or size must be provided, but not both.
+    size : int, optional
+        The total size of the input buffer in bits. Total size = width * depth.
+        Either this or depth must be provided, but not both.
     """
 
-    def __init__(self, tech_node: float, width: int = 16, depth: int = 128):
+    def __init__(
+        self,
+        tech_node: float,
+        width: int = 16,
+        depth: int | None = None,
+        size: int | None = None,
+    ):
+        depth = self.resolve_multiple_ways_to_calculate_value(
+            "depth",
+            ("depth", lambda depth: depth, {"depth": depth}),
+            (
+                "size / width",
+                lambda size, width: size / width,
+                {"size": size, "width": width},
+            ),
+        )
+
         super().__init__(leak_power=0.0, area=2100.0e-12)
         self.tech_node: float = self.scale(
             "tech_node",
@@ -140,8 +185,15 @@ class AtomlayerInputBufferTransfers(LibraryEstimatorClassBase):
             "width", width, 16, linear, linear, noscale, linear
         )
         self.depth: int = self.scale(
-            "depth", depth, 128, linear, cacti_depth_energy, noscale, cacti_depth_energy
+            "depth",
+            depth,
+            128,
+            linear,
+            cacti_depth_energy,
+            noscale,
+            cacti_depth_energy,
         )
+        self.size = width * depth
 
     @action(bits_per_action="width")
     def read(self) -> tuple[float, float]:

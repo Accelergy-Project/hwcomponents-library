@@ -49,10 +49,26 @@ class RaaamEDRAM(LibraryEstimatorClassBase):
         width * depth.
     depth: int
         The number of entries in the eDRAM, each with `width` bits. Total size = width *
-        depth.
+        depth. Either this or size must be provided, but not both. Either this or size
+        must be provided, but not both.
+    size: int, optional
+        The total size of the eDRAM in bits. Total size = width * depth. Either this or
+        depth must be provided, but not both. Either this or size must be provided, but
+        not both.
     """
 
-    def __init__(self, tech_node: float, width: int = 1024, depth: int = 1024):
+    def __init__(self, tech_node: float, width: int = 1024, depth: int | None = None, size: int | None = None):
+        if depth is None and size is None:
+            raise ValueError("Either depth or size must be provided.")
+        if depth is not None and size is not None:
+            raise ValueError("Either depth or size must be provided, but not both.")
+        if depth is not None:
+            depth = self.assert_int(depth, "depth")
+            self.size = self.assert_int(depth * width, "size")
+        else:
+            self.size = self.assert_int(size, "size")
+            depth = self.assert_int(self.size / width, "size / width")
+
         super().__init__(leak_power=3.81e-4, area=131570.0e-12)
         self.tech_node: float = self.scale(
             "tech_node",
@@ -66,7 +82,7 @@ class RaaamEDRAM(LibraryEstimatorClassBase):
         self.width: int = self.scale(
             "width", width, 1024, linear, linear, noscale, linear
         )
-        self.depth: int = self.scale(
+        depth: int = self.scale(
             "depth",
             depth,
             1024,
@@ -115,21 +131,24 @@ class SmartBufferSRAM(LibraryEstimatorClassBase):
 
     Parameters
     ----------
-        tech_node: The technology node in meters.
-        width: The width of the read and write ports in bits. This is the number of bits
+        tech_node: The technology node in meters. width: The width of the read and write
+        ports in bits. This is the number of bits
             that are accssed by any one read/write. Total size = width * depth.
         depth: The number of entries in the SRAM, each with `width` bits. Total size =
-            width * depth.
+            width * depth. Either this or size must be provided, but not both.
+        size: int, optional
+            The total size of the SRAM in bits. Total size = width * depth. Either this
+            or depth must be provided, but not both. Either this or size must be
+            provided, but not both.
         n_rw_ports: The number of read/write ports. Bandwidth will increase with more
             ports.
         n_banks: The number of banks. Bandwidth will increase with more banks.
 
     Attributes
     ----------
-        sram: The SRAM buffer.
-        address_reg: The register that holds the current address.
-        delta_reg: The register that holds the increment value.
-        adder: The adder that adds the increment value to the current address.
+        sram: The SRAM buffer. address_reg: The register that holds the current address.
+        delta_reg: The register that holds the increment value. adder: The adder that
+        adds the increment value to the current address.
     """
 
     component_name = ["smart_buffer_sram", "smartbuffer_sram", "smartbuffersram"]
@@ -139,10 +158,21 @@ class SmartBufferSRAM(LibraryEstimatorClassBase):
         self,
         tech_node: float,
         width: int,
-        depth: int,
+        depth: int | None = None,
+        size: int | None = None,
         n_rw_ports: int = 1,
         n_banks: int = 1,
     ):
+        depth = self.resolve_multiple_ways_to_calculate_value(
+            "depth",
+            ("depth", lambda depth: depth, {"depth": depth}),
+            (
+                "size / width",
+                lambda size, width: size / width,
+                {"size": size, "width": width},
+            ),
+        )
+
         self.sram: SRAM = SRAM(
             tech_node=tech_node,
             width=width,
@@ -153,6 +183,7 @@ class SmartBufferSRAM(LibraryEstimatorClassBase):
         self.address_bits = max(math.ceil(math.log2(depth)), 1)
         self.width = width
         self.depth = depth
+        self.size = width * depth
         self.n_rw_ports = n_rw_ports
         self.n_banks = n_banks
 

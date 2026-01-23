@@ -69,7 +69,7 @@ class IsaacEDRAM(LibraryEstimatorClassBase):
             32e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.width: int = self.scale(
@@ -95,7 +95,7 @@ class IsaacEDRAM(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 20.45e-12, 0.0
+        return 20.45e-12, 1e-9 / 36864 / self.width
 
     @action(bits_per_action="width")
     def write(self) -> tuple[float, float]:
@@ -106,7 +106,7 @@ class IsaacEDRAM(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 20.45e-12, 0.0
+        return 20.45e-12, 1e-9 / 36864 / self.width
 
 
 # Original CSV contents:
@@ -133,7 +133,7 @@ class IsaacChip2ChipLink(LibraryEstimatorClassBase):
             65e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.width: int = self.scale(
@@ -149,7 +149,7 @@ class IsaacChip2ChipLink(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 26.0e-12, 0.0
+        return 26.0e-12, 1 / 6.4 / 8 / 1024 / 1024 / 1024 / self.width
 
     @action(bits_per_action="width")
     def write(self) -> tuple[float, float]:
@@ -160,7 +160,7 @@ class IsaacChip2ChipLink(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 26.0e-12, 0.0
+        return 26.0e-12, 1 / 6.4 / 8 / 1024 / 1024 / 1024 / self.width
 
 
 # Original CSV contents:
@@ -189,7 +189,7 @@ class IsaacRouterSharedByFour(LibraryEstimatorClassBase):
             32e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.width: int = self.scale(
@@ -242,7 +242,7 @@ class IsaacRouterSharedByFour(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 20.74e-12, 0.0
+        return 20.74e-12, 1e-9 / 36864 / 4 / self.width
 
 
 # Original CSV contents:
@@ -286,11 +286,11 @@ class IsaacADC(LibraryEstimatorClassBase):
             32e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.resolution: int = self.scale(
-            "resolution", resolution, 8, pow_base(2), pow_base(2), noscale, pow_base(2)
+            "resolution", resolution, 8, pow_base(2), pow_base(2), linear, pow_base(2)
         )
 
     @action
@@ -302,7 +302,7 @@ class IsaacADC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 1.666666667e-12, 0.0
+        return 1.666666667e-12, 1 / 1.2e9
 
     @action
     def read(self) -> tuple[float, float]:
@@ -313,7 +313,7 @@ class IsaacADC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 1.666666667e-12, 0.0
+        return 1.666666667e-12, 1 / 1.2e9
 
 
 # Original CSV contents:
@@ -349,7 +349,7 @@ class IsaacRouter(LibraryEstimatorClassBase):
             32e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.width: int = self.scale(
@@ -392,7 +392,7 @@ class IsaacRouter(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 20.74e-12, 0.0
+        return 20.74e-12, 1e-9 / 36864 / self.width
 
 
 # Original CSV contents:
@@ -426,7 +426,7 @@ class IsaacShiftAdd(LibraryEstimatorClassBase):
             32e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.width: int = self.scale(
@@ -442,7 +442,7 @@ class IsaacShiftAdd(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.021e-12, 0.0
+        return 0.021e-12, 1e-9
 
     @action
     def read(self) -> tuple[float, float]:
@@ -453,7 +453,7 @@ class IsaacShiftAdd(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.0, 0.0
+        return self.shift_add()
 
     @action
     def write(self) -> tuple[float, float]:
@@ -499,7 +499,7 @@ class IsaacEDRAMBus(LibraryEstimatorClassBase):
             32e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.width: int = self.scale("width", width, 1, linear, linear, noscale, linear)
@@ -535,7 +535,7 @@ class IsaacEDRAMBus(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 0.054e-12, 0.0
+        return 0.054e-12, 1e-9 / 18432 / self.width
 
     @action(bits_per_action="width")
     def write(self) -> tuple[float, float]:
@@ -582,11 +582,11 @@ class IsaacDAC(LibraryEstimatorClassBase):
             32e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.resolution: int = self.scale(
-            "resolution", resolution, 1, pow_base(2), pow_base(2), noscale, pow_base(2)
+            "resolution", resolution, 1, pow_base(2), pow_base(2), linear, pow_base(2)
         )
         self.rows: int = self.scale("rows", rows, 1, linear, noscale, noscale, linear)
 
@@ -599,7 +599,7 @@ class IsaacDAC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 0.41667e-12, 0.0
+        return 0.41667e-12, 1e-9 / self.rows
 
     @action
     def read(self) -> tuple[float, float]:
@@ -610,4 +610,4 @@ class IsaacDAC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 0.41667e-12, 0.0
+        return 0.41667e-12, 1e-9 / self.rows

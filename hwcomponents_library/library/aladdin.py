@@ -50,7 +50,7 @@ class AladdinAdder(LibraryEstimatorClassBase):
             40e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.width: int = self.scale(
@@ -112,7 +112,7 @@ class AladdinRegister(LibraryEstimatorClassBase):
             40e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.width: int = self.scale("width", width, 1, linear, linear, noscale, linear)
@@ -179,7 +179,7 @@ class AladdinComparator(LibraryEstimatorClassBase):
             40e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.width: int = self.scale(
@@ -248,7 +248,7 @@ class AladdinMultiplier(LibraryEstimatorClassBase):
             40e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         if width_a != 32 and width != 32:
@@ -322,7 +322,7 @@ class AladdinCounter(LibraryEstimatorClassBase):
             40e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.width: int = self.scale(

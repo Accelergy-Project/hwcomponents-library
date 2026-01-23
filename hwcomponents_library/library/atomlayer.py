@@ -72,7 +72,7 @@ class AtomlayerRegisterLadder(LibraryEstimatorClassBase):
             32e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.width: int = self.scale(
@@ -103,7 +103,7 @@ class AtomlayerRegisterLadder(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.083e-12, 0.0
+        return 0.083e-12, 1e-9 / self.depth  # All entries can be read in parallel
 
     @action(bits_per_action="width")
     def write(self) -> tuple[float, float]:
@@ -119,7 +119,7 @@ class AtomlayerRegisterLadder(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.083e-12, 0.0
+        return 0.083e-12, 1e-9
 
 
 # Original CSV contents:
@@ -178,7 +178,7 @@ class AtomlayerInputBufferTransfers(LibraryEstimatorClassBase):
             32e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.width: int = self.scale(

@@ -54,7 +54,7 @@ class WanShiftAdd(LibraryEstimatorClassBase):
             130e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.n_repeats: int = self.scale(
@@ -129,7 +129,7 @@ class WanVariablePrecisionADC(LibraryEstimatorClassBase):
             130e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.n_repeats: int = self.scale(
@@ -188,7 +188,7 @@ class WanAnalogSample(LibraryEstimatorClassBase):
             130e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.voltage: float = self.scale(
@@ -246,7 +246,7 @@ class WanAnalogIntegrator(LibraryEstimatorClassBase):
             130e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.n_repeats: int = self.scale(

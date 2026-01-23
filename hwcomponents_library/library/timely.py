@@ -41,7 +41,7 @@ class TimelyIAdder(LibraryEstimatorClassBase):
             65e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
 
@@ -94,7 +94,7 @@ class TimelyPSubBuf(LibraryEstimatorClassBase):
             65e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
 
@@ -147,7 +147,7 @@ class TimelyDTC(LibraryEstimatorClassBase):
             65e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.resolution: int = self.scale(
@@ -202,7 +202,7 @@ class TimelyTDC(LibraryEstimatorClassBase):
             65e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.resolution: int = self.scale(
@@ -259,7 +259,7 @@ class TimelyXSubBuf(LibraryEstimatorClassBase):
             65e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.rows: int = self.scale("rows", rows, 1, linear, linear, noscale, linear)
@@ -311,7 +311,7 @@ class TimelyChargingComparator(LibraryEstimatorClassBase):
             65e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
 
@@ -386,7 +386,7 @@ class TimelyInputOutputBuffer(LibraryEstimatorClassBase):
             65e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.width: int = self.scale(

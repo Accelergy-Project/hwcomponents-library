@@ -45,7 +45,7 @@ class JiaShiftAdd(LibraryEstimatorClassBase):
             65e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.resolution: int = self.scale(
@@ -123,7 +123,7 @@ class JiaZeroGate(LibraryEstimatorClassBase):
             65e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.rows: int = self.scale("rows", rows, 1, linear, linear, noscale, linear)
@@ -193,7 +193,7 @@ class JiaDatapath(LibraryEstimatorClassBase):
             65e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.voltage: float = self.scale(

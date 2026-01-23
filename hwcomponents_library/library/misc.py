@@ -57,7 +57,15 @@ class RaaamEDRAM(LibraryEstimatorClassBase):
         not both.
     """
 
-    def __init__(self, tech_node: float, width: int = 1024, depth: int | None = None, size: int | None = None):
+    # Assuming .6V operation, frequency is 300MHz
+
+    def __init__(
+        self,
+        tech_node: float,
+        width: int = 1024,
+        depth: int | None = None,
+        size: int | None = None,
+    ):
         if depth is None and size is None:
             raise ValueError("Either depth or size must be provided.")
         if depth is not None and size is not None:
@@ -76,7 +84,7 @@ class RaaamEDRAM(LibraryEstimatorClassBase):
             16e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.width: int = self.scale(
@@ -89,7 +97,7 @@ class RaaamEDRAM(LibraryEstimatorClassBase):
             linear,
             cacti_depth_energy,
             noscale,
-            cacti_depth_energy,
+            linear,
         )
 
     @action(bits_per_action="width")
@@ -106,7 +114,7 @@ class RaaamEDRAM(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 2641.92e-12, 0.0
+        return 2641.92e-12, 1 / 300e6 / self.width
 
     @action(bits_per_action="width")
     def write(self) -> tuple[float, float]:
@@ -122,7 +130,7 @@ class RaaamEDRAM(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 2519.04e-12, 0.0
+        return 2519.04e-12, 1 / 300e6 / self.width
 
 
 class SmartBufferSRAM(LibraryEstimatorClassBase):
@@ -157,22 +165,12 @@ class SmartBufferSRAM(LibraryEstimatorClassBase):
     def __init__(
         self,
         tech_node: float,
-        width: int,
+        width: int | None = None,
         depth: int | None = None,
         size: int | None = None,
         n_rw_ports: int = 1,
         n_banks: int = 1,
     ):
-        depth = self.resolve_multiple_ways_to_calculate_value(
-            "depth",
-            ("depth", lambda depth: depth, {"depth": depth}),
-            (
-                "size / width",
-                lambda size, width: size / width,
-                {"size": size, "width": width},
-            ),
-        )
-
         self.sram: SRAM = SRAM(
             tech_node=tech_node,
             width=width,
@@ -180,6 +178,10 @@ class SmartBufferSRAM(LibraryEstimatorClassBase):
             n_rw_ports=n_rw_ports,
             n_banks=n_banks,
         )
+        # Use the SRAM's width, depth, and size because it does validation for us
+        width = self.sram.width
+        depth = self.sram.depth
+
         self.address_bits = max(math.ceil(math.log2(depth)), 1)
         self.width = width
         self.depth = depth

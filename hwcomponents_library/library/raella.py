@@ -50,7 +50,7 @@ class RaellaQuantMultiplier(LibraryEstimatorClassBase):
             40e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.resolution: int = self.scale(
@@ -66,7 +66,7 @@ class RaellaQuantMultiplier(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.25e-12, 0.0
+        return 0.25e-12, 1e-9
 
     @action
     def read(self) -> tuple[float, float]:
@@ -77,4 +77,4 @@ class RaellaQuantMultiplier(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.25e-12, 0.0
+        return 0.25e-12, 1e-9

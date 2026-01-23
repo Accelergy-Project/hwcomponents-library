@@ -50,11 +50,11 @@ class BrahmsDAC(LibraryEstimatorClassBase):
             40e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.resolution: int = self.scale(
-            "resolution", resolution, 8, pow_base(2), pow_base(2), noscale, pow_base(2)
+            "resolution", resolution, 8, pow_base(2), pow_base(2), linear, pow_base(2)
         )
 
     @action
@@ -66,7 +66,7 @@ class BrahmsDAC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 0.291e-12, 0.0
+        return 0.291e-12, 1 / 1.1e9
 
     @action
     def convert(self) -> tuple[float, float]:
@@ -77,4 +77,4 @@ class BrahmsDAC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 0.291e-12, 0.0
+        return 0.291e-12, 1 / 1.1e9

@@ -69,11 +69,11 @@ class NewtonADC(LibraryEstimatorClassBase):
             32e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.resolution: int = self.scale(
-            "resolution", resolution, 9, pow_base(2), noscale, pow_base(2), pow_base(2)
+            "resolution", resolution, 9, pow_base(2), pow_base(2), linear, pow_base(2)
         )
 
     @action
@@ -85,7 +85,7 @@ class NewtonADC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 2.58333333333e-12, 0.0
+        return 2.58333333333e-12, 1e-9
 
     @action
     def read(self) -> tuple[float, float]:
@@ -96,7 +96,7 @@ class NewtonADC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 2.58333333333e-12, 0.0
+        return 2.58333333333e-12, 1e-9
 
 
 class NewtonADC(IsaacADC):

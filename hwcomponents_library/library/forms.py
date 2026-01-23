@@ -43,11 +43,11 @@ class FormsADC(LibraryEstimatorClassBase):
             32e-9,
             tech_node_area,
             tech_node_energy,
-            noscale,
+            tech_node_latency,
             tech_node_leak,
         )
         self.resolution: int = self.scale(
-            "resolution", resolution, 4, pow_base(2), pow_base(2), noscale, pow_base(2)
+            "resolution", resolution, 4, pow_base(2), pow_base(2), linear, pow_base(2)
         )
 
     @action
@@ -59,7 +59,7 @@ class FormsADC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 0.22619e-12, 0.0
+        return 0.22619e-12, 1 / 2.1e9
 
     @action
     def read(self) -> tuple[float, float]:
@@ -70,7 +70,7 @@ class FormsADC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 0.22619e-12, 0.0
+        return 0.22619e-12, 1 / 2.1e9
 
 
 class FormsDAC(IsaacDAC):

@@ -442,7 +442,7 @@ class IsaacShiftAdd(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.021e-12, 1e-9
+        return 0.021e-12, 1e-9 / 1.2
 
     @action
     def read(self) -> tuple[float, float]:

@@ -172,6 +172,7 @@ class SmartBufferSRAM(LibraryEstimatorClassBase):
         n_banks: int = 1,
     ):
         self.sram: SRAM = SRAM(
+            size=size,
             tech_node=tech_node,
             width=width,
             depth=depth,
@@ -181,6 +182,7 @@ class SmartBufferSRAM(LibraryEstimatorClassBase):
         # Use the SRAM's width, depth, and size because it does validation for us
         width = self.sram.width
         depth = self.sram.depth
+        size = self.sram.size
 
         self.address_bits = max(math.ceil(math.log2(depth)), 1)
         self.width = width

@@ -1,3 +1,10 @@
+import math
+from hwcomponents_library.base import LibraryEstimatorClassBase
+from hwcomponents.scaling import *
+from hwcomponents import action
+from hwcomponents_cacti import SRAM
+from hwcomponents_library.library.aladdin import AladdinRegister, AladdinAdder
+
 """
 @ARTICLE{9131838,
   author={Giterman, Robert and Shalom, Amir and Burg, Andreas and Fish, Alexander and Teman, Adam},
@@ -10,13 +17,6 @@
   keywords={Random access memory;FinFETs;Temperature measurement;Leakage currents;Power demand;Voltage measurement;Embedded DRAM;gain cell (GC);low voltage;retention time;SRAM},
   doi={10.1109/LSSC.2020.3006496}}
 """
-
-from hwcomponents_library.base import LibraryEstimatorClassBase
-from hwcomponents.scaling import *
-from hwcomponents import action
-from hwcomponents_cacti import SRAM
-from hwcomponents_library.library.aladdin import AladdinRegister, AladdinAdder
-
 
 # Original CSV contents:
 # tech_node,global_cycle_period,width|datawidth,depth,energy,area,action

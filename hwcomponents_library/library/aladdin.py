@@ -262,7 +262,7 @@ class AladdinMultiplier(LibraryEstimatorClassBase):
                 "or width_a and width_b separately."
             )
         self.width: int = self.scale(
-            "width", width, 32, quadratic, noscale, quadratic, quadratic
+            "width", width, 32, quadratic, quadratic, noscale, quadratic
         )
         self.width_a: int = self.scale(
             "width_a", width_a, 32, linear, linear, noscale, linear

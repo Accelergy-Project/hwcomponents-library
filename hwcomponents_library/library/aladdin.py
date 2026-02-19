@@ -42,7 +42,7 @@ class AladdinAdder(LibraryEstimatorClassBase):
     component_name = ["Adder", "AladdinAdder", "IntAdder"]
     priority = 0.1
 
-    def __init__(self, tech_node: float, width: int = 32):
+    def __init__(self, tech_node: float, width: int):
         super().__init__(leak_power=2.40e-6, area=278.0e-12)
         self.tech_node: float = self.scale(
             "tech_node",
@@ -237,9 +237,9 @@ class AladdinMultiplier(LibraryEstimatorClassBase):
     def __init__(
         self,
         tech_node: float,
-        width: int = 32,
-        width_a: int = 32,
-        width_b: int = 32,
+        width: int = None,
+        width_a: int = None,
+        width_b: int = None,
     ):
         super().__init__(leak_power=8.00e-5, area=6350.0e-12)
         self.tech_node: float = self.scale(
@@ -251,25 +251,28 @@ class AladdinMultiplier(LibraryEstimatorClassBase):
             tech_node_latency,
             tech_node_leak,
         )
-        if width_a != 32 and width != 32:
+        if width is not None and (width_a is not None or width_b is not None):
             raise ValueError(
-                "width and width_a cannot both be set. Either set width of both inputs "
-                "or width_a and width_b separately."
+                "width and (width_a or width_b) cannot both be set. Either set width "
+                "of both inputs with width or set width_a and width_b separately."
             )
-        if width != 32 and width_b != 32:
-            raise ValueError(
-                "width and width_b cannot both be set. Either set width of both inputs "
-                "or width_a and width_b separately."
+        if width is None and (width_a is None or width_b is None):
+            raise ValueError("Either width or (width_a and width_b) must be set.")
+
+        if width is not None:
+            self.width: int = self.scale(
+                "width", width, 32, quadratic, quadratic, noscale, quadratic
             )
-        self.width: int = self.scale(
-            "width", width, 32, quadratic, quadratic, noscale, quadratic
-        )
-        self.width_a: int = self.scale(
-            "width_a", width_a, 32, linear, linear, noscale, linear
-        )
-        self.width_b: int = self.scale(
-            "width_b", width_b, 32, linear, linear, noscale, linear
-        )
+            self.width_a = width
+            self.width_b = width
+        else:
+            self.width_a: int = self.scale(
+                "width_a", width_a, 32, linear, linear, noscale, linear
+            )
+            self.width_b: int = self.scale(
+                "width_b", width_b, 32, linear, linear, noscale, linear
+            )
+            self.width = (self.width_a + self.width_b) / 2
 
     @action
     def multiply(self) -> tuple[float, float]:
@@ -370,9 +373,7 @@ class AladdinIntMAC(LibraryEstimatorClassBase):
     component_name = ["IntMAC", "AladdinIntMAC"]
     priority = 0.1
 
-    def __init__(
-        self, tech_node: float, adder_width: int = 16, multiplier_width: int = 8
-    ):
+    def __init__(self, tech_node: float, adder_width: int, multiplier_width: int):
         self.adder = AladdinAdder(tech_node, adder_width)
         self.multiplier = AladdinMultiplier(tech_node, multiplier_width)
         super().__init__(

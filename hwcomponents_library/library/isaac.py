@@ -215,7 +215,8 @@ class IsaacRouterSharedByFour(LibraryEstimatorClassBase):
     @action(bits_per_action="width")
     def write(self) -> tuple[float, float]:
         """
-        Write returns zero because transfer costs are already included in the read energy.
+        Write returns zero because transfer costs are already included in the read
+        energy.
 
         Parameters
         ----------

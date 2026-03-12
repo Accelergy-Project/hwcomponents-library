@@ -64,8 +64,8 @@ class JiaShiftAdd(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-
-        return 2.25e-12, 0.0
+        # Latency: 100GHz, 768 columns / (datapath multiplexed between 8 cols)
+        return 2.25e-12, 768 / 8e-8
 
     @action
     def write(self) -> tuple[float, float]:
@@ -148,7 +148,7 @@ class JiaZeroGate(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.5e-12, 0.0
+        return 0.5e-12, 1e-8
 
     def read(self) -> tuple[float, float]:
         """
@@ -210,7 +210,8 @@ class JiaDatapath(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 2.4e-12, 0.0
+        # Latency: 100GHz, 768 columns / (datapath multiplexed between 8 cols)
+        return 2.4e-12, 768 / 8e-8
 
     @action
     def read(self) -> tuple[float, float]:

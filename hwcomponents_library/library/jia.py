@@ -52,7 +52,7 @@ class JiaShiftAdd(LibraryEstimatorClassBase):
             "resolution", resolution, 8, pow_base(2), pow_base(2), noscale, pow_base(2)
         )
         self.voltage: float = self.scale(
-            "voltage", voltage, 1.2, noscale, quadratic, noscale, quadratic, 1
+            "voltage", voltage, 1.2, noscale, quadratic, noscale, quadratic
         )
 
     @action
@@ -81,13 +81,13 @@ class JiaShiftAdd(LibraryEstimatorClassBase):
     @action
     def read(self) -> tuple[float, float]:
         """
-        Zero energy and latency to read.
+        Returns the energy and latency consumed by a shift+add operation.
 
         Returns
         -------
-        (energy, latency): (0.0, 0.0)
+        (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.0, 0.0
+        return self.shift_and_add()
 
 
 # Original CSV contents:
@@ -131,7 +131,7 @@ class JiaZeroGate(LibraryEstimatorClassBase):
             "resolution", resolution, 8, linear, linear, noscale, linear
         )
         self.voltage: float = self.scale(
-            "voltage", voltage, 1.2, noscale, noscale, noscale, quadratic, 1
+            "voltage", voltage, 1.2, noscale, noscale, noscale, quadratic
         )
 
     @action(bits_per_action="resolution")
@@ -197,7 +197,7 @@ class JiaDatapath(LibraryEstimatorClassBase):
             tech_node_leak,
         )
         self.voltage: float = self.scale(
-            "voltage", voltage, 1.2, noscale, quadratic, noscale, quadratic, 1
+            "voltage", voltage, 1.2, noscale, quadratic, noscale, quadratic
         )
 
     @action

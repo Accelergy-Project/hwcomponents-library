@@ -47,7 +47,7 @@ class WanShiftAdd(LibraryEstimatorClassBase):
         resolution: int = 8,
         voltage: float = 1.8,
     ):
-        super().__init__(leak_power=1.00e-7, area=170.0e-12)
+        super().__init__(leak_power=5.00e-9, area=170.0e-12)  # 130nm digital static power
         self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
@@ -58,46 +58,25 @@ class WanShiftAdd(LibraryEstimatorClassBase):
             tech_node_leak,
         )
         self.n_repeats: int = self.scale(
-            "n_repeats", n_repeats, 1, linear, linear, noscale, linear
+            "n_repeats", n_repeats, 1, linear, linear, noscale, noscale
         )
         self.resolution: int = self.scale(
-            "resolution", resolution, 8, pow_base(2), pow_base(2), noscale, pow_base(2)
+            "resolution", resolution, 8, pow_base(2), pow_base(2), noscale, noscale
         )
         self.voltage: float = self.scale(
-            "voltage", voltage, 1.8, quadratic, quadratic, noscale, quadratic, 1
+            "voltage", voltage, 1.8, quadratic, quadratic, noscale, quadratic
         )
 
     @action
     def read(self) -> tuple[float, float]:
-        """
-        Returns zero energy and latency.
-
-        Returns
-        -------
-        (energy, latency): (0.0, 0.0).
-        """
-        return 0.0, 0.0
+        return self.shift_and_add()
 
     @action
     def write(self) -> tuple[float, float]:
-        """
-        Returns the energy and latency used to perform a shift-and-add operation.
-
-        Returns
-        -------
-        (energy, latency): Tuple in (Joules, seconds).
-        """
         return self.shift_and_add()
 
     @action
     def shift_and_add(self) -> tuple[float, float]:
-        """
-        Returns the energy and latency used to perform a shift-and-add operation.
-
-        Returns
-        -------
-        (energy, latency): Tuple in (Joules, seconds).
-        """
         return 0.1e-12, 0.0
 
 
@@ -122,7 +101,7 @@ class WanVariablePrecisionADC(LibraryEstimatorClassBase):
     """
 
     def __init__(self, tech_node: float, n_repeats: int = 1, voltage: float = 1.8):
-        super().__init__(leak_power=0.0, area=400.0e-12)
+        super().__init__(leak_power=1e-8, area=400.0e-12)  # 130nm ADC static power
         self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
@@ -133,21 +112,14 @@ class WanVariablePrecisionADC(LibraryEstimatorClassBase):
             tech_node_leak,
         )
         self.n_repeats: int = self.scale(
-            "n_repeats", n_repeats, 1, linear, linear, noscale, linear
+            "n_repeats", n_repeats, 1, linear, linear, noscale, noscale
         )
         self.voltage: float = self.scale(
-            "voltage", voltage, 1.8, quadratic, quadratic, noscale, quadratic, 1
+            "voltage", voltage, 1.8, quadratic, quadratic, noscale, quadratic
         )
 
     @action
     def convert(self) -> tuple[float, float]:
-        """
-        Returns the energy and latency used to convert a voltage to a digital value.
-
-        Returns
-        -------
-        (energy, latency): Tuple in (Joules, seconds).
-        """
         return 0.3e-12, 0.0
 
     @action
@@ -180,8 +152,8 @@ class WanAnalogSample(LibraryEstimatorClassBase):
         Voltage of the analog sample unit in volts.
     """
 
-    def __init__(self, tech_node: float, voltage: float = 1.8):
-        super().__init__(leak_power=0.0, area=350.0e-12)
+    def __init__(self, tech_node: float, width: int = 1, voltage: float = 1.8):
+        super().__init__(leak_power=1e-8, area=350.0e-12)  # 130nm analog sample static power
         self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
@@ -191,30 +163,20 @@ class WanAnalogSample(LibraryEstimatorClassBase):
             tech_node_latency,
             tech_node_leak,
         )
+        self._width = width
+        self.width: int = self.scale(
+            "width", width, 1, linear, noscale, noscale, noscale  # Width scales area only
+        )
         self.voltage: float = self.scale(
-            "voltage", voltage, 1.8, quadratic, quadratic, noscale, quadratic, 1
+            "voltage", voltage, 1.8, quadratic, quadratic, noscale, quadratic
         )
 
     @action
     def read(self) -> tuple[float, float]:
-        """
-        Returns the energy and latency used to sample an analog voltage.
-
-        Returns
-        -------
-        (energy, latency): Tuple in (Joules, seconds).
-        """
         return self.sample()
 
     @action
     def sample(self) -> tuple[float, float]:
-        """
-        Returns the energy and latency used to sample an analog voltage.
-
-        Returns
-        -------
-        (energy, latency): Tuple in (Joules, seconds).
-        """
         return 1.2e-12, 0.0
 
 
@@ -239,7 +201,7 @@ class WanAnalogIntegrator(LibraryEstimatorClassBase):
     """
 
     def __init__(self, tech_node: float, n_repeats: int = 1, voltage: float = 1.8):
-        super().__init__(leak_power=0.0, area=350.0e-12)
+        super().__init__(leak_power=5e-9, area=350.0e-12)  # 130nm integrator static power
         self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
@@ -250,21 +212,14 @@ class WanAnalogIntegrator(LibraryEstimatorClassBase):
             tech_node_leak,
         )
         self.n_repeats: int = self.scale(
-            "n_repeats", n_repeats, 1, linear, linear, linear
+            "n_repeats", n_repeats, 1, linear, linear, linear, noscale
         )
         self.voltage: float = self.scale(
-            "voltage", voltage, 1.8, quadratic, quadratic, noscale, quadratic, 1
+            "voltage", voltage, 1.8, quadratic, quadratic, noscale, quadratic
         )
 
     @action
     def integrate(self) -> tuple[float, float]:
-        """
-        Returns the energy and latency used to integrate charge for a sample.
-
-        Returns
-        -------
-        (energy, latency): Tuple in (Joules, seconds).
-        """
         return 0.25e-12, 0.0
 
     @action

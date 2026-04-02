@@ -21,6 +21,7 @@ series = {ISCA '23}
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
 from hwcomponents import action
+from hwcomponents_library.library.isaac import IsaacEDRAM
 
 
 # Original CSV contents:
@@ -40,9 +41,11 @@ class RaellaQuantMultiplier(LibraryEstimatorClassBase):
     ----------
     tech_node: float
         Technology node in meters.
+    width: int
+        Width of the to-be-quantized values in bits.
     """
 
-    def __init__(self, tech_node: float, resolution: int = 16):
+    def __init__(self, tech_node: float, width: int = 16):
         super().__init__(leak_power=0.0, area=0.0e-12)
         self.tech_node: float = self.scale(
             "tech_node",
@@ -53,8 +56,8 @@ class RaellaQuantMultiplier(LibraryEstimatorClassBase):
             tech_node_latency,
             tech_node_leak,
         )
-        self.resolution: int = self.scale(
-            "resolution", resolution, 16, linear, linear, noscale, linear
+        self.width: int = self.scale(
+            "resolution", width, 16, linear, linear, noscale, linear
         )
 
     @action
@@ -78,3 +81,47 @@ class RaellaQuantMultiplier(LibraryEstimatorClassBase):
         (energy, latency): Tuple in (Joules, seconds).
         """
         return 0.25e-12, 1e-9
+
+
+class RaellaQuantEDRAM(LibraryEstimatorClassBase):
+    """
+    The quantization & multipliler from the RAELLA paper. This unit will multiply a
+    partial sum value by a quantization scale to apply linear quntization. It also
+    includes an EDRAM buffer to store quantization scales and offsets.
+
+    Parameters
+    ----------
+    tech_node: float
+        Technology node in meters.
+    size: int
+        Total size of the EDRAM buffer in bits.
+    width: int
+        Width of the to-be-quantized values in bits.
+    """
+
+    def __init__(self, tech_node: float, size, width):
+        self.edram = IsaacEDRAM(tech_node=tech_node, size=size)
+        self.multiplier = RaellaQuantMultiplier(tech_node=tech_node, width=width)
+
+    @action
+    def multiply(self) -> tuple[float, float]:
+        """
+        Returns the energy and latency consumed by a quantization operation.
+
+        Returns
+        -------
+        (energy, latency): Tuple in (Joules, seconds).
+        """
+        self.edram.read()
+        self.multiplier.multiply()
+
+    @action
+    def read(self) -> tuple[float, float]:
+        """
+        Returns the energy and latency consumed by a multiply operation.
+
+        Returns
+        -------
+        (energy, latency): Tuple in (Joules, seconds).
+        """
+        self.multiply()

@@ -222,7 +222,6 @@ class SmartBufferSRAM(LibraryEstimatorClassBase):
         self.address_reg.read()
         self.delta_reg.read()
         self.adder.add()
-        return 0.0, 0.0
 
     @action(bits_per_action="width")
     def write(self) -> tuple[float, float]:
@@ -242,4 +241,3 @@ class SmartBufferSRAM(LibraryEstimatorClassBase):
         self.address_reg.write()
         self.delta_reg.read()
         self.adder.add()
-        return 0.0, 0.0

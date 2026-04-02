@@ -55,7 +55,7 @@ class TimelyIAdder(LibraryEstimatorClassBase):
         (energy, latency): Tuple in (Joules, seconds).
         """
 
-        return 0.0368e-12, 0.0
+        return 0.0368e-12, 150e-9
 
     @action
     def add(self) -> tuple[float, float]:
@@ -67,7 +67,7 @@ class TimelyIAdder(LibraryEstimatorClassBase):
         (energy, latency): Tuple in (Joules, seconds).
         """
 
-        return 0.0368e-12, 0.0
+        return 0.0368e-12, 150e-9
 
 
 # Original CSV contents:
@@ -107,7 +107,7 @@ class TimelyPSubBuf(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.0023e-12, 0.0
+        return 0.0023e-12, 150e-9
 
     @action
     def read(self) -> tuple[float, float]:
@@ -118,7 +118,7 @@ class TimelyPSubBuf(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.0023e-12, 0.0
+        return 0.0023e-12, 150e-9
 
 
 # Original CSV contents:
@@ -163,7 +163,7 @@ class TimelyDTC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.0375e-12, 0.0
+        return 0.0375e-12, 150e-9
 
     @action
     def read(self) -> tuple[float, float]:
@@ -174,7 +174,7 @@ class TimelyDTC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.0375e-12, 0.0
+        return 0.0375e-12, 150e-9
 
 
 # Original CSV contents:
@@ -218,7 +218,7 @@ class TimelyTDC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.145e-12, 0.0
+        return 0.145e-12, 150e-9
 
     @action
     def read(self) -> tuple[float, float]:
@@ -229,7 +229,7 @@ class TimelyTDC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.145e-12, 0.0
+        return 0.145e-12, 150e-9
 
 
 # Original CSV contents:
@@ -273,7 +273,7 @@ class TimelyXSubBuf(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.00062e-12, 0.0
+        return 0.00062e-12, 150e-9
 
     @action
     def drive(self) -> tuple[float, float]:
@@ -284,7 +284,7 @@ class TimelyXSubBuf(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.00062e-12, 0.0
+        return 0.00062e-12, 150e-9
 
 
 # Original CSV contents:
@@ -324,7 +324,7 @@ class TimelyChargingComparator(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.0417e-12, 0.0
+        return 0.0417e-12, 150e-9
 
     @action
     def read(self) -> tuple[float, float]:
@@ -335,7 +335,7 @@ class TimelyChargingComparator(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.0417e-12, 0.0
+        return 0.0417e-12, 150e-9
 
 
 # Original CSV contents:
@@ -411,7 +411,7 @@ class TimelyInputOutputBuffer(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 203.776e-12, 0.0
+        return 203.776e-12, 9.765625e-13 * self.width
 
     @action(bits_per_action="width")
     def write(self) -> tuple[float, float]:
@@ -427,7 +427,7 @@ class TimelyInputOutputBuffer(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 496.624e-12, 0.0
+        return 496.624e-12, 9.765625e-12 * self.width
 
 
 class TimelyChip2ChipLink(IsaacChip2ChipLink):

@@ -66,7 +66,7 @@ class AladdinAdder(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.21e-12, 0.0
+        return 0.21e-12, 1e-9
 
     @action
     def read(self) -> tuple[float, float]:
@@ -77,7 +77,7 @@ class AladdinAdder(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.21e-12, 0.0
+        return 0.21e-12, 1e-9
 
 
 # Original CSV contents:
@@ -131,7 +131,7 @@ class AladdinRegister(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.009e-12, 0.0
+        return 0.009e-12, 1e-9
 
     @action(bits_per_action="width")
     def write(self) -> tuple[float, float]:
@@ -147,7 +147,7 @@ class AladdinRegister(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.009e-12, 0.0
+        return 0.009e-12, 1e-9
 
 
 # Original CSV contents:
@@ -195,7 +195,7 @@ class AladdinComparator(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.02947e-12, 0.0
+        return 0.02947e-12, 1e-9
 
     @action
     def read(self) -> tuple[float, float]:
@@ -206,7 +206,7 @@ class AladdinComparator(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.02947e-12, 0.0
+        return 0.02947e-12, 1e-9
 
 
 # Original CSV contents:
@@ -283,7 +283,7 @@ class AladdinMultiplier(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 12.68e-12, 0.0
+        return 12.68e-12, 1e-9
 
     @action
     def read(self) -> tuple[float, float]:
@@ -294,7 +294,7 @@ class AladdinMultiplier(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 12.68e-12, 0.0
+        return 12.68e-12, 1e-9
 
 
 # Original CSV contents:
@@ -341,7 +341,7 @@ class AladdinCounter(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.25074e-12, 0.0
+        return 0.25074e-12, 1e-9
 
     @action
     def read(self) -> tuple[float, float]:
@@ -352,7 +352,7 @@ class AladdinCounter(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.25074e-12, 0.0
+        return 0.25074e-12, 1e-9
 
 
 class AladdinIntMAC(LibraryEstimatorClassBase):
@@ -376,12 +376,9 @@ class AladdinIntMAC(LibraryEstimatorClassBase):
     def __init__(self, tech_node: float, adder_width: int, multiplier_width: int):
         self.adder = AladdinAdder(tech_node, adder_width)
         self.multiplier = AladdinMultiplier(tech_node, multiplier_width)
-        super().__init__(
-            area=self.adder.area + self.multiplier.area,
-            leak_power=self.adder.leak_power + self.multiplier.leak_power,
-        )
+        super().__init__(subcomponents=[self.adder, self.multiplier])
 
-    @action
+    @action(pipelined_subcomponents=True)
     def mac(self) -> tuple[float, float]:
         """
         Returns the energy and latency for one multiply-accumulate operation.
@@ -390,9 +387,8 @@ class AladdinIntMAC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        ae, al = self.adder.add()
-        me, ml = self.multiplier.multiply()
-        return ae + me, max(al, ml)
+        self.adder.add()
+        self.multiplier.multiply()
 
     @action
     def read(self) -> tuple[float, float]:
@@ -403,7 +399,7 @@ class AladdinIntMAC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return self.mac()
+        self.mac()
 
     @action
     def compute(self) -> tuple[float, float]:
@@ -414,4 +410,4 @@ class AladdinIntMAC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return self.mac()
+        self.mac()

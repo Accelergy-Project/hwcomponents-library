@@ -141,7 +141,7 @@ class AladdinRegister(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.009e-12, 1e-9
+        return 0.009e-12, 0
 
     @action(bits_per_action="width")
     def write(self) -> tuple[float, float]:

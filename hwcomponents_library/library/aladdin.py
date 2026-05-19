@@ -103,8 +103,17 @@ class AladdinRegister(LibraryEstimatorClassBase):
     def __init__(
         self,
         tech_node: float,
-        width: int = 1,
+        width: int | None = None,
+        size: int | None = None,
     ):
+        if width is None and size is not None:
+            width = size
+        elif size is None and width is not None:
+            size = width
+        elif width is not None and size is not None and width != size:
+            raise ValueError("Width and size must be the same if both are provided.")
+        elif width is None and size is None:
+            raise ValueError("Either width or size must be provided.")
         super().__init__(leak_power=0.0, area=5.98e-12)
         self.tech_node: float = self.scale(
             "tech_node",
@@ -116,6 +125,7 @@ class AladdinRegister(LibraryEstimatorClassBase):
             tech_node_leak,
         )
         self.width: int = self.scale("width", width, 1, linear, linear, noscale, linear)
+        self.size = self.width
 
     @action(bits_per_action="width")
     def read(self) -> tuple[float, float]:

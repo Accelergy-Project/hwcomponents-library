@@ -13,7 +13,7 @@
 
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
-from hwcomponents import action
+from hwcomponents import action, ActionCost
 
 
 # Original CSV contents:
@@ -47,37 +47,61 @@ class WanShiftAdd(LibraryEstimatorClassBase):
         resolution: int = 8,
         voltage: float = 1.8,
     ):
-        super().__init__(leak_power=5.00e-9, area=170.0e-12)  # 130nm digital static power
+        super().__init__(
+            leak_power=5.00e-9, area=170.0e-12
+        )  # 130nm digital static power
         self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             130e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         self.n_repeats: int = self.scale(
-            "n_repeats", n_repeats, 1, linear, linear, noscale, noscale
+            "n_repeats",
+            n_repeats,
+            1,
+            area_scale_function=linear,
+            energy_scale_function=linear,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=noscale,
         )
         self.resolution: int = self.scale(
-            "resolution", resolution, 8, pow_base(2), pow_base(2), noscale, noscale
+            "resolution",
+            resolution,
+            8,
+            area_scale_function=pow_base(2),
+            energy_scale_function=pow_base(2),
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=noscale,
         )
         self.voltage: float = self.scale(
-            "voltage", voltage, 1.8, quadratic, quadratic, noscale, quadratic
+            "voltage",
+            voltage,
+            1.8,
+            area_scale_function=quadratic,
+            energy_scale_function=quadratic,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=quadratic,
         )
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         return self.shift_and_add()
 
     @action
-    def write(self) -> tuple[float, float]:
+    def write(self) -> ActionCost:
         return self.shift_and_add()
 
     @action
-    def shift_and_add(self) -> tuple[float, float]:
-        return 0.1e-12, 0.0
+    def shift_and_add(self) -> ActionCost:
+        return ActionCost(energy=0.1e-12, throughput=float("inf"), latency=0.0)
 
 
 # Original CSV contents:
@@ -106,24 +130,39 @@ class WanVariablePrecisionADC(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             130e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         self.n_repeats: int = self.scale(
-            "n_repeats", n_repeats, 1, linear, linear, noscale, noscale
+            "n_repeats",
+            n_repeats,
+            1,
+            area_scale_function=linear,
+            energy_scale_function=linear,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=noscale,
         )
         self.voltage: float = self.scale(
-            "voltage", voltage, 1.8, quadratic, quadratic, noscale, quadratic
+            "voltage",
+            voltage,
+            1.8,
+            area_scale_function=quadratic,
+            energy_scale_function=quadratic,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=quadratic,
         )
 
     @action
-    def convert(self) -> tuple[float, float]:
-        return 0.3e-12, 0.0
+    def convert(self) -> ActionCost:
+        return ActionCost(energy=0.3e-12, throughput=float("inf"), latency=0.0)
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency used to convert a voltage to a digital value.
 
@@ -153,31 +192,48 @@ class WanAnalogSample(LibraryEstimatorClassBase):
     """
 
     def __init__(self, tech_node: float, width: int = 1, voltage: float = 1.8):
-        super().__init__(leak_power=1e-8, area=350.0e-12)  # 130nm analog sample static power
+        super().__init__(
+            leak_power=1e-8, area=350.0e-12
+        )  # 130nm analog sample static power
         self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             130e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         self._width = width
         self.width: int = self.scale(
-            "width", width, 1, linear, noscale, noscale, noscale  # Width scales area only
+            "width",
+            width,
+            1,
+            area_scale_function=linear,
+            energy_scale_function=noscale,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=noscale,
         )
         self.voltage: float = self.scale(
-            "voltage", voltage, 1.8, quadratic, quadratic, noscale, quadratic
+            "voltage",
+            voltage,
+            1.8,
+            area_scale_function=quadratic,
+            energy_scale_function=quadratic,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=quadratic,
         )
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         return self.sample()
 
     @action
-    def sample(self) -> tuple[float, float]:
-        return 1.2e-12, 0.0
+    def sample(self) -> ActionCost:
+        return ActionCost(energy=1.2e-12, throughput=float("inf"), latency=0.0)
 
 
 # Original CSV contents:
@@ -201,29 +257,46 @@ class WanAnalogIntegrator(LibraryEstimatorClassBase):
     """
 
     def __init__(self, tech_node: float, n_repeats: int = 1, voltage: float = 1.8):
-        super().__init__(leak_power=5e-9, area=350.0e-12)  # 130nm integrator static power
+        super().__init__(
+            leak_power=5e-9, area=350.0e-12
+        )  # 130nm integrator static power
         self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             130e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         self.n_repeats: int = self.scale(
-            "n_repeats", n_repeats, 1, linear, linear, linear, noscale
+            "n_repeats",
+            n_repeats,
+            1,
+            area_scale_function=linear,
+            energy_scale_function=linear,
+            latency_scale_function=linear,
+            throughput_scale_function=reciprocal,
+            leak_power_scale_function=noscale,
         )
         self.voltage: float = self.scale(
-            "voltage", voltage, 1.8, quadratic, quadratic, noscale, quadratic
+            "voltage",
+            voltage,
+            1.8,
+            area_scale_function=quadratic,
+            energy_scale_function=quadratic,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=quadratic,
         )
 
     @action
-    def integrate(self) -> tuple[float, float]:
-        return 0.25e-12, 0.0
+    def integrate(self) -> ActionCost:
+        return ActionCost(energy=0.25e-12, throughput=float("inf"), latency=0.0)
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency used to integrate charge for a sample.
 

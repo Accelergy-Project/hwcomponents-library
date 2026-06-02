@@ -12,7 +12,7 @@
 
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
-from hwcomponents import action
+from hwcomponents import action, ActionCost
 from .isaac import IsaacADC
 from .isaac import IsaacDAC
 from .isaac import IsaacEDRAM
@@ -70,27 +70,36 @@ class AtomlayerRegisterLadder(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             32e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         self.width: int = self.scale(
-            "width", width, 16, linear, linear, noscale, linear
+            "width",
+            width,
+            16,
+            area_scale_function=linear,
+            energy_scale_function=linear,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=linear,
         )
         self.depth: int = self.scale(
             "depth",
             depth,
             128,
-            linear,
-            cacti_depth_energy,
-            noscale,
-            cacti_depth_energy,
+            area_scale_function=linear,
+            energy_scale_function=cacti_depth_energy,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=cacti_depth_energy,
         )
         self.size = width * depth
 
     @action(bits_per_action="width")
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency for one read operation.
 
@@ -103,10 +112,14 @@ class AtomlayerRegisterLadder(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.083e-12, 1e-9 / self.depth  # All entries can be read in parallel
+        return ActionCost(
+            energy=0.083e-12,
+            throughput=1 / (1e-9 / self.depth),
+            latency=1e-9 / self.depth,
+        )  # All entries can be read in parallel
 
     @action(bits_per_action="width")
-    def write(self) -> tuple[float, float]:
+    def write(self) -> ActionCost:
         """
         Returns the energy and latency for one write operation.
 
@@ -119,7 +132,7 @@ class AtomlayerRegisterLadder(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.083e-12, 1e-9
+        return ActionCost(energy=0.083e-12, throughput=1 / 1e-9, latency=1e-9)
 
 
 # Original CSV contents:
@@ -176,27 +189,36 @@ class AtomlayerInputBufferTransfers(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             32e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         self.width: int = self.scale(
-            "width", width, 16, linear, linear, noscale, linear
+            "width",
+            width,
+            16,
+            area_scale_function=linear,
+            energy_scale_function=linear,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=linear,
         )
         self.depth: int = self.scale(
             "depth",
             depth,
             128,
-            linear,
-            cacti_depth_energy,
-            noscale,
-            cacti_depth_energy,
+            area_scale_function=linear,
+            energy_scale_function=cacti_depth_energy,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=cacti_depth_energy,
         )
         self.size = width * depth
 
     @action(bits_per_action="width")
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency for one read operation.
 
@@ -209,10 +231,10 @@ class AtomlayerInputBufferTransfers(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 6.46e-12, 0.0
+        return ActionCost(energy=6.46e-12, throughput=float("inf"), latency=0.0)
 
     @action(bits_per_action="width")
-    def transfer(self) -> tuple[float, float]:
+    def transfer(self) -> ActionCost:
         """
         Returns the energy and latency for one transfer operation.
 
@@ -225,7 +247,7 @@ class AtomlayerInputBufferTransfers(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 6.46e-12, 0.0
+        return ActionCost(energy=6.46e-12, throughput=float("inf"), latency=0.0)
 
 
 class AtomlayerADC(IsaacADC):

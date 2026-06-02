@@ -12,7 +12,7 @@
 
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
-from hwcomponents import action
+from hwcomponents import action, ActionCost
 from .isaac import IsaacChip2ChipLink
 
 
@@ -39,14 +39,15 @@ class TimelyIAdder(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             65e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency used to sum two currents.
 
@@ -55,10 +56,10 @@ class TimelyIAdder(LibraryEstimatorClassBase):
         (energy, latency): Tuple in (Joules, seconds).
         """
 
-        return 0.0368e-12, 150e-9
+        return ActionCost(energy=0.0368e-12, throughput=1 / 150e-9, latency=150e-9)
 
     @action
-    def add(self) -> tuple[float, float]:
+    def add(self) -> ActionCost:
         """
         Returns the energy and latency used to sum two currents.
 
@@ -67,7 +68,7 @@ class TimelyIAdder(LibraryEstimatorClassBase):
         (energy, latency): Tuple in (Joules, seconds).
         """
 
-        return 0.0368e-12, 150e-9
+        return ActionCost(energy=0.0368e-12, throughput=1 / 150e-9, latency=150e-9)
 
 
 # Original CSV contents:
@@ -92,14 +93,15 @@ class TimelyPSubBuf(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             65e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
 
     @action
-    def drive(self) -> tuple[float, float]:
+    def drive(self) -> ActionCost:
         """
         Returns the energy and latency used to drive a voltage.
 
@@ -107,10 +109,10 @@ class TimelyPSubBuf(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.0023e-12, 150e-9
+        return ActionCost(energy=0.0023e-12, throughput=1 / 150e-9, latency=150e-9)
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency used to drive a voltage.
 
@@ -118,7 +120,7 @@ class TimelyPSubBuf(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.0023e-12, 150e-9
+        return ActionCost(energy=0.0023e-12, throughput=1 / 150e-9, latency=150e-9)
 
 
 # Original CSV contents:
@@ -145,17 +147,25 @@ class TimelyDTC(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             65e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         self.resolution: int = self.scale(
-            "resolution", resolution, 8, pow_base(2), pow_base(2), noscale, pow_base(2)
+            "resolution",
+            resolution,
+            8,
+            area_scale_function=pow_base(2),
+            energy_scale_function=pow_base(2),
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=pow_base(2),
         )
 
     @action
-    def convert(self) -> tuple[float, float]:
+    def convert(self) -> ActionCost:
         """
         Returns the energy and latency used to convert a digital value into a PWM signal.
 
@@ -163,10 +173,10 @@ class TimelyDTC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.0375e-12, 150e-9
+        return ActionCost(energy=0.0375e-12, throughput=1 / 150e-9, latency=150e-9)
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency used to convert a digital value into a PWM signal.
 
@@ -174,7 +184,7 @@ class TimelyDTC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.0375e-12, 150e-9
+        return ActionCost(energy=0.0375e-12, throughput=1 / 150e-9, latency=150e-9)
 
 
 # Original CSV contents:
@@ -200,17 +210,25 @@ class TimelyTDC(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             65e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         self.resolution: int = self.scale(
-            "resolution", resolution, 8, pow_base(2), pow_base(2), noscale, pow_base(2)
+            "resolution",
+            resolution,
+            8,
+            area_scale_function=pow_base(2),
+            energy_scale_function=pow_base(2),
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=pow_base(2),
         )
 
     @action
-    def convert(self) -> tuple[float, float]:
+    def convert(self) -> ActionCost:
         """
         Returns the energy and latency used to convert a PWM signal into a digital value.
 
@@ -218,10 +236,10 @@ class TimelyTDC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.145e-12, 150e-9
+        return ActionCost(energy=0.145e-12, throughput=1 / 150e-9, latency=150e-9)
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency used to convert a PWM signal into a digital value.
 
@@ -229,7 +247,7 @@ class TimelyTDC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.145e-12, 150e-9
+        return ActionCost(energy=0.145e-12, throughput=1 / 150e-9, latency=150e-9)
 
 
 # Original CSV contents:
@@ -257,15 +275,25 @@ class TimelyXSubBuf(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             65e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
-        self.rows: int = self.scale("rows", rows, 1, linear, linear, noscale, linear)
+        self.rows: int = self.scale(
+            "rows",
+            rows,
+            1,
+            area_scale_function=linear,
+            energy_scale_function=linear,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=linear,
+        )
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency used to repeat & amplify an input current.
 
@@ -273,10 +301,10 @@ class TimelyXSubBuf(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.00062e-12, 150e-9
+        return ActionCost(energy=0.00062e-12, throughput=1 / 150e-9, latency=150e-9)
 
     @action
-    def drive(self) -> tuple[float, float]:
+    def drive(self) -> ActionCost:
         """
         Returns the energy and latency used to repeat & amplify an input current.
 
@@ -284,7 +312,7 @@ class TimelyXSubBuf(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.00062e-12, 150e-9
+        return ActionCost(energy=0.00062e-12, throughput=1 / 150e-9, latency=150e-9)
 
 
 # Original CSV contents:
@@ -309,14 +337,15 @@ class TimelyChargingComparator(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             65e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
 
     @action
-    def compare(self) -> tuple[float, float]:
+    def compare(self) -> ActionCost:
         """
         Returns the energy and latency used to compare an input to the reference.
 
@@ -324,10 +353,10 @@ class TimelyChargingComparator(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.0417e-12, 150e-9
+        return ActionCost(energy=0.0417e-12, throughput=1 / 150e-9, latency=150e-9)
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency used to compare an input to the reference.
 
@@ -335,7 +364,7 @@ class TimelyChargingComparator(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.0417e-12, 150e-9
+        return ActionCost(energy=0.0417e-12, throughput=1 / 150e-9, latency=150e-9)
 
 
 # Original CSV contents:
@@ -384,21 +413,36 @@ class TimelyInputOutputBuffer(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             65e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         self.width: int = self.scale(
-            "width", width, 128, linear, linear, noscale, linear
+            "width",
+            width,
+            128,
+            area_scale_function=linear,
+            energy_scale_function=linear,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=linear,
         )
         self.depth: int = self.scale(
-            "depth", depth, 128, linear, cacti_depth_energy, noscale, cacti_depth_energy
+            "depth",
+            depth,
+            128,
+            area_scale_function=linear,
+            energy_scale_function=cacti_depth_energy,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=cacti_depth_energy,
         )
         self.size = width * depth
 
     @action(bits_per_action="width")
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency used to read from the buffer.
 
@@ -411,10 +455,14 @@ class TimelyInputOutputBuffer(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 203.776e-12, 9.765625e-13 * self.width
+        return ActionCost(
+            energy=203.776e-12,
+            throughput=1 / (9.765625e-13 * self.width),
+            latency=9.765625e-13 * self.width,
+        )
 
     @action(bits_per_action="width")
-    def write(self) -> tuple[float, float]:
+    def write(self) -> ActionCost:
         """
         Returns the energy and latency used to write to the buffer.
 
@@ -427,7 +475,11 @@ class TimelyInputOutputBuffer(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 496.624e-12, 9.765625e-12 * self.width
+        return ActionCost(
+            energy=496.624e-12,
+            throughput=1 / (9.765625e-12 * self.width),
+            latency=9.765625e-12 * self.width,
+        )
 
 
 class TimelyChip2ChipLink(IsaacChip2ChipLink):

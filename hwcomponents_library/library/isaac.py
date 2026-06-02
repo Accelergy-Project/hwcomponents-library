@@ -12,7 +12,7 @@
 
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
-from hwcomponents import action
+from hwcomponents import action, ActionCost
 
 
 # Original CSV contents:
@@ -67,27 +67,36 @@ class IsaacEDRAM(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             32e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         self.width: int = self.scale(
-            "width", width, 256, linear, linear, noscale, linear
+            "width",
+            width,
+            256,
+            area_scale_function=linear,
+            energy_scale_function=linear,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=linear,
         )
         self.depth: int = self.scale(
             "depth",
             depth,
             2048,
-            linear,
-            cacti_depth_energy,
-            noscale,
-            cacti_depth_energy,
+            area_scale_function=linear,
+            energy_scale_function=cacti_depth_energy,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=cacti_depth_energy,
         )
         self.size = width * depth
 
     @action(bits_per_action="width")
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency of one read operation.
 
@@ -95,10 +104,14 @@ class IsaacEDRAM(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 20.45e-12, 1e-9 / 36864 / self.width
+        return ActionCost(
+            energy=20.45e-12,
+            throughput=1 / (1e-9 / 36864 / self.width),
+            latency=1e-9 / 36864 / self.width,
+        )
 
     @action(bits_per_action="width")
-    def write(self) -> tuple[float, float]:
+    def write(self) -> ActionCost:
         """
         Returns the energy and latency of one write operation.
 
@@ -106,7 +119,11 @@ class IsaacEDRAM(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 20.45e-12, 1e-9 / 36864 / self.width
+        return ActionCost(
+            energy=20.45e-12,
+            throughput=1 / (1e-9 / 36864 / self.width),
+            latency=1e-9 / 36864 / self.width,
+        )
 
 
 # Original CSV contents:
@@ -131,17 +148,25 @@ class IsaacChip2ChipLink(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             65e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         self.width: int = self.scale(
-            "width", width, 128, linear, linear, noscale, linear
+            "width",
+            width,
+            128,
+            area_scale_function=linear,
+            energy_scale_function=linear,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=linear,
         )
 
     @action(bits_per_action="width")
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency of one read operation.
 
@@ -149,10 +174,14 @@ class IsaacChip2ChipLink(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 26.0e-12, 1 / 6.4 / 8 / 1024 / 1024 / 1024 / self.width
+        return ActionCost(
+            energy=26.0e-12,
+            throughput=6.4 * 8 * 1024 * 1024 * 1024 * self.width,
+            latency=1 / 6.4 / 8 / 1024 / 1024 / 1024 / self.width,
+        )
 
     @action(bits_per_action="width")
-    def write(self) -> tuple[float, float]:
+    def write(self) -> ActionCost:
         """
         Returns the energy and latency of one write operation.
 
@@ -160,7 +189,11 @@ class IsaacChip2ChipLink(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 26.0e-12, 1 / 6.4 / 8 / 1024 / 1024 / 1024 / self.width
+        return ActionCost(
+            energy=26.0e-12,
+            throughput=6.4 * 8 * 1024 * 1024 * 1024 * self.width,
+            latency=1 / 6.4 / 8 / 1024 / 1024 / 1024 / self.width,
+        )
 
 
 # Original CSV contents:
@@ -187,17 +220,25 @@ class IsaacRouterSharedByFour(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             32e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         self.width: int = self.scale(
-            "width", width, 256, linear, linear, noscale, linear
+            "width",
+            width,
+            256,
+            area_scale_function=linear,
+            energy_scale_function=linear,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=linear,
         )
 
     @action(bits_per_action="width")
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency to transfer data.
 
@@ -213,7 +254,7 @@ class IsaacRouterSharedByFour(LibraryEstimatorClassBase):
         return self.transfer()
 
     @action(bits_per_action="width")
-    def write(self) -> tuple[float, float]:
+    def write(self) -> ActionCost:
         """
         Write returns zero because transfer costs are already included in the read
         energy.
@@ -227,10 +268,10 @@ class IsaacRouterSharedByFour(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 0.0, 0.0
+        return ActionCost(energy=0.0, throughput=float("inf"), latency=0.0)
 
     @action(bits_per_action="width")
-    def transfer(self) -> tuple[float, float]:
+    def transfer(self) -> ActionCost:
         """
         Returns the energy and latency to transfer data.
 
@@ -243,7 +284,11 @@ class IsaacRouterSharedByFour(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 20.74e-12, 1e-9 / 36864 / 4 / self.width
+        return ActionCost(
+            energy=20.74e-12,
+            throughput=1 / (1e-9 / 36864 / 4 / self.width),
+            latency=1e-9 / 36864 / 4 / self.width,
+        )
 
 
 # Original CSV contents:
@@ -285,17 +330,25 @@ class IsaacADC(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             32e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         self.resolution: int = self.scale(
-            "resolution", resolution, 8, pow_base(2), pow_base(2), linear, pow_base(2)
+            "resolution",
+            resolution,
+            8,
+            area_scale_function=pow_base(2),
+            energy_scale_function=pow_base(2),
+            latency_scale_function=linear,
+            throughput_scale_function=reciprocal,
+            leak_power_scale_function=pow_base(2),
         )
 
     @action
-    def convert(self) -> tuple[float, float]:
+    def convert(self) -> ActionCost:
         """
         Returns the energy and latency of one ADC conversion.
 
@@ -303,10 +356,10 @@ class IsaacADC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 1.666666667e-12, 1 / 1.2e9
+        return ActionCost(energy=1.666666667e-12, throughput=1.2e9, latency=1 / 1.2e9)
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency of one ADC conversion.
 
@@ -314,7 +367,7 @@ class IsaacADC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 1.666666667e-12, 1 / 1.2e9
+        return ActionCost(energy=1.666666667e-12, throughput=1.2e9, latency=1 / 1.2e9)
 
 
 # Original CSV contents:
@@ -348,17 +401,25 @@ class IsaacRouter(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             32e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         self.width: int = self.scale(
-            "width", width, 256, linear, linear, noscale, linear
+            "width",
+            width,
+            256,
+            area_scale_function=linear,
+            energy_scale_function=linear,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=linear,
         )
 
     @action(bits_per_action="width")
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency to transfer data.
 
@@ -369,7 +430,7 @@ class IsaacRouter(LibraryEstimatorClassBase):
         return self.transfer()
 
     @action(bits_per_action="width")
-    def write(self) -> tuple[float, float]:
+    def write(self) -> ActionCost:
         """
         Returns the energy and latency to transfer data.
 
@@ -377,10 +438,10 @@ class IsaacRouter(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.0, 0.0
+        return ActionCost(energy=0.0, throughput=float("inf"), latency=0.0)
 
     @action(bits_per_action="width")
-    def transfer(self) -> tuple[float, float]:
+    def transfer(self) -> ActionCost:
         """
         Returns the energy and latency to transfer data.
 
@@ -393,7 +454,11 @@ class IsaacRouter(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 20.74e-12, 1e-9 / 36864 / self.width
+        return ActionCost(
+            energy=20.74e-12,
+            throughput=1 / (1e-9 / 36864 / self.width),
+            latency=1e-9 / 36864 / self.width,
+        )
 
 
 # Original CSV contents:
@@ -425,17 +490,25 @@ class IsaacShiftAdd(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             32e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         self.width: int = self.scale(
-            "width", width, 16, linear, linear, noscale, linear
+            "width",
+            width,
+            16,
+            area_scale_function=linear,
+            energy_scale_function=linear,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=linear,
         )
 
     @action
-    def shift_add(self) -> tuple[float, float]:
+    def shift_add(self) -> ActionCost:
         """
         Returns the energy and latency of one shift-and-add operation.
 
@@ -443,10 +516,12 @@ class IsaacShiftAdd(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.021e-12, 1e-9 / 1.2
+        return ActionCost(
+            energy=0.021e-12, throughput=1 / (1e-9 / 1.2), latency=1e-9 / 1.2
+        )
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency to read the shift-and-add unit's output.
 
@@ -457,7 +532,7 @@ class IsaacShiftAdd(LibraryEstimatorClassBase):
         return self.shift_add()
 
     @action
-    def write(self) -> tuple[float, float]:
+    def write(self) -> ActionCost:
         """
         Returns the energy and latency of one shift-and-add operation.
 
@@ -465,7 +540,7 @@ class IsaacShiftAdd(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.021e-12, 0.0
+        return ActionCost(energy=0.021e-12, throughput=float("inf"), latency=0.0)
 
 
 # Original CSV contents:
@@ -498,12 +573,22 @@ class IsaacEDRAMBus(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             32e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
-        self.width: int = self.scale("width", width, 1, linear, linear, noscale, linear)
+        self.width: int = self.scale(
+            "width",
+            width,
+            1,
+            area_scale_function=linear,
+            energy_scale_function=linear,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=linear,
+        )
 
     @action(bits_per_action="width")
     def read(self) -> float:
@@ -536,10 +621,14 @@ class IsaacEDRAMBus(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 0.054e-12, 1e-9 / 18432 / self.width
+        return ActionCost(
+            energy=0.054e-12,
+            throughput=1 / (1e-9 / 18432 / self.width),
+            latency=1e-9 / 18432 / self.width,
+        )
 
     @action(bits_per_action="width")
-    def write(self) -> tuple[float, float]:
+    def write(self) -> ActionCost:
         """
         Returns zero because transfer costs are already included in the read energy.
 
@@ -550,9 +639,10 @@ class IsaacEDRAMBus(LibraryEstimatorClassBase):
 
         Returns
         -------
-        (energy, latency): (0.0, 0.0)
+        ActionCost
+            The cost of this action.
         """
-        return 0.0, 0.0
+        return ActionCost(energy=0.0, throughput=float("inf"), latency=0.0)
 
 
 # Original CSV contents:
@@ -581,18 +671,35 @@ class IsaacDAC(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             32e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         self.resolution: int = self.scale(
-            "resolution", resolution, 1, pow_base(2), pow_base(2), linear, pow_base(2)
+            "resolution",
+            resolution,
+            1,
+            area_scale_function=pow_base(2),
+            energy_scale_function=pow_base(2),
+            latency_scale_function=linear,
+            throughput_scale_function=reciprocal,
+            leak_power_scale_function=pow_base(2),
         )
-        self.rows: int = self.scale("rows", rows, 1, linear, noscale, noscale, linear)
+        self.rows: int = self.scale(
+            "rows",
+            rows,
+            1,
+            area_scale_function=linear,
+            energy_scale_function=noscale,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=linear,
+        )
 
     @action
-    def convert(self) -> tuple[float, float]:
+    def convert(self) -> ActionCost:
         """
         Returns the energy and latency to convert with the the DAC.
 
@@ -600,10 +707,14 @@ class IsaacDAC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 0.41667e-12, 1e-9 / self.rows
+        return ActionCost(
+            energy=0.41667e-12,
+            throughput=1 / (1e-9 / self.rows),
+            latency=1e-9 / self.rows,
+        )
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency to read the DAC.
 
@@ -611,4 +722,8 @@ class IsaacDAC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 0.41667e-12, 1e-9 / self.rows
+        return ActionCost(
+            energy=0.41667e-12,
+            throughput=1 / (1e-9 / self.rows),
+            latency=1e-9 / self.rows,
+        )

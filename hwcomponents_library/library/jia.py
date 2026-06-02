@@ -12,7 +12,7 @@
 
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
-from hwcomponents import action
+from hwcomponents import action, ActionCost
 
 
 # Original CSV contents:
@@ -43,20 +43,35 @@ class JiaShiftAdd(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             65e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         self.resolution: int = self.scale(
-            "resolution", resolution, 8, pow_base(2), pow_base(2), noscale, pow_base(2)
+            "resolution",
+            resolution,
+            8,
+            area_scale_function=pow_base(2),
+            energy_scale_function=pow_base(2),
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=pow_base(2),
         )
         self.voltage: float = self.scale(
-            "voltage", voltage, 1.2, noscale, quadratic, noscale, quadratic
+            "voltage",
+            voltage,
+            1.2,
+            area_scale_function=noscale,
+            energy_scale_function=quadratic,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=quadratic,
         )
 
     @action
-    def shift_and_add(self) -> tuple[float, float]:
+    def shift_and_add(self) -> ActionCost:
         """
         Returns the energy and latency consumed by a shift+add operation.
 
@@ -65,10 +80,12 @@ class JiaShiftAdd(LibraryEstimatorClassBase):
         (energy, latency): Tuple in (Joules, seconds).
         """
         # Latency: 100GHz, 768 columns / (datapath multiplexed between 8 cols)
-        return 2.25e-12, 768 / 8e-8
+        return ActionCost(
+            energy=2.25e-12, throughput=1 / (768 / 8e-8), latency=768 / 8e-8
+        )
 
     @action
-    def write(self) -> tuple[float, float]:
+    def write(self) -> ActionCost:
         """
         Returns the energy and latency consumed by a shift+add operation.
 
@@ -79,7 +96,7 @@ class JiaShiftAdd(LibraryEstimatorClassBase):
         return self.shift_and_add()
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency consumed by a shift+add operation.
 
@@ -121,21 +138,45 @@ class JiaZeroGate(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             65e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
-        self.rows: int = self.scale("rows", rows, 1, linear, linear, noscale, linear)
+        self.rows: int = self.scale(
+            "rows",
+            rows,
+            1,
+            area_scale_function=linear,
+            energy_scale_function=linear,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=linear,
+        )
         self.resolution: int = self.scale(
-            "resolution", resolution, 8, linear, linear, noscale, linear
+            "resolution",
+            resolution,
+            8,
+            area_scale_function=linear,
+            energy_scale_function=linear,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=linear,
         )
         self.voltage: float = self.scale(
-            "voltage", voltage, 1.2, noscale, noscale, noscale, quadratic
+            "voltage",
+            voltage,
+            1.2,
+            area_scale_function=noscale,
+            energy_scale_function=noscale,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=quadratic,
         )
 
     @action(bits_per_action="resolution")
-    def zero_gate(self) -> tuple[float, float]:
+    def zero_gate(self) -> ActionCost:
         """
         Returns the energy and latency consumed to zero gate & read an input.
 
@@ -148,9 +189,9 @@ class JiaZeroGate(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.5e-12, 1e-8
+        return ActionCost(energy=0.5e-12, throughput=1 / 1e-8, latency=1e-8)
 
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency consumed to zero gate & read an input.
 
@@ -191,17 +232,25 @@ class JiaDatapath(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             65e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         self.voltage: float = self.scale(
-            "voltage", voltage, 1.2, noscale, quadratic, noscale, quadratic
+            "voltage",
+            voltage,
+            1.2,
+            area_scale_function=noscale,
+            energy_scale_function=quadratic,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=quadratic,
         )
 
     @action
-    def process(self) -> tuple[float, float]:
+    def process(self) -> ActionCost:
         """
         Returns the energy and latency consumed by the datapath to quantize and apply
         activation functions on a single input.
@@ -211,10 +260,12 @@ class JiaDatapath(LibraryEstimatorClassBase):
         (energy, latency): Tuple in (Joules, seconds).
         """
         # Latency: 100GHz, 768 columns / (datapath multiplexed between 8 cols)
-        return 2.4e-12, 768 / 8e-8
+        return ActionCost(
+            energy=2.4e-12, throughput=1 / (768 / 8e-8), latency=768 / 8e-8
+        )
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency consumed by the datapath to quantize and apply
         activation functions on a single input.

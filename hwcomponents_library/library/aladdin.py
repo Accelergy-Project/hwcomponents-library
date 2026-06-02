@@ -12,7 +12,7 @@
 
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
-from hwcomponents import action
+from hwcomponents import action, ActionCost
 
 
 # Original CSV contents:
@@ -48,17 +48,25 @@ class AladdinAdder(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             40e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         self.width: int = self.scale(
-            "width", width, 32, linear, linear, noscale, linear
+            "width",
+            width,
+            32,
+            area_scale_function=linear,
+            energy_scale_function=linear,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=linear,
         )
 
     @action
-    def add(self) -> tuple[float, float]:
+    def add(self) -> ActionCost:
         """
         Returns the energy and latency for one addition operation.
 
@@ -66,10 +74,10 @@ class AladdinAdder(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.21e-12, 1e-9
+        return ActionCost(energy=0.21e-12, throughput=1 / 1e-9, latency=1e-9)
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency for one addition operation.
 
@@ -77,7 +85,7 @@ class AladdinAdder(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.21e-12, 1e-9
+        return ActionCost(energy=0.21e-12, throughput=1 / 1e-9, latency=1e-9)
 
 
 # Original CSV contents:
@@ -119,16 +127,26 @@ class AladdinRegister(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             40e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
-        self.width: int = self.scale("width", width, 1, linear, linear, noscale, linear)
+        self.width: int = self.scale(
+            "width",
+            width,
+            1,
+            area_scale_function=linear,
+            energy_scale_function=linear,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=linear,
+        )
         self.size = self.width
 
     @action(bits_per_action="width")
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency for one read operation.
 
@@ -141,10 +159,10 @@ class AladdinRegister(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.009e-12, 0
+        return ActionCost(energy=0.009e-12, throughput=float("inf"), latency=0)
 
     @action(bits_per_action="width")
-    def write(self) -> tuple[float, float]:
+    def write(self) -> ActionCost:
         """
         Returns the energy and latency for one write operation.
 
@@ -157,7 +175,7 @@ class AladdinRegister(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.009e-12, 1e-9
+        return ActionCost(energy=0.009e-12, throughput=1 / 1e-9, latency=1e-9)
 
 
 # Original CSV contents:
@@ -187,17 +205,25 @@ class AladdinComparator(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             40e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         self.width: int = self.scale(
-            "width", width, 32, linear, linear, noscale, linear
+            "width",
+            width,
+            32,
+            area_scale_function=linear,
+            energy_scale_function=linear,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=linear,
         )
 
     @action
-    def compare(self) -> tuple[float, float]:
+    def compare(self) -> ActionCost:
         """
         Returns the energy and latency for one comparison operation.
 
@@ -205,10 +231,10 @@ class AladdinComparator(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.02947e-12, 1e-9
+        return ActionCost(energy=0.02947e-12, throughput=1 / 1e-9, latency=1e-9)
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency for one comparison operation.
 
@@ -216,7 +242,7 @@ class AladdinComparator(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.02947e-12, 1e-9
+        return ActionCost(energy=0.02947e-12, throughput=1 / 1e-9, latency=1e-9)
 
 
 # Original CSV contents:
@@ -256,10 +282,11 @@ class AladdinMultiplier(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             40e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         if width is not None and (width_a is not None or width_b is not None):
             raise ValueError(
@@ -271,21 +298,42 @@ class AladdinMultiplier(LibraryEstimatorClassBase):
 
         if width is not None:
             self.width: int = self.scale(
-                "width", width, 32, quadratic, quadratic, noscale, quadratic
+                "width",
+                width,
+                32,
+                area_scale_function=quadratic,
+                energy_scale_function=quadratic,
+                latency_scale_function=noscale,
+                throughput_scale_function=noscale,
+                leak_power_scale_function=quadratic,
             )
             self.width_a = width
             self.width_b = width
         else:
             self.width_a: int = self.scale(
-                "width_a", width_a, 32, linear, linear, noscale, linear
+                "width_a",
+                width_a,
+                32,
+                area_scale_function=linear,
+                energy_scale_function=linear,
+                latency_scale_function=noscale,
+                throughput_scale_function=noscale,
+                leak_power_scale_function=linear,
             )
             self.width_b: int = self.scale(
-                "width_b", width_b, 32, linear, linear, noscale, linear
+                "width_b",
+                width_b,
+                32,
+                area_scale_function=linear,
+                energy_scale_function=linear,
+                latency_scale_function=noscale,
+                throughput_scale_function=noscale,
+                leak_power_scale_function=linear,
             )
             self.width = (self.width_a + self.width_b) / 2
 
     @action
-    def multiply(self) -> tuple[float, float]:
+    def multiply(self) -> ActionCost:
         """
         Returns the energy and latency for one multiplication operation.
 
@@ -293,10 +341,10 @@ class AladdinMultiplier(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 12.68e-12, 1e-9
+        return ActionCost(energy=12.68e-12, throughput=1 / 1e-9, latency=1e-9)
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency for one read operation.
 
@@ -304,7 +352,7 @@ class AladdinMultiplier(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 12.68e-12, 1e-9
+        return ActionCost(energy=12.68e-12, throughput=1 / 1e-9, latency=1e-9)
 
 
 # Original CSV contents:
@@ -333,17 +381,25 @@ class AladdinCounter(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             40e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         self.width: int = self.scale(
-            "width", width, 32, linear, linear, noscale, linear
+            "width",
+            width,
+            32,
+            area_scale_function=linear,
+            energy_scale_function=linear,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=linear,
         )
 
     @action
-    def count(self) -> tuple[float, float]:
+    def count(self) -> ActionCost:
         """
         Returns the energy and latency for one increment operation.
 
@@ -351,10 +407,10 @@ class AladdinCounter(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.25074e-12, 1e-9
+        return ActionCost(energy=0.25074e-12, throughput=1 / 1e-9, latency=1e-9)
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency for one increment operation.
 
@@ -362,7 +418,7 @@ class AladdinCounter(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.25074e-12, 1e-9
+        return ActionCost(energy=0.25074e-12, throughput=1 / 1e-9, latency=1e-9)
 
 
 class AladdinIntMAC(LibraryEstimatorClassBase):
@@ -388,8 +444,8 @@ class AladdinIntMAC(LibraryEstimatorClassBase):
         self.multiplier = AladdinMultiplier(tech_node, multiplier_width)
         super().__init__(subcomponents=[self.adder, self.multiplier])
 
-    @action(pipelined_subcomponents=True)
-    def mac(self) -> tuple[float, float]:
+    @action
+    def mac(self) -> ActionCost:
         """
         Returns the energy and latency for one multiply-accumulate operation.
 
@@ -401,7 +457,7 @@ class AladdinIntMAC(LibraryEstimatorClassBase):
         self.multiplier.multiply()
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency for one multiply-accumulate operation.
 
@@ -412,7 +468,7 @@ class AladdinIntMAC(LibraryEstimatorClassBase):
         self.mac()
 
     @action
-    def compute(self) -> tuple[float, float]:
+    def compute(self) -> ActionCost:
         """
         Returns the energy and latency for one multiply-accumulate operation.
 

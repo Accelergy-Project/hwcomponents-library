@@ -1,7 +1,7 @@
 import math
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
-from hwcomponents import action
+from hwcomponents import action, ActionCost
 from hwcomponents_cacti import SRAM
 from hwcomponents_library.library.aladdin import AladdinRegister, AladdinAdder
 
@@ -17,6 +17,7 @@ from hwcomponents_library.library.aladdin import AladdinRegister, AladdinAdder
   keywords={Random access memory;FinFETs;Temperature measurement;Leakage currents;Power demand;Voltage measurement;Embedded DRAM;gain cell (GC);low voltage;retention time;SRAM},
   doi={10.1109/LSSC.2020.3006496}}
 """
+
 
 # Original CSV contents:
 # tech_node,global_cycle_period,width|datawidth,depth,energy,area,action
@@ -71,37 +72,46 @@ class RaaamEDRAM(LibraryEstimatorClassBase):
         if depth is not None and size is not None:
             raise ValueError("Either depth or size must be provided, but not both.")
         if depth is not None:
-            depth = self.assert_int(depth, "depth")
-            self.size = self.assert_int(depth * width, "size")
+            depth = self.assert_int("depth", depth)
+            self.size = self.assert_int("size", depth * width)
         else:
-            self.size = self.assert_int(size, "size")
-            depth = self.assert_int(self.size / width, "size / width")
+            self.size = self.assert_int("size", size)
+            depth = self.assert_int("size / width", self.size / width)
 
         super().__init__(leak_power=3.81e-4, area=131570.0e-12)
         self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             16e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         self.width: int = self.scale(
-            "width", width, 1024, linear, linear, noscale, linear
+            "width",
+            width,
+            1024,
+            area_scale_function=linear,
+            energy_scale_function=linear,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=linear,
         )
         depth: int = self.scale(
             "depth",
             depth,
             1024,
-            linear,
-            cacti_depth_energy,
-            noscale,
-            linear,
+            area_scale_function=linear,
+            energy_scale_function=cacti_depth_energy,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=linear,
         )
 
     @action(bits_per_action="width")
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency consumed by a read operation.
 
@@ -114,10 +124,14 @@ class RaaamEDRAM(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 2641.92e-12, 1 / 300e6 / self.width
+        return ActionCost(
+            energy=2641.92e-12,
+            throughput=300e6 * self.width,
+            latency=1 / 300e6 / self.width,
+        )
 
     @action(bits_per_action="width")
-    def write(self) -> tuple[float, float]:
+    def write(self) -> ActionCost:
         """
         Returns the energy and latency consumed by a write operation.
 
@@ -130,7 +144,11 @@ class RaaamEDRAM(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 2519.04e-12, 1 / 300e6 / self.width
+        return ActionCost(
+            energy=2519.04e-12,
+            throughput=300e6 * self.width,
+            latency=1 / 300e6 / self.width,
+        )
 
 
 class SmartBufferSRAM(LibraryEstimatorClassBase):
@@ -205,7 +223,7 @@ class SmartBufferSRAM(LibraryEstimatorClassBase):
         )
 
     @action(bits_per_action="width")
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency consumed by a read operation.
 
@@ -224,7 +242,7 @@ class SmartBufferSRAM(LibraryEstimatorClassBase):
         self.adder.add()
 
     @action(bits_per_action="width")
-    def write(self) -> tuple[float, float]:
+    def write(self) -> ActionCost:
         """
         Returns the energy and latency consumed by a write operation.
 

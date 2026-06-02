@@ -20,7 +20,7 @@ series = {ISCA '23}
 
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
-from hwcomponents import action
+from hwcomponents import action, ActionCost
 from hwcomponents_library.library.isaac import IsaacEDRAM
 
 
@@ -51,17 +51,25 @@ class RaellaQuantMultiplier(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             40e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         self.width: int = self.scale(
-            "resolution", width, 16, linear, linear, noscale, linear
+            "resolution",
+            width,
+            16,
+            area_scale_function=linear,
+            energy_scale_function=linear,
+            latency_scale_function=noscale,
+            throughput_scale_function=noscale,
+            leak_power_scale_function=linear,
         )
 
     @action
-    def multiply(self) -> tuple[float, float]:
+    def multiply(self) -> ActionCost:
         """
         Returns the energy and latency consumed by a multiply operation.
 
@@ -69,10 +77,10 @@ class RaellaQuantMultiplier(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.25e-12, 1e-9
+        return ActionCost(energy=0.25e-12, throughput=1 / 1e-9, latency=1e-9)
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency consumed by a multiply operation.
 
@@ -80,7 +88,7 @@ class RaellaQuantMultiplier(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds).
         """
-        return 0.25e-12, 1e-9
+        return ActionCost(energy=0.25e-12, throughput=1 / 1e-9, latency=1e-9)
 
 
 class RaellaQuantEDRAM(LibraryEstimatorClassBase):
@@ -104,7 +112,7 @@ class RaellaQuantEDRAM(LibraryEstimatorClassBase):
         self.multiplier = RaellaQuantMultiplier(tech_node=tech_node, width=width)
 
     @action
-    def multiply(self) -> tuple[float, float]:
+    def multiply(self) -> ActionCost:
         """
         Returns the energy and latency consumed by a quantization operation.
 
@@ -116,7 +124,7 @@ class RaellaQuantEDRAM(LibraryEstimatorClassBase):
         self.multiplier.multiply()
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency consumed by a multiply operation.
 

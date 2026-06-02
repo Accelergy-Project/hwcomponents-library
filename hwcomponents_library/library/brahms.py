@@ -12,7 +12,7 @@
 
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
-from hwcomponents import action
+from hwcomponents import action, ActionCost
 
 
 # Original CSV contents:
@@ -48,17 +48,25 @@ class BrahmsDAC(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             40e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         self.resolution: int = self.scale(
-            "resolution", resolution, 8, pow_base(2), pow_base(2), linear, pow_base(2)
+            "resolution",
+            resolution,
+            8,
+            area_scale_function=pow_base(2),
+            energy_scale_function=pow_base(2),
+            latency_scale_function=linear,
+            throughput_scale_function=reciprocal,
+            leak_power_scale_function=pow_base(2),
         )
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency of one DAC conversion.
 
@@ -66,10 +74,10 @@ class BrahmsDAC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 0.291e-12, 1 / 1.1e9
+        return ActionCost(energy=0.291e-12, throughput=1.1e9, latency=1 / 1.1e9)
 
     @action
-    def convert(self) -> tuple[float, float]:
+    def convert(self) -> ActionCost:
         """
         Returns the energy and latency of one DAC conversion.
 
@@ -77,4 +85,4 @@ class BrahmsDAC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 0.291e-12, 1 / 1.1e9
+        return ActionCost(energy=0.291e-12, throughput=1.1e9, latency=1 / 1.1e9)

@@ -12,7 +12,7 @@
 
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
-from hwcomponents import action
+from hwcomponents import action, ActionCost
 from .isaac import IsaacDAC
 
 
@@ -41,17 +41,25 @@ class FormsADC(LibraryEstimatorClassBase):
             "tech_node",
             tech_node,
             32e-9,
-            tech_node_area,
-            tech_node_energy,
-            tech_node_latency,
-            tech_node_leak,
+            area_scale_function=tech_node_area,
+            energy_scale_function=tech_node_energy,
+            latency_scale_function=tech_node_latency,
+            throughput_scale_function=tech_node_throughput,
+            leak_power_scale_function=tech_node_leak,
         )
         self.resolution: int = self.scale(
-            "resolution", resolution, 4, pow_base(2), pow_base(2), linear, pow_base(2)
+            "resolution",
+            resolution,
+            4,
+            area_scale_function=pow_base(2),
+            energy_scale_function=pow_base(2),
+            latency_scale_function=linear,
+            throughput_scale_function=reciprocal,
+            leak_power_scale_function=pow_base(2),
         )
 
     @action
-    def convert(self) -> tuple[float, float]:
+    def convert(self) -> ActionCost:
         """
         Returns the energy and latency of one ADC conversion.
 
@@ -59,10 +67,10 @@ class FormsADC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 0.22619e-12, 1 / 2.1e9
+        return ActionCost(energy=0.22619e-12, throughput=2.1e9, latency=1 / 2.1e9)
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency of one ADC conversion operation.
 
@@ -70,7 +78,7 @@ class FormsADC(LibraryEstimatorClassBase):
         -------
         (energy, latency): Tuple in (Joules, seconds)
         """
-        return 0.22619e-12, 1 / 2.1e9
+        return ActionCost(energy=0.22619e-12, throughput=2.1e9, latency=1 / 2.1e9)
 
 
 class FormsDAC(IsaacDAC):

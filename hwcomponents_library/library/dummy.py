@@ -1,6 +1,6 @@
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
-from hwcomponents import action
+from hwcomponents import action, ActionCost
 
 
 # Original CSV contents:
@@ -21,26 +21,28 @@ class DummyStorage(LibraryEstimatorClassBase):
         self.tech_node: float = tech_node
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency of one read operation. Energy is zero.
 
         Returns
         -------
-        (energy, latency): (0.0, 0.0)
+        ActionCost
+            The cost of this action.
         """
-        return 0.0, 0.0
+        return ActionCost(energy=0.0, throughput=float("inf"), latency=0.0)
 
     @action
-    def write(self) -> tuple[float, float]:
+    def write(self) -> ActionCost:
         """
         Returns the energy and latency of one write operation. Energy is zero.
 
         Returns
         -------
-        (energy, latency): (0.0, 0.0)
+        ActionCost
+            The cost of this action.
         """
-        return 0.0, 0.0
+        return ActionCost(energy=0.0, throughput=float("inf"), latency=0.0)
 
 
 # Original CSV contents:
@@ -61,26 +63,28 @@ class DummyCompute(LibraryEstimatorClassBase):
         self.tech_node: float = tech_node
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency of one compute operation. Energy is zero.
 
         Returns
         -------
-        (energy, latency): (0.0, 0.0)
+        ActionCost
+            The cost of this action.
         """
-        return 0.0, 0.0
+        return ActionCost(energy=0.0, throughput=float("inf"), latency=0.0)
 
     @action
-    def compute(self) -> tuple[float, float]:
+    def compute(self) -> ActionCost:
         """
         Returns the energy and latency of one compute operation. Energy is zero.
 
         Returns
         -------
-        (energy, latency): (0.0, 0.0)
+        ActionCost
+            The cost of this action.
         """
-        return 0.0, 0.0
+        return ActionCost(energy=0.0, throughput=float("inf"), latency=0.0)
 
 
 class DummyMemory(LibraryEstimatorClassBase):
@@ -98,26 +102,28 @@ class DummyMemory(LibraryEstimatorClassBase):
         self.tech_node: float = tech_node
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency of one read operation. Energy is zero.
 
         Returns
         -------
-        (energy, latency): (0.0, 0.0)
+        ActionCost
+            The cost of this action.
         """
-        return 0.0, 0.0
+        return ActionCost(energy=0.0, throughput=float("inf"), latency=0.0)
 
     @action
-    def write(self) -> tuple[float, float]:
+    def write(self) -> ActionCost:
         """
         Returns the energy and latency of one write operation. Energy is zero.
 
         Returns
         -------
-        (energy, latency): (0.0, 0.0)
+        ActionCost
+            The cost of this action.
         """
-        return 0.0, 0.0
+        return ActionCost(energy=0.0, throughput=float("inf"), latency=0.0)
 
 
 class DummyNetwork(LibraryEstimatorClassBase):
@@ -135,23 +141,25 @@ class DummyNetwork(LibraryEstimatorClassBase):
         self.tech_node: float = tech_node
 
     @action
-    def read(self) -> tuple[float, float]:
+    def read(self) -> ActionCost:
         """
         Returns the energy and latency of one read operation. Energy is zero.
 
         Returns
         -------
-        (energy, latency): (0.0, 0.0)
+        ActionCost
+            The cost of this action.
         """
-        return 0.0, 0.0
+        return ActionCost(energy=0.0, throughput=float("inf"), latency=0.0)
 
     @action
-    def write(self) -> tuple[float, float]:
+    def write(self) -> ActionCost:
         """
         Returns the energy and latency of one write operation. Energy is zero.
 
         Returns
         -------
-        (energy, latency): (0.0, 0.0)
+        ActionCost
+            The cost of this action.
         """
-        return 0.0, 0.0
+        return ActionCost(energy=0.0, throughput=float("inf"), latency=0.0)

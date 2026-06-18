@@ -45,7 +45,13 @@ class JiaShiftAdd(LibraryEstimatorClassBase):
         analog array.
     """
 
-    def __init__(self, tech_node: float, resolution: int = 8, voltage: float = 1.2, cycle_period: float = 540e-9):
+    def __init__(
+        self,
+        tech_node: float,
+        resolution: int = 8,
+        voltage: float = 1.2,
+        cycle_period: float = 540e-9,
+    ):
         super().__init__(leak_power=2.22e-6, area=5000.0e-12)
         self.tech_node: float = self.scale(
             "tech_node",
@@ -78,7 +84,7 @@ class JiaShiftAdd(LibraryEstimatorClassBase):
             latency=self.cycle_period / 8,
             throughput=8 / self.cycle_period,
         )
-    
+
     @action
     def write(self) -> tuple[float, float]:
         """
@@ -124,7 +130,9 @@ class JiaDatapath(LibraryEstimatorClassBase):
 
     """
 
-    def __init__(self, tech_node: float, voltage: float = 1.2, cycle_period: float = 540e-9):
+    def __init__(
+        self, tech_node: float, voltage: float = 1.2, cycle_period: float = 540e-9
+    ):
         super().__init__(leak_power=4.44e-6, area=10535.0e-12)
         self.tech_node: float = self.scale(
             "tech_node",
@@ -224,20 +232,20 @@ class JiaZeroComparator(LibraryEstimatorClassBase):
         self.flip_flop.throughput_scale *= n_flip_flops
 
         # Charging per-input, not for all
-        self.flip_flop.energy_scale *= n_flip_flops_serial 
+        self.flip_flop.energy_scale *= n_flip_flops_serial
         self.flip_flop.latency_scale *= n_flip_flops_serial
 
         self.zeros_counter = AdderTree(
             n_bits=1,
             n_adder_tree_inputs=n_comparators,
             tech_node=tech_node,
-            cycle_period=cycle_period
+            cycle_period=cycle_period,
         )
         # Adder tree charges energy and throughput for ALL inputs, but this component
         # charges per-input, so scale down by the number of inputs.
         self.zeros_counter.energy_scale /= n_comparators
         self.zeros_counter.throughput_scale *= n_comparators
-        
+
         self.flip_flop.energy_scale = 0
 
         super().__init__(

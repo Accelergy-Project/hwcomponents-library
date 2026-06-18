@@ -21,7 +21,7 @@ from hwcomponents import action, ActionCost
 # 130nm,     1,      1e-6,                8,          1.8,    0.1,   170,  read
 # 130nm,     1,      1e-6,                8,          1.8,    0.1,   170,  write|update
 # 130nm,     1,      1e-6,                8,          1.8,    0.1,   170,  leak
-class WanShiftAdd(LibraryEstimatorClassBase):
+class NeurramShiftAdd(LibraryEstimatorClassBase):
     """
     The shift-and-add unit from the Wan et al. Nature 2022 paper. This unit will sum and
     accumulate values in a register, while also shifting the register contents to accept
@@ -31,8 +31,6 @@ class WanShiftAdd(LibraryEstimatorClassBase):
     ----------
     tech_node: float
         Technology node in meters.
-    n_repeats: int
-        Number of times to repeat the shift-and-add operation.
     resolution: int
         Resolution of the shift-and-add unit in bits. This is the number of bits of each
         input value that is added to the register.
@@ -43,7 +41,6 @@ class WanShiftAdd(LibraryEstimatorClassBase):
     def __init__(
         self,
         tech_node: float,
-        n_repeats: int = 1,
         resolution: int = 8,
         voltage: float = 1.8,
     ):
@@ -59,16 +56,6 @@ class WanShiftAdd(LibraryEstimatorClassBase):
             latency_scale_function=tech_node_latency,
             throughput_scale_function=tech_node_throughput,
             leak_power_scale_function=tech_node_leak,
-        )
-        self.n_repeats: int = self.scale(
-            "n_repeats",
-            n_repeats,
-            1,
-            area_scale_function=linear,
-            energy_scale_function=linear,
-            latency_scale_function=noscale,
-            throughput_scale_function=noscale,
-            leak_power_scale_function=noscale,
         )
         self.resolution: int = self.scale(
             "resolution",
@@ -93,14 +80,35 @@ class WanShiftAdd(LibraryEstimatorClassBase):
 
     @action
     def read(self) -> ActionCost:
+        """
+        Returns the cost consumed by a shift-and-add operation.
+
+        Returns
+        -------
+        ActionCost: The cost of this action
+        """
         return self.shift_and_add()
 
     @action
     def write(self) -> ActionCost:
+        """
+        Returns the cost consumed by a shift-and-add operation.
+
+        Returns
+        -------
+        ActionCost: The cost of this action
+        """
         return self.shift_and_add()
 
     @action
     def shift_and_add(self) -> ActionCost:
+        """
+        Returns the cost consumed by a shift-and-add operation.
+
+        Returns
+        -------
+        ActionCost: The cost of this action
+        """
         return ActionCost(energy=0.1e-12, throughput=float("inf"), latency=0.0)
 
 
@@ -109,7 +117,7 @@ class WanShiftAdd(LibraryEstimatorClassBase):
 # 130nm,     1,      1e-6,                1.8,    0.3,  400,   read
 # 130nm,     1,      1e-6,                1.8,    0,     400,   leak
 # 130nm,     1,      1e-6,                1.8,    0,     400,   write|update
-class WanVariablePrecisionADC(LibraryEstimatorClassBase):
+class NeurramVariablePrecisionADC(LibraryEstimatorClassBase):
     """
     The variable precision ADC from the Wan et al. Nature 2022 paper. This unit will
     convert a voltage to a digital value.
@@ -118,13 +126,11 @@ class WanVariablePrecisionADC(LibraryEstimatorClassBase):
     ----------
     tech_node: float
         Technology node in meters.
-    n_repeats: int
-        Number of times to repeat the ADC operation.
     voltage: float
         Voltage of the ADC unit in volts.
     """
 
-    def __init__(self, tech_node: float, n_repeats: int = 1, voltage: float = 1.8):
+    def __init__(self, tech_node: float, voltage: float = 1.8):
         super().__init__(leak_power=1e-8, area=400.0e-12)  # 130nm ADC static power
         self.tech_node: float = self.scale(
             "tech_node",
@@ -135,16 +141,6 @@ class WanVariablePrecisionADC(LibraryEstimatorClassBase):
             latency_scale_function=tech_node_latency,
             throughput_scale_function=tech_node_throughput,
             leak_power_scale_function=tech_node_leak,
-        )
-        self.n_repeats: int = self.scale(
-            "n_repeats",
-            n_repeats,
-            1,
-            area_scale_function=linear,
-            energy_scale_function=linear,
-            latency_scale_function=noscale,
-            throughput_scale_function=noscale,
-            leak_power_scale_function=noscale,
         )
         self.voltage: float = self.scale(
             "voltage",
@@ -159,16 +155,23 @@ class WanVariablePrecisionADC(LibraryEstimatorClassBase):
 
     @action
     def convert(self) -> ActionCost:
+        """
+        Returns the cost consumed to convert a voltage to a digital value.
+
+        Returns
+        -------
+        ActionCost: The cost of this action
+        """
         return ActionCost(energy=0.3e-12, throughput=float("inf"), latency=0.0)
 
     @action
     def read(self) -> ActionCost:
         """
-        Returns the energy and latency used to convert a voltage to a digital value.
+        Returns the cost consumed to convert a voltage to a digital value.
 
         Returns
         -------
-        (energy, latency): Tuple in (Joules, seconds).
+        ActionCost: The cost of this action
         """
         return self.convert()
 
@@ -178,7 +181,7 @@ class WanVariablePrecisionADC(LibraryEstimatorClassBase):
 # 130nm,     1e-6,                1.8,    1.2,   350,  read
 # 130nm,     1e-6,                1.8,    0,     350,  leak
 # 130nm,     1e-6,                1.8,    0,     350,  write|update
-class WanAnalogSample(LibraryEstimatorClassBase):
+class NeurramAnalogSample(LibraryEstimatorClassBase):
     """
     The analog sample unit from the Wan et al. Nature 2022 paper. This unit will sample
     an analog charge and add it to an analog integrator.
@@ -193,7 +196,7 @@ class WanAnalogSample(LibraryEstimatorClassBase):
 
     def __init__(self, tech_node: float, width: int = 1, voltage: float = 1.8):
         super().__init__(
-            leak_power=1e-8, area=350.0e-12
+            leak_power=1e-8, area=45.0e-12
         )  # 130nm analog sample static power
         self.tech_node: float = self.scale(
             "tech_node",
@@ -229,10 +232,24 @@ class WanAnalogSample(LibraryEstimatorClassBase):
 
     @action
     def read(self) -> ActionCost:
+        """
+        Returns the cost consumed to sample an analog charge.
+
+        Returns
+        -------
+        ActionCost: The cost of this action
+        """
         return self.sample()
 
     @action
     def sample(self) -> ActionCost:
+        """
+        Returns the cost consumed to sample an analog charge.
+
+        Returns
+        -------
+        ActionCost: The cost of this action
+        """
         return ActionCost(energy=1.2e-12, throughput=float("inf"), latency=0.0)
 
 
@@ -241,7 +258,7 @@ class WanAnalogSample(LibraryEstimatorClassBase):
 # 130nm,     1,      1e-6,                 1.8,   0.25,  350,  read
 # 130nm,     1,      1e-6,                1.8,    0,     350,  leak
 # 130nm,     1,      1e-6,                1.8,    0,     350,  write|update
-class WanAnalogIntegrator(LibraryEstimatorClassBase):
+class NeurramAnalogIntegrator(LibraryEstimatorClassBase):
     """
     The analog integrator unit from the Wan et al. Nature 2022 paper. This unit will
     integrate charge over multiple samples.
@@ -250,13 +267,11 @@ class WanAnalogIntegrator(LibraryEstimatorClassBase):
     ----------
     tech_node: float
         Technology node in meters.
-    n_repeats: int
-        Number of times to repeat the analog integration operation.
     voltage: float
         Voltage of the analog integrator unit in volts.
     """
 
-    def __init__(self, tech_node: float, n_repeats: int = 1, voltage: float = 1.8):
+    def __init__(self, tech_node: float, voltage: float = 1.8):
         super().__init__(
             leak_power=5e-9, area=350.0e-12
         )  # 130nm integrator static power
@@ -269,16 +284,6 @@ class WanAnalogIntegrator(LibraryEstimatorClassBase):
             latency_scale_function=tech_node_latency,
             throughput_scale_function=tech_node_throughput,
             leak_power_scale_function=tech_node_leak,
-        )
-        self.n_repeats: int = self.scale(
-            "n_repeats",
-            n_repeats,
-            1,
-            area_scale_function=linear,
-            energy_scale_function=linear,
-            latency_scale_function=linear,
-            throughput_scale_function=reciprocal,
-            leak_power_scale_function=noscale,
         )
         self.voltage: float = self.scale(
             "voltage",
@@ -293,15 +298,22 @@ class WanAnalogIntegrator(LibraryEstimatorClassBase):
 
     @action
     def integrate(self) -> ActionCost:
+        """
+        Returns the cost consumed to integrate charge for a sample.
+
+        Returns
+        -------
+        ActionCost: The cost of this action
+        """
         return ActionCost(energy=0.25e-12, throughput=float("inf"), latency=0.0)
 
     @action
     def read(self) -> ActionCost:
         """
-        Returns the energy and latency used to integrate charge for a sample.
+        Returns the cost consumed to integrate charge for a sample.
 
         Returns
         -------
-        (energy, latency): Tuple in (Joules, seconds).
+        ActionCost: The cost of this action
         """
         return self.integrate()

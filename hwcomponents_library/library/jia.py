@@ -12,7 +12,12 @@
 
 from hwcomponents_library.base import LibraryEstimatorClassBase
 from hwcomponents.scaling import *
-from hwcomponents import action, ActionCost
+from hwcomponents import ComponentModel, action
+from math import ceil, log2
+from hwcomponents import ComponentModel, action, ActionCost
+from hwcomponents.scaling import linear, quadratic, reciprocal
+from hwcomponents_library.library.aladdin import AladdinComparator, AladdinCounter
+from hwcomponents_neurosim import FlipFlop, AdderTree
 
 
 # Original CSV contents:
@@ -35,176 +40,66 @@ class JiaShiftAdd(LibraryEstimatorClassBase):
         input value that is added to the register.
     voltage: float
         Voltage of the shift-and-add unit in volts.
+    cycle_period: float
+        Cycle period of the system clock in seconds. One cycle = one activation of the
+        analog array.
     """
 
-    def __init__(self, tech_node: float, resolution: int = 8, voltage: float = 1.2):
+    def __init__(self, tech_node: float, resolution: int = 8, voltage: float = 1.2, cycle_period: float = 540e-9):
         super().__init__(leak_power=2.22e-6, area=5000.0e-12)
         self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             65e-9,
-            area_scale_function=tech_node_area,
-            energy_scale_function=tech_node_energy,
-            latency_scale_function=tech_node_latency,
-            throughput_scale_function=tech_node_throughput,
-            leak_power_scale_function=tech_node_leak,
+            tech_node_area,
+            tech_node_energy,
+            tech_node_latency,
+            tech_node_leak,
         )
         self.resolution: int = self.scale(
-            "resolution",
-            resolution,
-            8,
-            area_scale_function=pow_base(2),
-            energy_scale_function=pow_base(2),
-            latency_scale_function=noscale,
-            throughput_scale_function=noscale,
-            leak_power_scale_function=pow_base(2),
+            "resolution", resolution, 8, pow_base(2), pow_base(2), noscale, pow_base(2)
         )
         self.voltage: float = self.scale(
-            "voltage",
-            voltage,
-            1.2,
-            area_scale_function=noscale,
-            energy_scale_function=quadratic,
-            latency_scale_function=noscale,
-            throughput_scale_function=noscale,
-            leak_power_scale_function=quadratic,
+            "voltage", voltage, 1.2, noscale, quadratic, noscale, quadratic
         )
+        self.cycle_period: float = cycle_period
 
     @action
-    def shift_and_add(self) -> ActionCost:
+    def shift_and_add(self) -> tuple[float, float]:
         """
-        Returns the energy and latency consumed by a shift+add operation.
+        Returns the costv consumed by a shift+add operation.
 
         Returns
         -------
-        (energy, latency): Tuple in (Joules, seconds).
+        ActionCost: The cost of this action
         """
-        # Latency: 100GHz, 768 columns / (datapath multiplexed between 8 cols)
         return ActionCost(
-            energy=2.25e-12, throughput=1 / (768 / 8e-8), latency=768 / 8e-8
+            energy=2.25e-12,
+            latency=self.cycle_period / 8,
+            throughput=8 / self.cycle_period,
         )
-
+    
     @action
-    def write(self) -> ActionCost:
+    def write(self) -> tuple[float, float]:
         """
-        Returns the energy and latency consumed by a shift+add operation.
+        Returns the cost consumed by a shift+add operation.
 
         Returns
         -------
-        (energy, latency): Tuple in (Joules, seconds).
+        ActionCost: The cost of this action
         """
         return self.shift_and_add()
 
     @action
-    def read(self) -> ActionCost:
+    def read(self) -> tuple[float, float]:
         """
-        Returns the energy and latency consumed by a shift+add operation.
+        Returns the cost consumed by a shift+add operation.
 
         Returns
         -------
-        (energy, latency): Tuple in (Joules, seconds).
+        ActionCost: The cost of this action
         """
         return self.shift_and_add()
-
-
-# Original CSV contents:
-# tech_node,global_cycle_period,rows,resolution,voltage,energy,area,action
-# 65nm,      540e-9,              1,   8,         1.2,   0.5,   174, read
-# 65nm,      540e-9,              1,   8,         1.2,   0.2,   174, leak
-# 65nm,      540e-9,              1,   8,         1.2,   0,     174, write|update
-class JiaZeroGate(LibraryEstimatorClassBase):
-    """
-    The zero gating unit from Jia et al. JSSC 2020. This unit gates analog voltages for
-    zero-valued inputs going into the rows of the crossbar array.
-
-    Parameters
-    ----------
-    tech_node: float
-        Technology node in meters.
-    rows: int
-        Number of rows in the crossbar array, equal to the number of checks done by the
-        zero gate.
-    resolution: int
-        Resolution of each input in bits.
-    voltage: float
-        Voltage of the zero gating unit in volts.
-    """
-
-    def __init__(
-        self, tech_node: float, rows: int = 1, resolution: int = 8, voltage: float = 1.2
-    ):
-        super().__init__(leak_power=3.70e-7, area=174.0e-12)
-        self.tech_node: float = self.scale(
-            "tech_node",
-            tech_node,
-            65e-9,
-            area_scale_function=tech_node_area,
-            energy_scale_function=tech_node_energy,
-            latency_scale_function=tech_node_latency,
-            throughput_scale_function=tech_node_throughput,
-            leak_power_scale_function=tech_node_leak,
-        )
-        self.rows: int = self.scale(
-            "rows",
-            rows,
-            1,
-            area_scale_function=linear,
-            energy_scale_function=linear,
-            latency_scale_function=noscale,
-            throughput_scale_function=noscale,
-            leak_power_scale_function=linear,
-        )
-        self.resolution: int = self.scale(
-            "resolution",
-            resolution,
-            8,
-            area_scale_function=linear,
-            energy_scale_function=linear,
-            latency_scale_function=noscale,
-            throughput_scale_function=noscale,
-            leak_power_scale_function=linear,
-        )
-        self.voltage: float = self.scale(
-            "voltage",
-            voltage,
-            1.2,
-            area_scale_function=noscale,
-            energy_scale_function=noscale,
-            latency_scale_function=noscale,
-            throughput_scale_function=noscale,
-            leak_power_scale_function=quadratic,
-        )
-
-    @action(bits_per_action="resolution")
-    def zero_gate(self) -> ActionCost:
-        """
-        Returns the energy and latency consumed to zero gate & read an input.
-
-        Parameters
-        ----------
-        bits_per_action: int
-            The number of bits to check for zero.
-
-        Returns
-        -------
-        (energy, latency): Tuple in (Joules, seconds).
-        """
-        return ActionCost(energy=0.5e-12, throughput=1 / 1e-8, latency=1e-8)
-
-    def read(self) -> ActionCost:
-        """
-        Returns the energy and latency consumed to zero gate & read an input.
-
-        Parameters
-        ----------
-        bits_per_action: int
-            The number of bits to check for zero.
-
-        Returns
-        -------
-        (energy, latency): Tuple in (Joules, seconds).
-        """
-        return self.zero_gate()
 
 
 # Original CSV contents:
@@ -223,55 +118,159 @@ class JiaDatapath(LibraryEstimatorClassBase):
         Technology node in meters.
     voltage: float
         Voltage of the datapath in volts.
+    cycle_period: float
+        Cycle period of the system clock in seconds. One cycle = one activation of the
+        analog array.
 
     """
 
-    def __init__(self, tech_node: float, voltage: float = 1.2):
+    def __init__(self, tech_node: float, voltage: float = 1.2, cycle_period: float = 540e-9):
         super().__init__(leak_power=4.44e-6, area=10535.0e-12)
         self.tech_node: float = self.scale(
             "tech_node",
             tech_node,
             65e-9,
-            area_scale_function=tech_node_area,
-            energy_scale_function=tech_node_energy,
-            latency_scale_function=tech_node_latency,
-            throughput_scale_function=tech_node_throughput,
-            leak_power_scale_function=tech_node_leak,
+            tech_node_area,
+            tech_node_energy,
+            tech_node_latency,
+            tech_node_leak,
         )
         self.voltage: float = self.scale(
-            "voltage",
-            voltage,
-            1.2,
-            area_scale_function=noscale,
-            energy_scale_function=quadratic,
-            latency_scale_function=noscale,
-            throughput_scale_function=noscale,
-            leak_power_scale_function=quadratic,
+            "voltage", voltage, 1.2, noscale, quadratic, noscale, quadratic
         )
+        self.cycle_period: float = cycle_period
 
     @action
     def process(self) -> ActionCost:
         """
-        Returns the energy and latency consumed by the datapath to quantize and apply
-        activation functions on a single input.
+        Returns the cost consumed by the datapath to quantize and apply activation
+        functions on a single input.
 
         Returns
         -------
-        (energy, latency): Tuple in (Joules, seconds).
+        ActionCost: The cost of this action
         """
-        # Latency: 100GHz, 768 columns / (datapath multiplexed between 8 cols)
         return ActionCost(
-            energy=2.4e-12, throughput=1 / (768 / 8e-8), latency=768 / 8e-8
+            energy=12e-12,
+            latency=self.cycle_period / 8,
+            throughput=8 / self.cycle_period,
         )
+
+    @action
+    def read(self) -> tuple[float, float]:
+        """
+        Returns the cost consumed by the datapath to quantize and apply activation
+        functions on a single input.
+
+        Returns
+        -------
+        ActionCost: The cost of this action
+        """
+        return self.process()
+
+
+class JiaZeroComparator(LibraryEstimatorClassBase):
+    """
+    Counts the number of zeros in a list of values. Includes a flag for each zero.
+
+    Based on the zero gating logic in the paper: A Programmable Heterogeneous
+    Microprocessor Based on Bit-Scalable In-Memory Computing, by Hongyang Jia, Hossein
+    Valavi, Yinqi Tang, Jintao Zhang, and Naveen Verma, JSSC 2020
+    10.1109/JSSC.2020.2987714
+
+    Parameters
+    ----------
+    n_comparators: int
+        The number of comparators to include.
+    n_bits: int
+        The number of bits of each comparator.
+    tech_node: str
+        The technology node of the comparators.
+    voltage: float
+        The voltage of the comparators.
+    """
+
+    def __init__(
+        self,
+        n_comparators: int,
+        n_bits: int,
+        tech_node: str,
+        voltage: float = 0.85,
+        cycle_period: float = 1e-9,
+    ):
+        self.n_comparators = n_comparators
+        self.n_bits = n_bits
+
+        # Scale up the comparator to handle all the comparators
+        self.comparator = AladdinComparator(
+            width=n_bits,
+            tech_node=tech_node,
+        )
+        self.comparator.area_scale *= n_comparators
+        self.comparator.leak_power_scale *= n_comparators
+        self.comparator.throughput_scale *= n_comparators
+
+        # Flip flops are used one bit at a time, so we only make one bit and scale the
+        # energy and latency
+        self.flip_flop = FlipFlop(
+            n_bits=1,
+            tech_node=tech_node,
+            cycle_period=cycle_period,
+        )
+        n_flip_flops = n_comparators * n_bits  # One flip flop per bit per comparator
+        n_flip_flops_serial = n_bits  # Only one flip flop active at a time
+        self.flip_flop.area_scale *= n_flip_flops
+        self.flip_flop.leak_power_scale *= n_flip_flops
+        self.flip_flop.throughput_scale *= n_flip_flops
+
+        # Charging per-input, not for all
+        self.flip_flop.energy_scale *= n_flip_flops_serial 
+        self.flip_flop.latency_scale *= n_flip_flops_serial
+
+        self.zeros_counter = AdderTree(
+            n_bits=1,
+            n_adder_tree_inputs=n_comparators,
+            tech_node=tech_node,
+            cycle_period=cycle_period
+        )
+        # Adder tree charges energy and throughput for ALL inputs, but this component
+        # charges per-input, so scale down by the number of inputs.
+        self.zeros_counter.energy_scale /= n_comparators
+        self.zeros_counter.throughput_scale *= n_comparators
+        
+        self.flip_flop.energy_scale = 0
+
+        super().__init__(
+            subcomponents=[
+                self.comparator,
+                self.flip_flop,
+                self.zeros_counter,
+            ],
+        )
+
+        for subcomponent in self.subcomponents:
+            subcomponent.scale(
+                "voltage",
+                voltage,
+                0.85,
+                area_scale_function=linear,
+                energy_scale_function=quadratic,
+                latency_scale_function=reciprocal,
+                throughput_scale_function=linear,
+                leak_power_scale_function=linear,
+            )
+            subcomponent.leak_power_scale *= 0.02  # Low-leakage technology
 
     @action
     def read(self) -> ActionCost:
         """
-        Returns the energy and latency consumed by the datapath to quantize and apply
-        activation functions on a single input.
+        Processes ONE value through the comparator and updates the flip flop and zeros
+        counter accordingly.
 
         Returns
         -------
-        (energy, latency): Tuple in (Joules, seconds).
+        ActionCost: The cost of this action
         """
-        return self.process()
+        self.comparator.read()
+        self.flip_flop.read()
+        self.zeros_counter.read()

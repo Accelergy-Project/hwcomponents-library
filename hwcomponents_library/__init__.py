@@ -9,7 +9,7 @@ from hwcomponents_library.library.misc import *
 from hwcomponents_library.library.newton import *
 from hwcomponents_library.library.raella import *
 from hwcomponents_library.library.timely import *
-from hwcomponents_library.library.wan import *
+from hwcomponents_library.library.neurram import *
 
 __all__ = [
     # From aladdin
@@ -73,8 +73,8 @@ __all__ = [
     "TimelyInputOutputBuffer",
     "TimelyChip2ChipLink",
     # From wan
-    "WanShiftAdd",
-    "WanVariablePrecisionADC",
-    "WanAnalogSample",
-    "WanAnalogIntegrator",
+    "NeurramShiftAdd",
+    "NeurramVariablePrecisionADC",
+    "NeurramAnalogSample",
+    "NeurramAnalogIntegrator",
 ]

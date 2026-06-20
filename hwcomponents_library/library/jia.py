@@ -214,9 +214,9 @@ class JiaZeroComparator(LibraryEstimatorClassBase):
             width=n_bits,
             tech_node=tech_node,
         )
-        self.comparator.area_scale *= n_comparators
-        self.comparator.leak_power_scale *= n_comparators
-        self.comparator.throughput_scale *= n_comparators
+        self.comparator.scale_area(n_comparators, include_subcomponents=False)
+        self.comparator.scale_leak_power(n_comparators, include_subcomponents=False)
+        self.comparator.scale_throughput(n_comparators, include_subcomponents=False)
 
         # Flip flops are used one bit at a time, so we only make one bit and scale the
         # energy and latency
@@ -227,13 +227,13 @@ class JiaZeroComparator(LibraryEstimatorClassBase):
         )
         n_flip_flops = n_comparators * n_bits  # One flip flop per bit per comparator
         n_flip_flops_serial = n_bits  # Only one flip flop active at a time
-        self.flip_flop.area_scale *= n_flip_flops
-        self.flip_flop.leak_power_scale *= n_flip_flops
-        self.flip_flop.throughput_scale *= n_flip_flops
+        self.flip_flop.scale_area(n_flip_flops, include_subcomponents=False)
+        self.flip_flop.scale_leak_power(n_flip_flops, include_subcomponents=False)
+        self.flip_flop.scale_throughput(n_flip_flops, include_subcomponents=False)
 
         # Charging per-input, not for all
-        self.flip_flop.energy_scale *= n_flip_flops_serial
-        self.flip_flop.latency_scale *= n_flip_flops_serial
+        self.flip_flop.scale_energy(n_flip_flops_serial, include_subcomponents=False)
+        self.flip_flop.scale_latency(n_flip_flops_serial, include_subcomponents=False)
 
         self.zeros_counter = AdderTree(
             n_bits=1,
@@ -243,10 +243,10 @@ class JiaZeroComparator(LibraryEstimatorClassBase):
         )
         # Adder tree charges energy and throughput for ALL inputs, but this component
         # charges per-input, so scale down by the number of inputs.
-        self.zeros_counter.energy_scale /= n_comparators
-        self.zeros_counter.throughput_scale *= n_comparators
+        self.zeros_counter.scale_energy(1 / n_comparators, include_subcomponents=False)
+        self.zeros_counter.scale_throughput(n_comparators, include_subcomponents=False)
 
-        self.flip_flop.energy_scale = 0
+        self.flip_flop.scale_energy(0, include_subcomponents=False)
 
         super().__init__(
             subcomponents=[
@@ -266,8 +266,10 @@ class JiaZeroComparator(LibraryEstimatorClassBase):
                 latency_scale_function=reciprocal,
                 throughput_scale_function=linear,
                 leak_power_scale_function=linear,
+                include_subcomponents=False,
             )
-            subcomponent.leak_power_scale *= 0.02  # Low-leakage technology
+            # Low-leakage technology
+            subcomponent.scale_leak_power(0.02, include_subcomponents=False)
 
     @action
     def read(self) -> ActionCost:

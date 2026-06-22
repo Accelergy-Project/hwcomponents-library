@@ -10,6 +10,10 @@ from hwcomponents_library.library.newton import *
 from hwcomponents_library.library.raella import *
 from hwcomponents_library.library.timely import *
 from hwcomponents_library.library.neurram import *
+from hwcomponents_library.library.albireo import *
+from hwcomponents_library.library.colonnade import *
+from hwcomponents_library.library.c2c_multiplier import *
+from hwcomponents_library.library.dac_c2c_r2r import *
 
 __all__ = [
     # From aladdin
@@ -77,4 +81,33 @@ __all__ = [
     "NeurramVariablePrecisionADC",
     "NeurramAnalogSample",
     "NeurramAnalogIntegrator",
+    # From albireo
+    "AlbireoTIA",
+    "AlbireoDAC",
+    "AlbireoMachZehnderModulator",
+    "AlbireoMicroRingResonator",
+    "AlbireoDoubleMicroRingResonator",
+    "AlbireoPhotodiode",
+    "AlbireoArrayedWaveguideGrating",
+    "AlbireoStarCoupler",
+    "AlbireoLaser",
+    # From colonnade
+    "ColonnadeCimLogic",
+    "ColonnadeCimLogicInputPort",
+    "ColonnadeRegister",
+    # From c2c_multiplier
+    "C2CMultiplier",
+    "C2CMultiplierPortB",
+    # From dac_c2c_r2r
+    "C2CLadderDAC",
+    "R2RLadderDAC",
+    "DualSidedR2RLadderDAC",
+    # From misc (moved from accelforge)
+    "Capacitor",
+    "Wire",
+    # From raella (moved from accelforge)
+    "RaellaOutputCenterOffsetCorrect",
+    "RaellaInputBuffer",
+    "RaellaFlagRegister",
+    "RaellaQuantEDRAM",
 ]
